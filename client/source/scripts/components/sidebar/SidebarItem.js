@@ -5,7 +5,7 @@ class SidebarItem extends React.Component {
   render() {
     let classes = classnames(this.props.baseClassName, {
       [`${this.props.baseClassName}--${this.props.modifier}`]: this.props.modifier
-    });
+    }, this.props.className);
 
     return (
       <div className={classes}>
@@ -16,12 +16,15 @@ class SidebarItem extends React.Component {
 }
 
 SidebarItem.defaultProps = {
-  baseClassName: 'sidebar__item'
+  baseClassName: 'sidebar__item',
+  className: ''
 };
 
 SidebarItem.propTypes = {
   baseClassName: React.PropTypes.string,
   children: React.PropTypes.node,
+  className: React.PropTypes.oneOfType([React.PropTypes.string,
+    React.PropTypes.object]),
   modifier: React.PropTypes.string
 };
 

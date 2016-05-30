@@ -72,10 +72,16 @@ export default class Dropdown extends React.Component {
     }
   }
 
-  getDropdownButton() {
+  getDropdownButton(options = {}) {
+    let buttonLabel = this.props.header;
+
+    if (options.triggerButton && this.props.triggerButtonLabel) {
+      buttonLabel = this.props.triggerButtonLabel;
+    }
+
     return (
-      <div className={this.props.dropdownButtonClass} onClick={this.handleDropdownClick}>
-        {this.props.header}
+      <div className={this.props.dropdownButtonClassName} onClick={this.handleDropdownClick}>
+        {buttonLabel}
       </div>
     );
   }
@@ -122,11 +128,9 @@ export default class Dropdown extends React.Component {
   }
 
   render() {
-    let dropdownWrapperClass = classnames({
-      [this.props.dropdownWrapperClass]: true,
+    let dropdownWrapperClasses = classnames('dropdown', {
       'is-expanded': this.state.isExpanded
-    });
-
+    }, this.props.dropdownWrapperClassName);
     let menu = null;
 
     if (this.state.isExpanded) {
@@ -134,8 +138,8 @@ export default class Dropdown extends React.Component {
     }
 
     return (
-      <div className={dropdownWrapperClass} onFocus={this.handleDropdownFocus} onBlur={this.handleDropdownBlur} ref="dropdown" tabIndex="0">
-        {this.getDropdownButton()}
+      <div className={dropdownWrapperClasses} onFocus={this.handleDropdownFocus} onBlur={this.handleDropdownBlur} ref="dropdown" tabIndex="0">
+        {this.getDropdownButton({triggerButton: true})}
         <CSSTransitionGroup
           transitionName="menu"
           transitionEnterTimeout={250}
@@ -148,10 +152,12 @@ export default class Dropdown extends React.Component {
 }
 
 Dropdown.defaultProps = {
-  dropdownWrapperClass: 'dropdown',
-  dropdownButtonClass: 'dropdown__trigger'
+  dropdownWrapperClassName: '',
+  dropdownButtonClassName: 'dropdown__trigger',
+  triggerButtonLabel: null
 };
 
 Dropdown.propTypes = {
-  menuItems: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.object)).isRequired
+  menuItems: React.PropTypes.arrayOf(React.PropTypes.arrayOf(React.PropTypes.object)).isRequired,
+  triggerButtonLabel: React.PropTypes.node
 };

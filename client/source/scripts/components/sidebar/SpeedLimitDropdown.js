@@ -50,10 +50,16 @@ class SpeedLimitDropdown extends React.Component {
     });
   }
 
-  getDropdownHeader() {
+  getDropdownHeader(options = {}) {
+    let label = ' Speed Limits';
+
+    if (options.suppressLabel) {
+      label = null;
+    }
+
     return (
-      <a className="sidebar__icon-button sidebar__icon-button--limits">
-        <LimitsIcon /> Speed Limits
+      <a className="sidebar__icon-button">
+        <LimitsIcon />{label}
       </a>
     );
   }
@@ -143,13 +149,10 @@ class SpeedLimitDropdown extends React.Component {
 
   render() {
     return (
-      <SidebarItem modifier="speed-limit">
-        <Dropdown
-          handleItemSelect={this.handleItemSelect}
-          header={this.getDropdownHeader()}
-          menuItems={this.getDropdownMenus()}
-          />
-      </SidebarItem>
+      <Dropdown handleItemSelect={this.handleItemSelect}
+        header={this.getDropdownHeader()} menuItems={this.getDropdownMenus()}
+        dropdownWrapperClassName="sidebar__actions__item"
+        triggerButtonLabel={this.getDropdownHeader({suppressLabel: true})} />
     );
   }
 }

@@ -5,6 +5,7 @@ import React from 'react';
 import AddTorrents from './AddTorrents';
 import ConfirmModal from './ConfirmModal';
 import EventTypes from '../../constants/EventTypes';
+import HistoryModal from './HistoryModal';
 import Modal from './Modal';
 import MoveTorrents from './MoveTorrents';
 import SettingsModal from './SettingsModal';
@@ -24,10 +25,11 @@ export default class Modals extends React.Component {
 
     this.modals = {
       confirm: ConfirmModal,
-      'move-torrents': MoveTorrents,
       'add-torrents': AddTorrents,
-      'torrent-details': TorrentDetailsModal,
-      'settings': SettingsModal
+      'history': HistoryModal,
+      'move-torrents': MoveTorrents,
+      'settings': SettingsModal,
+      'torrent-details': TorrentDetailsModal
     };
 
     this.state = {
@@ -57,6 +59,10 @@ export default class Modals extends React.Component {
 
   getModal() {
     let ActiveModal = this.modals[this.state.activeModal.id];
+
+    if (!ActiveModal) {
+      throw new Error(`Unknown modal ID: ${this.state.activeModal.id}.`);
+    }
 
     return (
       <ActiveModal dismiss={this.dismissModal}

@@ -30,8 +30,6 @@ $sidebar--icon-button--foreground--hover: $blue;
   &__item {
 
     &--speed-limit {
-      padding-left: 5px;
-      padding-top: 5px;
 
       .dropdown {
 
@@ -72,11 +70,22 @@ $sidebar--icon-button--foreground--hover: $blue;
       vertical-align: middle;
       width: 13px;
     }
+  }
 
-    &--settings {
-      position: absolute;
-      right: $spacing-unit * 1/5;
-      top: $spacing-unit * 1/5;
+  &__actions {
+    display: flex;
+
+    &__item {
+      flex: 1 1 33.33%;
+      text-align: center;
+
+      &:first-child {
+        text-align: left;
+      }
+
+      &:last-child {
+        text-align: right;
+      }
     }
   }
 }
