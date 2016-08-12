@@ -1,0 +1,13 @@
+scgi_local = /tmp/rtorrent.sock
+encoding_list = UTF-8
+
+directory = /folder/files
+session = /folder/.session
+schedule = watch_directory,5,5,load_start=/folder/torrents/*.torrent
+schedule = scgi_permission,0,0,"execute.nothrow=chmod,\"g+w,o=\",/tmp/rtorrent.sock"
+
+dht = auto
+use_udp_trackers = yes
+peer_exchange = yes
+port_range = 49161-49161
+dht_port = 49160
