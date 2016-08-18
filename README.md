@@ -36,6 +36,10 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 3. Kill the running Node server and restart it with `npm start`.
   * The `start` script removes old dependencies, installs new ones, transpiles JavaScript and CSS, and starts the web server.
 
+#### Docker
+* x86 - [lafin/alpine-flood](https://hub.docker.com/r/lafin/alpine-flood/)
+* arm - [lafin/armhf-alpine-flood](https://hub.docker.com/r/lafin/armhf-alpine-flood/)
+
 #### Tips
 * I run the web server with `screen` to keep the web server running independently of the terminal session.
 * Ubuntu users will need to install `nodejs-legacy` (`sudo apt-get install nodejs-legacy`) for dependencies to install successfully. You can read more on [this Stack Overflow post](http://stackoverflow.com/questions/21168141/cannot-install-packages-using-node-package-manager-in-ubuntu).
