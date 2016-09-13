@@ -9,7 +9,6 @@ rtorrent:
 
 flood:
   build: ./
-  image: flood/flood
   environment:
     - UID=1000
     - GID=1000
