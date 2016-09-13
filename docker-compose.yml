@@ -1,0 +1,24 @@
+rtorrent:
+  image: xataz/rtorrent
+  environment:
+    - UID=1000
+    - GID=1000
+  tty: true
+  volumes:
+    - /home/user/downloads:/data
+
+flood:
+  build: ./
+  image: flood/flood
+  environment:
+    - UID=1000
+    - GID=1000
+    - RTORRENT_HOST=rtorrent
+    - RTORRENT_PORT=5000
+    - FLOOD_SECRET=flood
+  volumes:
+    - /home/user/flood/db:/usr/app/src/server/db
+  ports:
+    - "3000:3000"
+  links:
+    - rtorrent:rtorrent
