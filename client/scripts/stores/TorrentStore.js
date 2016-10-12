@@ -1,12 +1,12 @@
 import _ from 'lodash';
 
 import ActionTypes from '../constants/ActionTypes';
+import AlertStore from './AlertStore';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
 import config from '../../../config';
 import EventTypes from '../constants/EventTypes';
 import {filterTorrents} from '../util/filterTorrents';
-import NotificationStore from './NotificationStore';
 import {searchTorrents} from '../util/searchTorrents';
 import {selectTorrents} from '../util/selectTorrents';
 import SettingsStore from './SettingsStore';
@@ -27,8 +27,9 @@ class TorrentStoreClass extends BaseStore {
     this.torrents = {};
   }
 
-  fetchTorrentDetails() {
-    if (!this.isRequestPending('fetch-torrent-details')) {
+  fetchTorrentDetails(options = {}) {
+    if (!this.isRequestPending('fetch-torrent-details')
+      || options.forceUpdate) {
       this.beginRequest('fetch-torrent-details');
       TorrentActions.fetchTorrentDetails(UIStore.getTorrentDetailsHash());
     }
@@ -123,12 +124,12 @@ class TorrentStoreClass extends BaseStore {
       data: response.destination
     });
 
-    NotificationStore.add({
+    AlertStore.add({
       accumulation: {
-        id: 'notification.torrent.add',
+        id: 'alert.torrent.add',
         value: response.count || 1
       },
-      id: 'notification.torrent.add'
+      id: 'alert.torrent.add'
     });
   }
 
@@ -152,24 +153,24 @@ class TorrentStoreClass extends BaseStore {
   handleMoveTorrentsSuccess(response) {
     this.emit(EventTypes.CLIENT_MOVE_TORRENTS_SUCCESS);
 
-    NotificationStore.add({
+    AlertStore.add({
       accumulation: {
-        id: 'notification.torrent.move',
+        id: 'alert.torrent.move',
         value: response.count
       },
-      id: 'notification.torrent.move',
+      id: 'alert.torrent.move',
     });
   }
 
   handleMoveTorrentsError(error) {
     this.emit(EventTypes.CLIENT_MOVE_TORRENTS_REQUEST_ERROR);
 
-    NotificationStore.add({
+    AlertStore.add({
       accumulation: {
-        id: 'notification.torrent.move.failed',
+        id: 'alert.torrent.move.failed',
         value: error.count
       },
-      id: 'notification.torrent.move.failed'
+      id: 'alert.torrent.move.failed'
     });
   }
 
@@ -203,23 +204,32 @@ class TorrentStoreClass extends BaseStore {
       data: response.deleteData
     });
 
-    NotificationStore.add({
+    AlertStore.add({
       accumulation: {
-        id: 'notification.torrent.remove',
+        id: 'alert.torrent.remove',
         value: response.count
       },
-      id: 'notification.torrent.remove'
+      id: 'alert.torrent.remove'
     });
   }
 
   handleRemoveTorrentsError(error) {
-    NotificationStore.add({
+    AlertStore.add({
       accumulation: {
-        id: 'notification.torrent.remove.failed',
+        id: 'alert.torrent.remove.failed',
         value: error.count
       },
-      id: 'notification.torrent.remove.failed'
+      id: 'alert.torrent.remove.failed'
     });
+  }
+
+  handleSetFilePrioritySuccess() {
+    this.emit(EventTypes.CLIENT_SET_FILE_PRIORITY_SUCCESS);
+    this.fetchTorrentDetails({forceUpdate: true});
+  }
+
+  setFilePriority(hash, fileIndices, priority) {
+    TorrentActions.setFilePriority(hash, fileIndices, priority);
   }
 
   setTorrentDetails(hash, torrentDetails) {
@@ -303,6 +313,9 @@ TorrentStore.dispatcherID = AppDispatcher.register((payload) => {
       break;
     case ActionTypes.CLIENT_REMOVE_TORRENT_ERROR:
       TorrentStore.handleRemoveTorrentsError(action.error);
+      break;
+    case ActionTypes.CLIENT_SET_FILE_PRIORITY_SUCCESS:
+      TorrentStore.handleSetFilePrioritySuccess(action.data);
       break;
     case ActionTypes.UI_CLICK_TORRENT:
       TorrentStore.setSelectedTorrents(action.data.event, action.data.hash);

@@ -17,53 +17,83 @@ export default {
   'button.state.saving': 'Opslaan...',
   'button.yes': 'Ja',
 
+  'feeds.add.automatic.download.rule': 'Regel toevoegen',
+  'feeds.add.feed': 'Feed toevoegen',
+  'feeds.applicable.feed': 'Feed',
+  'feeds.apply.tags': 'Tags toevoegen',
+  'feeds.exclude.pattern': 'Overslaan op patroon',
+  'feeds.existing.feeds': 'Feeds',
+  'feeds.existing.rules': 'Regels',
+  'feeds.label': 'Label',
+  'feeds.match.count': `{count, plural, =1 {# match} other {# matches}}`,
+  'feeds.match.pattern': 'Match op patroon',
+  'feeds.match': 'Match',
+  'feeds.no.feeds.available': 'Geen feeds beschikbaar.',
+  'feeds.no.feeds.defined': 'Geen feeds toegevoegd.',
+  'feeds.no.rules.defined': 'Geen regels toegevoegd.',
+  'feeds.regEx': 'RegEx',
+  'feeds.select.feed': 'Selecteer feed',
+  'feeds.select.interval': 'Interval',
+  'feeds.start.on.load': 'Start na toevoegen',
+  'feeds.tabs.download.rules': 'Regels',
+  'feeds.tabs.feeds': 'Feeds',
+  'feeds.tabs.heading': 'Torrent feeds',
+  'feeds.tags': 'Tags',
+  'feeds.time.hr': 'uur',
+  'feeds.time.min': 'min',
+  'feeds.torrent.destination': 'Torrent downloadlocatie',
+  'feeds.url': 'URL',
+  'feeds.validation.invalid.regular.expression': 'Fout in regular expression.',
+  'feeds.validation.must.select.feed': 'Je moet een feed selecteren.',
+  'feeds.validation.must.specify.destination': 'Je moet een downloadlocatie opgeven.',
+  'feeds.validation.must.specify.label': 'Je moet een label selecteren.',
+  'feeds.validation.must.specify.valid.feed.url': 'Je moet een geldige feed URL opgeven.',
+
   'filter.all': 'Alles',
-  'filter.status.title': 'Filter op Status',
+  'filter.status.title': 'Filter op status',
   'filter.status.downloading': 'Downloaden',
   'filter.status.completed': 'Klaar',
   'filter.status.active': 'Actief',
   'filter.status.inactive': 'Inactief',
   'filter.status.error': 'Fout',
-  'filter.tracker.title': 'Filter op Tracker',
-  'filter.tag.title': 'Filter op Tag',
+  'filter.tracker.title': 'Filter op tracker',
+  'filter.tag.title': 'Filter op tag',
   'filter.untagged': 'Niet getagd',
 
   'locale.language.en': 'English',
   'locale.language.fr': 'Frans',
   'locale.language.nl': 'Nederlands',
 
-  'notification.torrent.add': `Het toevoegen van {countElement} {count, plural,
+  'alert.torrent.add': `Het toevoegen van {countElement} {count, plural,
     =1 {torrent}
     other {torrents}
   } is klaar.`,
-  'notification.torrent.add.failed': `Het toevoegen van {countElement} {count, plural,
+  'alert.torrent.add.failed': `Het toevoegen van {countElement} {count, plural,
     =1 {torrent}
     other {torrents}
   } is mislukt.`,
-  'notification.torrent.move': `Het verplaatsen van {countElement} {count, plural,
+  'alert.torrent.move': `Het verplaatsen van {countElement} {count, plural,
     =1 {torrent}
     other {torrents}
   } is klaar.`,
-  'notification.torrent.move.failed': `Het verplaatsen van {countElement} {count, plural,
+  'alert.torrent.move.failed': `Het verplaatsen van {countElement} {count, plural,
     =1 {torrent}
     other {torrents}
   } is mislukt.`,
-  'notification.torrent.remove': `Het verwijderen van {countElement} {count, plural,
+  'alert.torrent.remove': `Het verwijderen van {countElement} {count, plural,
     =1 {torrent}
     other {torrents}
   } is klaar.`,
-  'notification.torrent.remove.failed': `Het verwijderen van {countElement} {count, plural,
+  'alert.torrent.remove.failed': `Het verwijderen van {countElement} {count, plural,
     =1 {torrent}
     other {torrents}
   } is mislukt.`,
-  'notification.settings.saved': 'Instellingen zijn opgeslagen.',
+  'alert.settings.saved': 'Instellingen zijn opgeslagen.',
 
   'priority.dont.download': 'Niet downloaden',
   'priority.high': 'Hoog',
   'priority.low': 'Laag',
   'priority.normal': 'Normaal',
-
-  'searchbox.placeholder': 'Zoek torrents',
 
   'settings.bandwidth.slots.download.divider.label': 'Download slots divider',
   'settings.bandwidth.slots.download.global.label': 'Download slots globaal',
@@ -112,19 +142,36 @@ export default {
   'settings.ui.locale': 'Landinstelling',
   'settings.ui.language': 'Taal',
 
+  'sidebar.button.feeds': 'Feeds',
   'sidebar.button.settings': 'Instellingen',
   'sidebar.button.speedlimits': 'Sneldheidsbeperkingen',
+
+  'sidebar.search.placeholder': 'Zoek torrents',
 
   'sidebar.transferdata.downloaded': 'Gedownload',
   'sidebar.transferdata.uploaded': 'Geupload',
 
   'speed.unlimited': 'Ongelimiteerd',
 
+  'unit.size.byte': 'B',
+  'unit.size.kilobyte': 'kB',
+  'unit.size.megabyte': 'MB',
+  'unit.size.gigabyte': 'GB',
+  'unit.size.terabyte': 'TB',
+  'unit.speed': '{baseUnit}/s',
+  'unit.time.year': 'j',
+  'unit.time.week': 'w',
+  'unit.time.day': 'd',
+  'unit.time.hour': 't',
+  'unit.time.minute': 'm',
+  'unit.time.second': 'tw',
+  'unit.time.infinity': '∞',
+
   'torrents.add.button.add': 'Torrent toevoegen',
   'torrents.add.destination.label': 'Downloadlocatie',
   'torrents.add.destination.placeholder': 'Downloadlocatie',
   'torrents.add.heading': 'Torrents toevoegen',
-  'torrents.add.start.label': 'Start Torrent',
+  'torrents.add.start.label': 'Start torrent',
   'torrents.add.tab.file.browse': 'of klik om te bladeren.',
   'torrents.add.tab.file.drop': 'Sleep bestanden hierheen,',
   'torrents.add.tab.file.title': 'Via bestand',
@@ -139,7 +186,7 @@ export default {
   'torrents.details.files': 'Bestanden',
   'torrents.details.general.added': 'Toegevoegd op',
   'torrents.details.general.comment': 'Opmerking',
-  'torrents.details.general.connected': 'verbonden',
+  'torrents.details.general.connected': '{connected} verbonden van {total}',
   'torrents.details.general.creation.date': 'Aangemaakt op',
   'torrents.details.general.downloaded': 'Gedownload',
   'torrents.details.general.free.disk.space': 'Vrije schijfruimte',
@@ -163,6 +210,11 @@ export default {
   'torrents.details.general.type': 'Type',
   'torrents.details.peers.no.data': 'Er zijn geen peer-gegevens voor deze torrent.',
   'torrents.details.peers': 'Peers',
+  'torrents.details.selected.files': `{count, plural,
+    =1 {{countElement} bestand geselecteerd}
+    other {{countElement} bestanden geselecteerd}
+  }`,
+  'torrents.details.selected.files.set.priority': 'Wijzig prioriteit',
   'torrents.details.trackers.no.data': 'Er zijn geen tracker-gegevens voor deze torrent.',
   'torrents.details.trackers.type': 'Type',
   'torrents.details.trackers': 'Trackers',
@@ -177,6 +229,8 @@ export default {
   'torrents.list.context.start': 'Start',
   'torrents.list.context.stop': 'Stop',
   'torrents.list.no.torrents': 'Geen torrents om te laten zien.',
+  'torrent.list.peers': '{connected} {of} {total}',
+  'torrent.list.peers.of': 'van',
 
   'torrents.set.tags.button.set': 'Tags instellen',
   'torrents.set.tags.button.state.setting': 'Instellen...',

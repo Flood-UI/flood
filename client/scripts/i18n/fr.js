@@ -32,38 +32,36 @@ export default {
   'locale.language.nl': 'Néerlandais',
   'locale.language.fr': 'Français',
 
-  'notification.torrent.add': `L'ajout de {countElement} {count, plural,
+  'alert.torrent.add': `L'ajout de {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     } a réussi.`,
-  'notification.torrent.add.failed': `L'ajout de {countElement} {count, plural,
+  'alert.torrent.add.failed': `L'ajout de {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     } a échoué.`,
-  'notification.torrent.move': `La modification de {countElement} {count, plural,
+  'alert.torrent.move': `La modification de {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     } a réussi.`,
-  'notification.torrent.move.failed': `La modification de {countElement} {count, plural,
+  'alert.torrent.move.failed': `La modification de {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     } a échoué.`,
-  'notification.torrent.remove': `La suppression de {countElement} {count, plural,
+  'alert.torrent.remove': `La suppression de {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     } a réussi.`,
-  'notification.torrent.remove.failed': `La suppression de {countElement} {count, plural,
+  'alert.torrent.remove.failed': `La suppression de {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     } a échoué.`,
-  'notification.settings.saved': 'Paramètres modifiés.',
+  'alert.settings.saved': 'Paramètres modifiés.',
 
   'priority.dont.download': 'Arrêt',
   'priority.high': 'Haut',
   'priority.low': 'Bas',
   'priority.normal': 'Normal',
-
-  'searchbox.placeholder': 'Rechercher des Torrents',
 
   'settings.bandwidth.slots.download.divider.label': 'Download Slots Divider',
   'settings.bandwidth.slots.download.global.label': 'Download Slots Global',
@@ -115,10 +113,26 @@ export default {
   'sidebar.button.settings': 'Réglages',
   'sidebar.button.speedlimits': 'Limite de Vitesse',
 
+  'sidebar.search.placeholder': 'Rechercher des Torrents',
+
   'sidebar.transferdata.downloaded': 'Téléchargé',
   'sidebar.transferdata.uploaded': 'Envoyé',
 
   'speed.unlimited': 'Illimité',
+
+  'unit.size.byte': 'o',
+  'unit.size.kilobyte': 'ko',
+  'unit.size.megabyte': 'Mo',
+  'unit.size.gigabyte': 'Go',
+  'unit.size.terabyte': 'To',
+  'unit.speed': '{baseUnit}/s',
+  'unit.time.year': 'a',
+  'unit.time.week': 'sem',
+  'unit.time.day': 'j',
+  'unit.time.hour': 'h',
+  'unit.time.minute': 'm',
+  'unit.time.second': 'sec',
+  'unit.time.infinity': '∞',
 
   'torrents.add.button.add': 'Ajouter un Torrent',
   'torrents.add.destination.label': 'Destination',
@@ -139,7 +153,11 @@ export default {
   'torrents.details.files': 'Fichiers',
   'torrents.details.general.added': 'Ajouté',
   'torrents.details.general.comment': 'Commentaires',
-  'torrents.details.general.connected': 'Connectés',
+  'torrents.details.general.connected': `{connected} {connectedCount, plural,
+      =0 {connecté}
+      one {connecté}
+      other {connectés}
+  } sur {total}`,
   'torrents.details.general.creation.date': 'Date de Création',
   'torrents.details.general.downloaded': 'Téléchargé',
   'torrents.details.general.free.disk.space': 'Espace Libre',
@@ -177,6 +195,8 @@ export default {
   'torrents.list.context.start': 'Démarrer',
   'torrents.list.context.stop': 'Arrêter',
   'torrents.list.no.torrents': 'Aucun Torrent à afficher.',
+  'torrent.list.peers': '{connected} {of} {total}',
+  'torrent.list.peers.of': 'sur',
 
   'torrents.set.tags.button.set': 'Définir les Tags',
   'torrents.set.tags.button.state.setting': 'Paramètres...',

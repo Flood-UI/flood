@@ -17,6 +17,38 @@ export default {
   'button.state.saving': 'Saving...',
   'button.yes': 'Yes',
 
+  'feeds.add.automatic.download.rule': 'Add Download Rule',
+  'feeds.add.feed': 'Add Feed',
+  'feeds.applicable.feed': 'Applicable Feed',
+  'feeds.apply.tags': 'Apply Tags',
+  'feeds.exclude.pattern': 'Exclude Pattern',
+  'feeds.existing.feeds': 'Existing Feeds',
+  'feeds.existing.rules': 'Existing Rules',
+  'feeds.label': 'Label',
+  'feeds.match.count': `{count, plural, =1 {# match} other {# matches}}`,
+  'feeds.match.pattern': 'Match Pattern',
+  'feeds.match': 'Match',
+  'feeds.no.feeds.available': 'No feeds available.',
+  'feeds.no.feeds.defined': 'No feeds defined.',
+  'feeds.no.rules.defined': 'No rules defined.',
+  'feeds.regEx': 'RegEx',
+  'feeds.select.feed': 'Select Feed',
+  'feeds.select.interval': 'Interval',
+  'feeds.start.on.load': 'Start on load',
+  'feeds.tabs.download.rules': 'Download Rules',
+  'feeds.tabs.feeds': 'Feeds',
+  'feeds.tabs.heading': 'Torrent Feeds',
+  'feeds.tags': 'Tags',
+  'feeds.time.hr': 'hr',
+  'feeds.time.min': 'min',
+  'feeds.torrent.destination': 'Torrent Destination',
+  'feeds.url': 'URL',
+  'feeds.validation.invalid.regular.expression': 'Invalid regular expression.',
+  'feeds.validation.must.select.feed': 'You must select a feed.',
+  'feeds.validation.must.specify.destination': 'You must specify a destination.',
+  'feeds.validation.must.specify.label': 'You must specify a label.',
+  'feeds.validation.must.specify.valid.feed.url': 'You must specify a valid feed URL.',
+
   'filter.all': 'All',
   'filter.status.title': 'Filter by Status',
   'filter.status.downloading': 'Downloading',
@@ -32,38 +64,36 @@ export default {
   'locale.language.fr': 'French',
   'locale.language.nl': 'Nederlands',
 
-  'notification.torrent.add': `Successfully added {countElement} {count, plural,
+  'alert.torrent.add': `Successfully added {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     }.`,
-  'notification.torrent.add.failed': `Failed to add {countElement} {count, plural,
+  'alert.torrent.add.failed': `Failed to add {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     }.`,
-  'notification.torrent.move': `Successfully moved {countElement} {count, plural,
+  'alert.torrent.move': `Successfully moved {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     }.`,
-  'notification.torrent.move.failed': `Failed to move {countElement} {count, plural,
+  'alert.torrent.move.failed': `Failed to move {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     }.`,
-  'notification.torrent.remove': `Successfully removed {countElement} {count, plural,
+  'alert.torrent.remove': `Successfully removed {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     }.`,
-  'notification.torrent.remove.failed': `Failed to remove {countElement} {count, plural,
+  'alert.torrent.remove.failed': `Failed to remove {countElement} {count, plural,
       =1 {torrent}
       other {torrents}
     }.`,
-  'notification.settings.saved': 'Successfully saved settings.',
+  'alert.settings.saved': 'Successfully saved settings.',
 
   'priority.dont.download': 'Don\'t Download',
   'priority.high': 'High',
   'priority.low': 'Low',
   'priority.normal': 'Normal',
-
-  'searchbox.placeholder': 'Search torrents',
 
   'settings.bandwidth.slots.download.divider.label': 'Download Slots Divider',
   'settings.bandwidth.slots.download.global.label': 'Download Slots Global',
@@ -112,13 +142,30 @@ export default {
   'settings.ui.locale': 'Locale',
   'settings.ui.language': 'Language',
 
+  'sidebar.button.feeds': 'Feeds',
   'sidebar.button.settings': 'Settings',
   'sidebar.button.speedlimits': 'Speed Limits',
+
+  'sidebar.search.placeholder': 'Search torrents',
 
   'sidebar.transferdata.downloaded': 'Downloaded',
   'sidebar.transferdata.uploaded': 'Uploaded',
 
   'speed.unlimited': 'Unlimited',
+
+  'unit.size.byte': 'B',
+  'unit.size.kilobyte': 'kB',
+  'unit.size.megabyte': 'MB',
+  'unit.size.gigabyte': 'GB',
+  'unit.size.terabyte': 'TB',
+  'unit.speed': '{baseUnit}/s',
+  'unit.time.year': 'yr',
+  'unit.time.week': 'wk',
+  'unit.time.day': 'd',
+  'unit.time.hour': 'hr',
+  'unit.time.minute': 'm',
+  'unit.time.second': 's',
+  'unit.time.infinity': '∞',
 
   'torrents.add.button.add': 'Add Torrent',
   'torrents.add.destination.label': 'Destination',
@@ -139,7 +186,7 @@ export default {
   'torrents.details.files': 'Files',
   'torrents.details.general.added': 'Added',
   'torrents.details.general.comment': 'Comment',
-  'torrents.details.general.connected': 'connected',
+  'torrents.details.general.connected': '{connected} connected of {total}',
   'torrents.details.general.creation.date': 'Creation Date',
   'torrents.details.general.downloaded': 'Downloaded',
   'torrents.details.general.free.disk.space': 'Free Disk Space',
@@ -163,6 +210,11 @@ export default {
   'torrents.details.general.type': 'Type',
   'torrents.details.peers.no.data': 'There is no peer data for this torrent.',
   'torrents.details.peers': 'Peers',
+  'torrents.details.selected.files': `{count, plural,
+    =1 {{countElement} selected file}
+    other {{countElement} selected files}
+  }`,
+  'torrents.details.selected.files.set.priority': 'Set Priority',
   'torrents.details.trackers.no.data': 'There is no tracker data for this torrent.',
   'torrents.details.trackers.type': 'Type',
   'torrents.details.trackers': 'Trackers',
@@ -177,6 +229,8 @@ export default {
   'torrents.list.context.start': 'Start',
   'torrents.list.context.stop': 'Stop',
   'torrents.list.no.torrents': 'No torrents to display.',
+  'torrent.list.peers': '{connected} {of} {total}',
+  'torrent.list.peers.of': 'of',
 
   'torrents.set.tags.button.set': 'Set Tags',
   'torrents.set.tags.button.state.setting': 'Setting...',
