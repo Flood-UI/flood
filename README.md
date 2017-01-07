@@ -30,6 +30,7 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 3. Create a long, unique secret (used to sign [JWT auth tokens](https://github.com/auth0/node-jsonwebtoken)) in `config.js`.
 
 #### Starting the Server
+
 1. Run `npm install --production` (only the first time when installing).
 2. Run `npm run start:production`.
 3. Access the UI in your browser. Defaults to `localhost:3000`.
@@ -41,8 +42,7 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 2. Check `config.template.js` for configuration changes that you may wish to incoporate in your `config.js`.
 3. Kill the running Node server.
 4. Run `npm install --production` to update dependencies.
-5. Restart it with `npm run start:production`.
-  * Static client-side assets are transpiled and compressed before starting the server.
+5. Restart it with `npm start`.
 
 #### Tips
 * I run the web server with `screen` to keep the web server running independently of the terminal session.
@@ -50,8 +50,8 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 
 #### Local Development
 1. Run `npm install`.
-2. Run `npm start` and `npm run start:watch` in separate terminal instances.
-  * `npm start` uses [nodemon](https://github.com/remy/nodemon) to watch for changes to the server-side JavaScript.
+2. Run `npm start:development` and `npm run start:watch` in separate terminal instances.
+  * `npm start:development` uses [nodemon](https://github.com/remy/nodemon) to watch for changes to the server-side JavaScript.
   * `npm run start:watch` watches for changes in the client-side source.
 3. Access the UI through the [browser-sync](https://www.browsersync.io/) proxy at [localhost:4200](http://localhost:4200).
 
