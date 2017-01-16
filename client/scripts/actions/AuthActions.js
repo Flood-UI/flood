@@ -3,6 +3,18 @@ import axios from 'axios';
 import ActionTypes from '../constants/ActionTypes';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
+import Config from '../../../config';
+
+let floodServerHost = Config.floodServerHost || 'localhost';
+
+if (Config.baseUrl) {
+  if (Config.ssl) {
+    axios.defaults.baseURL = `https://${floodServerHost}:${Config.floodServerPort}${Config.baseUrl}`;
+  } else {
+    axios.defaults.baseURL = `http://${floodServerHost}:${Config.floodServerPort}${Config.baseUrl}`;
+  }
+}
+
 let AuthActions = {
   authenticate: (credentials) => {
     return axios.post('/auth/authenticate', credentials)

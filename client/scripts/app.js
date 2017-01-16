@@ -1,5 +1,6 @@
 import {FormattedMessage, IntlProvider} from 'react-intl';
-import {IndexRoute, Router, Route, Link, browserHistory} from 'react-router';
+import { createHistory } from 'history';
+import {IndexRoute, Router, Route, Link, useRouterHistory } from 'react-router';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -11,6 +12,12 @@ import Register from './views/Register';
 import SettingsStore from './stores/SettingsStore';
 import TorrentList from './views/TorrentList';
 import UIStore from './stores/UIStore';
+
+import Config from '../../config';
+
+const browserHistory = useRouterHistory(createHistory)({
+    basename: Config.baseUrl || '/'
+});
 
 let appRoutes = (
   <Router history={browserHistory}>

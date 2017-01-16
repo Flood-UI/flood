@@ -15,6 +15,9 @@ let app = express();
 let apiRoutes = require('./routes/api');
 let authRoutes = require('./routes/auth');
 let mainRoutes = require('./routes/main');
+
+let config = require('../config');
+
 let PollService = require('./models/PollService');
 let Users = require('./models/Users');
 
@@ -33,9 +36,9 @@ app.use(express.static(path.join(__dirname, 'assets')));
 
 require('./config/passport')(passport);
 
-app.use('/api', apiRoutes);
-app.use('/auth', authRoutes);
-app.use('/', mainRoutes);
+app.use(config.baseUrl + '/api', apiRoutes);
+app.use(config.baseUrl + 'auth', authRoutes);
+app.use(config.baseUrl, mainRoutes);
 
 // Begin polling the client.
 PollService.init();

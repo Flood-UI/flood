@@ -11,6 +11,7 @@ let sass = require('gulp-sass');
 let sourcemaps = require('gulp-sourcemaps');
 let uglify = require('gulp-uglify');
 let webpack = require('webpack');
+let path = require('path');
 
 let development = process.env.NODE_ENV === 'development';
 
