@@ -1,0 +1,38 @@
+version: '2'
+
+networks:
+  torrent:
+    driver: bridge
+
+volumes:
+  db_flood:
+    driver: local
+
+services:
+  rtorrent:
+    image: xataz/rtorrent
+    environment:
+      - UID=1000
+      - GID=1000
+    tty: true
+    volumes:
+      - /home/user/downloads:/data
+    networks:
+      - torrent
+
+  flood:
+    build:
+      context: ./
+    image: flood/flood
+    environment:
+      - UID=1000
+      - GID=1000
+      - RTORRENT_HOST=rtorrent
+      - RTORRENT_PORT=5000
+      - FLOOD_SECRET=flood
+    ports:
+      - "3000:3000"
+    volumes:
+      - db_flood:/usr/app/src/server/db
+    networks:
+      - torrent

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+## Generate config file
+sed "s/host:.*$/host: '"${RTORRENT_HOST}"',/; \
+    s/port:.*$/port: "${RTORRENT_PORT}",/; \
+    s/socket:.*$/socket: "${RTORRENT_SOCKET}",/; \
+    s|socketPath:.*$|socketPath: '"${RTORRENT_SOCKET_PATH}"'|; \
+    s/secret:.*$/secret: '"${FLOOD_SECRET}"',/" /usr/app/src/config.template.js > /usr/app/src/config.js
+
+## Change /usr/app/src permission
+chown -R ${UID}:${GID} /usr/app/src
+
+## Execute prestart
+su-exec ${UID}:${GID} ./node_modules/.bin/gulp dist
+
+## Execute flood
+if [ "${FLOOD_START}" == "develop" ]; then
+    su-exec ${UID}:${GID} ./node_modules/.bin/nodemon ./server/bin/www &
+    su-exec ${UID}:${GID} NODE_ENV='development' ./node_modules/.bin/gulp livereload
+else
+    su-exec ${UID}:${GID} node ./server/bin/www
+fi

@@ -50,6 +50,47 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
   * `npm run start:watch` watches for changes in the client-side source.
 3. Access the UI through the [browser-sync](https://www.browsersync.io/) proxy at [localhost:4200](http://localhost:4200).
 
+# Docker
+## Build Image
+```shell
+docker build -t flood/flood https://github.com/jfurrow/flood
+```
+
+## Configuration
+### Environments
+* UID : Choose uid for launch flood (default : 991)
+* GID : Choose gid for launch flood (default : 991)
+* RTORRENT_HOST : rtorrent name image (default : torrent)
+* RTORRENT_PORT : rtorrent scgi port (default : 5000)
+* RTORRENT_SOCKET : enable or not socker for rtorrent (default : false)
+* RTORRENT_SOCKET_PATH : path of rtorrent socket if use (default : /tmp/rtorrent.sock)
+* FLOOD_SECRET : secret (default : flood)
+* FLOOD_START : Start flood in develop or production (default : production)
+
+### Volumes
+* /usr/app/src/server/db
+
+### Ports
+* 3000
+
+## Usage
+### Example without docker-compose
+```shell
+$ docker run -dt --name torrent -v /home/user/downloads:/data/ xataz/rtorrent
+$ docker run -d --name flood --link torrent:torrent -p 3000:3000 flood/flood
+```
+
+### Example with docker-compose
+```shell
+$ docker-compose build flood
+$ docker-compose up -d
+```
+or
+```shell
+$ docker-compose build flood
+$ docker-compose -f docker-compose.v2.yml up -d
+```
+
 # Screenshots
 ![](https://s3.amazonaws.com/johnfurrow.com/share/flood-screenshot-a-0606.png)
 ![](https://s3.amazonaws.com/johnfurrow.com/share/flood-screenshot-b-0606.png)
