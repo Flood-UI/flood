@@ -4,6 +4,7 @@ import BaseStore from './BaseStore';
 import ConfigStore from './ConfigStore';
 import EventTypes from '../constants/EventTypes';
 import FloodActions from '../actions/FloodActions';
+import SettingsStore from './SettingsStore';
 
 const pollInterval = ConfigStore.getPollInterval();
 const maxHistoryStates = ConfigStore.getMaxHistoryStates();
@@ -22,7 +23,7 @@ class TransferDataStoreClass extends BaseStore {
     if (!this.isRequestPending('fetch-transfer-history')) {
       this.beginRequest('fetch-transfer-history');
       FloodActions.fetchTransferHistory({
-        snapshot: 'fiveMin'
+        snapshot: SettingsStore.getFloodSettings('graphHistoryTime')
       });
     }
 

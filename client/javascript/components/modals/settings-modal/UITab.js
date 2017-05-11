@@ -8,7 +8,9 @@ import Checkbox from '../../general/form-elements/Checkbox';
 import ErrorIcon from '../../icons/ErrorIcon';
 import Close from '../../icons/Close';
 import Dropdown from '../../general/form-elements/Dropdown';
+import DropdownGraph from '../../general/form-elements/Dropdown';
 import EventTypes from '../../../constants/EventTypes';
+import GraphHistoryTimes from '../../../constants/GraphHistoryTimes';
 import Languages from '../../../constants/Languages';
 import Radio from '../../general/form-elements/Radio';
 import SettingsStore from '../../../stores/SettingsStore';
@@ -34,7 +36,8 @@ class UITab extends SettingsTab {
     this.state = {
       torrentDetails: SettingsStore.getFloodSettings('torrentDetails'),
       torrentListViewSize: SettingsStore.getFloodSettings('torrentListViewSize'),
-      selectedLanguage: SettingsStore.getFloodSettings('language')
+      selectedLanguage: SettingsStore.getFloodSettings('language'),
+      graphHistoryTime: SettingsStore.getFloodSettings('graphHistoryTime')
     };
 
     methodsToBind.forEach((method) => {
@@ -62,6 +65,33 @@ class UITab extends SettingsTab {
         ),
         selected: this.state.selectedLanguage === language,
         language
+      };
+    });
+
+    // Dropdown expects an array of arrays.
+    return [items];
+  }
+
+  getGraphHistoryDropdownHeader() {
+    return (
+      <a className="dropdown__button">
+        <span className="dropdown__value">
+          <FormattedMessage
+            defaultMessage={GraphHistoryTimes[this.state.graphHistoryTime].defaultMessage}
+            id={GraphHistoryTimes[this.state.graphHistoryTime].id} />
+        </span>
+      </a>
+    );
+  }
+
+  getGraphHistoryDropdownMenu() {
+    let items = Object.keys(GraphHistoryTimes).map((graphTime) => {
+      return {
+        displayName: this.props.intl.formatMessage(
+          GraphHistoryTimes[graphTime]
+        ),
+        selected: this.state.graphHistoryTime === graphTime,
+        graphTime
       };
     });
 
@@ -103,10 +133,16 @@ class UITab extends SettingsTab {
   }
 
   handleItemSelect(item) {
-    let {language} = item;
+    if(item.graphTime) {
+      this.setState({graphHistoryTime: item.graphTime});
+      this.props.onSettingsChange({graphHistoryTime: item.graphTime});
+    }
+    else {
+      let {language} = item;
 
-    this.setState({selectedLanguage: language});
-    this.props.onSettingsChange({language});
+      this.setState({selectedLanguage: language});
+      this.props.onSettingsChange({language});
+    }
   }
 
   handleRadioToggleChange(field, event) {
@@ -224,6 +260,26 @@ class UITab extends SettingsTab {
                 handleItemSelect={this.handleItemSelect}
                 header={this.getDropdownHeader()}
                 menuItems={this.getDropdownMenu()} />
+            </div>
+          </div>
+        </div>
+        <div className="form__section">
+          <div className="form__section__heading">
+            <FormattedMessage
+              defaultMessage="Graph history"
+              id="settings.ui.graphhistory" />
+          </div>
+          <div className="form__row">
+            <div className="form__column form__column--auto">
+              <label className="form__label">
+                <FormattedMessage
+                  defaultMessage="Select interval"
+                  id="settings.ui.graphhistory.interval"  />
+              </label>
+              <DropdownGraph
+                handleItemSelect={this.handleItemSelect}
+                header={this.getGraphHistoryDropdownHeader()}
+                menuItems={this.getGraphHistoryDropdownMenu()} />
             </div>
           </div>
         </div>

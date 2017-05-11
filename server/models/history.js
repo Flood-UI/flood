@@ -68,7 +68,7 @@ let processData = (opts, callback, data, error) => {
     return;
   }
 
-  const currentTime = moment(Date.now());
+  const currentTime = moment();
   data = data.slice(data.length - config.maxHistoryStates);
 
   callback(data.reduce((accumulator, snapshot, index) => {
@@ -128,6 +128,6 @@ let history = {
     clearInterval(pollIntervalID);
     pollIntervalID = null;
   }
-}
+};
 
 module.exports = history;
