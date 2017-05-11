@@ -16,31 +16,31 @@ let yearSnapshot = new HistoryEra({
 
 let monthSnapshot = new HistoryEra({
   interval: 1000 * 60 * 60 * 12, // 12 hours
-  maxTime: 1000 * 60 * 60 * 24 * 365, // 365 days
+  maxTime: 1000 * 60 * 60 * 24 * 30, // 30 days
   name: 'monthSnapshot',
   nextEraUpdateInterval: 1000 * 60 * 60 * 24 * 7, // 7 days
   nextEra: yearSnapshot
 });
 
 let weekSnapshot = new HistoryEra({
-  interval: 1000 * 60 * 60 * 4, // 4 hours
-  maxTime: 1000 * 60 * 60 * 24 * 7 * 24, // 24 weeks
+  interval: 1000 * 60 * 60 * 2, // 2 hours
+  maxTime: 1000 * 60 * 60 * 24 * 7, // 1 week
   name: 'weekSnapshot',
   nextEraUpdateInterval: 1000 * 60 * 60 * 12, // 12 hours
   nextEra: monthSnapshot
 });
 
 let daySnapshot = new HistoryEra({
-  interval: 1000 * 60 * 60, // 60 minutes
-  maxTime: 1000 * 60 * 60 * 24 * 30, // 30 days
+  interval: 1000 * 60 * 20, // 20 minutes
+  maxTime: 1000 * 60 * 60 * 24, // 1 day
   name: 'daySnapshot',
   nextEraUpdateInterval: 1000 * 60 * 60 * 4, // 4 hours
   nextEra: weekSnapshot
 });
 
 let hourSnapshot = new HistoryEra({
-  interval: 1000 * 60 * 15, // 15 minutes
-  maxTime: 1000 * 60 * 60 * 24, // 24 hours
+  interval: 1000 * 40, // 40 seconds
+  maxTime: 1000 * 60 * 60, // 1 hour
   name: 'hourSnapshot',
   nextEraUpdateInterval: 1000 * 60 * 60, // 60 minutes
   nextEra: daySnapshot
