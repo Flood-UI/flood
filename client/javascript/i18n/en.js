@@ -103,6 +103,14 @@ export default {
   'locale.language.fr': 'French',
   'locale.language.nl': 'Nederlands',
 
+  'graphhistory.time.fiveMin': '5 minutes',
+  'graphhistory.time.thirtyMin': '30 minutes',
+  'graphhistory.time.hour': '1 hour',
+  'graphhistory.time.day': '1 day',
+  'graphhistory.time.week': '1 week',
+  'graphhistory.time.month': '1 month',
+  'graphhistory.time.year': '1 year',
+
   'mediainfo.execError': 'An error occurred while running mediainfo on the server. Check that mediainfo is installed and available in the PATH to Flood.',
   'mediainfo.fetching': 'Fetching...',
   'mediainfo.heading': 'Mediainfo Output',
@@ -163,6 +171,8 @@ export default {
   'settings.tabs.authentication': 'Authentication',
   'settings.tabs.userinterface': 'User Interface',
 
+  'settings.ui.graphhistory': 'Graph history',
+  'settings.ui.graphhistory.interval': 'Select interval',
   'settings.ui.locale': 'Locale',
   'settings.ui.language': 'Language',
   'settings.ui.torrent.list': 'Torrent List Display',
