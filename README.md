@@ -16,6 +16,12 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 2. Install NodeJS version `6.9.x`:
   * I recommend managing different Node versions with [nvm](https://github.com/creationix/nvm) or [n](https://github.com/tj/n).
 
+#### Installing
+
+1. Check you are in your home directory: `cd ~`.
+2. Copy the flood git repository: `git clone https://github.com/jfurrow/flood flood`.
+3. Go inside the flood repository before configuring: `cd ~/flood`.
+
 #### Configuring
 1. Copy `config.template.js` to `config.js`. This is required.
 2. Set your rTorrent SCGI hostname and port in `config.js`. Defaults are `localhost` and `5000`.
@@ -26,8 +32,9 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
   * For example, if hosting Flood from `https://foo.bar/apps/flood`, you would set `baseURI` to `/apps/flood`. If hosting flood from `https://foo.bar`, you do not need to configure `baseURI`.
 
 #### Starting the Server
-1. Run `npm install --production`.
-2. Run `npm start`.
+
+1. Run `npm install --production` (only the first time when installing).
+2. Run `npm run start:production`.
 3. Access the UI in your browser. Defaults to `localhost:3000`.
   * You may change the default port in `config.js`.
 4. Upon loading the UI the first time, you will be prompted to create a user account.
