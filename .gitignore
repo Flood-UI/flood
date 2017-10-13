@@ -5,3 +5,4 @@
 /server/db
 /server/assets/*.map
 /server/temp
+package-lock.json
