@@ -147,14 +147,18 @@ class FeedService {
 
   // TODO: Allow users to specify which key contains the URLs.
   getTorrentUrlsFromItem(feedItem) {
+
+    // Combine items from link tag and enclosures
+    let items = [];
+
     if (feedItem.link) {
-      return [feedItem.link];
+      items.push(feedItem.link);
     }
 
     // If we've got an Array of enclosures, we'll iterate over the values and
     // look for the url key.
     if (feedItem.enclosures && Array.isArray(feedItem.enclosures)) {
-      return feedItem.enclosures.reduce(
+      items.concat(feedItem.enclosures.reduce(
         (urls, enclosure) => {
           if (enclosure.url) {
             urls.push(enclosure.url);
@@ -163,10 +167,11 @@ class FeedService {
           return urls;
         },
         []
-      );
+      ));
     }
 
-    return [];
+    // Return the combined list
+    return items;
   }
 
   getUrlsFromItems(feedItems) {
