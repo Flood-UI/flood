@@ -149,8 +149,8 @@ class FeedService {
   getTorrentUrlsFromItem(feedItem) {
     // If we've got an Array of enclosures, we'll iterate over the values and
     // look for the url key.
-    if (feedItem.enclosures && Array.isArray(feedItem.enclosures)) {
-      return feedItem.enclosures.reduce(
+    if (feedItem.enclosure && Array.isArray(feedItem.enclosure)) {
+      return feedItem.enclosure.reduce(
         (urls, enclosure) => {
           if (enclosure.url) {
             urls.push(enclosure.url);
