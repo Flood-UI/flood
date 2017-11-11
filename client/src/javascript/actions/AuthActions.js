@@ -86,6 +86,22 @@ let AuthActions = {
       });
   },
 
+  logoutUser: (username) => {
+    return axios.post(`${baseURI}auth/users/${encodeURIComponent(username)}`)
+    .then((json={}) => json.data)
+    .then((data) => {
+      AppDispatcher.dispatchServerAction({
+        type: ActionTypes.AUTH_LOGOUT_USER_SUCCESS,
+        data
+      });
+    }, (error) => {
+      AppDispatcher.dispatchServerAction({
+        type: ActionTypes.AUTH_LOGOUT_USER_ERROR,
+        error
+      });
+    });
+  },
+
   register: (credentials) => {
     return axios.post(`${baseURI}auth/register`, credentials)
       .then((json = {}) => json.data)
