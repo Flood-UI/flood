@@ -30,6 +30,10 @@ class AuthStoreClass extends BaseStore {
     AuthActions.deleteUser(username);
   }
 
+  logoutUser(username) {
+    AuthActions.logoutUser(username);
+  }
+
   fetchUserList() {
     AuthActions.fetchUsers();
   }
@@ -61,6 +65,14 @@ class AuthStoreClass extends BaseStore {
 
   handleDeleteUserSuccess(data) {
     this.emit(EventTypes.AUTH_DELETE_USER_SUCCESS, data.username);
+  }
+
+  handleLogoutUserError(error) {
+    this.emit(EventTypes.AUTH_LOGOUT_USER_ERROR, error.username); 
+  }
+
+  handleLogoutUserSuccess(data) {
+    this.emit(EventTypes.AUTH_LOGOUT_USER_SUCCESS, data.username);
   }
 
   handleListUsersError(error) {
@@ -152,6 +164,12 @@ AuthStore.dispatcherID = AppDispatcher.register((payload) => {
       break;
     case ActionTypes.AUTH_REGISTER_ERROR:
       AuthStore.handleRegisterError(action.error.data);
+      break;
+    case ActionTypes.AUTH_LOGOUT_USER_SUCCESS:
+      AuthStore.handleLogoutUserSuccess(action.data);
+      break;
+    case ActionTypes.AUTH_LOGOUT_USER_ERROR:
+      AuthStore.handleLogoutUserError(action.error);
       break;
     case ActionTypes.AUTH_VERIFY_SUCCESS:
       AuthStore.handleAuthVerificationSuccess(action.data);

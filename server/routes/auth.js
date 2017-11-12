@@ -30,6 +30,24 @@ const setAuthToken = (res, username) => {
   return res.json({success: true, token: `JWT ${token}`, username});
 };
 
+const removeAuthToken = (res, username) => {
+  let cookieExpiration = 0;
+  let expirationSeconds = 0;
+  let token = jwt.sign(
+    {username},
+    config.secret, {
+    expiresIn: expirationSeconds
+  });
+
+  res.cookie(
+    'jwt',
+    token,
+    {expires: new Date(cookieExpiration), httpOnly: true}
+  );
+
+  return res.json({success: true, token: `JWT ${token}`, username});
+};
+
 router.post('/authenticate', (req, res) => {
   const credentials = {
     password: req.body.password,
@@ -111,6 +129,10 @@ router.get('/users', (req, res, next) => {
 router.delete('/users/:username', (req, res, next) => {
   Users.removeUser(req.params.username, ajaxUtil.getResponseFn(res));
 });
+
+router.post('/users/:username', (req, res, next) => {
+  return removeAuthToken(res, req.params.username)
+})
 
 router.put('/users', (req, res, next) => {
   Users.createUser({
