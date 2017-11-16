@@ -37,9 +37,8 @@ app.use('/api', apiRoutes);
 app.use('/auth', authRoutes);
 
 // After routes, look for static assets.
-app.use(express.static(paths.appBuild));
-// After static assets, always return index.html
-app.use((req, res) => res.sendFile(path.join(paths.appBuild, 'index.html')));
+app.use('/', express.static(__dirname + '/assets'))
+app.use((req, res) => res.sendFile(__dirname + '/assets/index.html'));
 
 // Catch 404 and forward to error handler.
 app.use((req, res, next) => {
