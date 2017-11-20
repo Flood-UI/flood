@@ -14,7 +14,7 @@ const CONFIG = {
     socket: false,
     socketPath: '/tmp/rtorrent.sock'
   },
-  ssl: false,
+  ssl: true,
   sslKey: '/absolute/path/to/key/',
   sslCert: '/absolute/path/to/certificate/',
   torrentClientPollInterval: 1000 * 2
