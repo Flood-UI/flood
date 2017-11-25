@@ -1,4 +1,5 @@
 'use strict';
+
 const EventEmitter = require('events');
 
 const clientRequestService = require('./clientRequestService');
@@ -31,25 +32,26 @@ const processData = (opts, callback, data, error) => {
 };
 
 class HistoryService extends EventEmitter {
-  constructor() {
-    super(...arguments);
+  constructor(userId, ...args) {
+    super(...args);
 
-    this.fetchCurrentTransferSummary = this.fetchCurrentTransferSummary.bind(this);
-    this.handleFetchTransferSummaryError = this.handleFetchTransferSummaryError.bind(this);
-    this.handleFetchTransferSummarySuccess = this.handleFetchTransferSummarySuccess.bind(this);
-
+    this.userId = userId;
     this.errorCount = 0;
     this.lastSnapshots = {};
     this.pollTimeout = null;
     this.transferSummary = {};
 
-    this.yearSnapshot = new HistoryEra({
+    this.fetchCurrentTransferSummary = this.fetchCurrentTransferSummary.bind(this);
+    this.handleFetchTransferSummaryError = this.handleFetchTransferSummaryError.bind(this);
+    this.handleFetchTransferSummarySuccess = this.handleFetchTransferSummarySuccess.bind(this);
+
+    this.yearSnapshot = new HistoryEra(this.userId, {
       interval: 1000 * 60 * 60 * 24 * 7, // 7 days
       maxTime: 0, // infinite
       name: 'yearSnapshot'
     });
 
-    this.monthSnapshot = new HistoryEra({
+    this.monthSnapshot = new HistoryEra(this.userId, {
       interval: 1000 * 60 * 60 * 12, // 12 hours
       maxTime: 1000 * 60 * 60 * 24 * 365, // 365 days
       name: 'monthSnapshot',
@@ -57,7 +59,7 @@ class HistoryService extends EventEmitter {
       nextEra: this.yearSnapshot
     });
 
-    this.weekSnapshot = new HistoryEra({
+    this.weekSnapshot = new HistoryEra(this.userId, {
       interval: 1000 * 60 * 60 * 4, // 4 hours
       maxTime: 1000 * 60 * 60 * 24 * 7 * 24, // 24 weeks
       name: 'weekSnapshot',
@@ -65,7 +67,7 @@ class HistoryService extends EventEmitter {
       nextEra: this.monthSnapshot
     });
 
-    this.daySnapshot = new HistoryEra({
+    this.daySnapshot = new HistoryEra(this.userId, {
       interval: 1000 * 60 * 60, // 60 minutes
       maxTime: 1000 * 60 * 60 * 24 * 30, // 30 days
       name: 'daySnapshot',
@@ -73,7 +75,7 @@ class HistoryService extends EventEmitter {
       nextEra: this.weekSnapshot
     });
 
-    this.hourSnapshot = new HistoryEra({
+    this.hourSnapshot = new HistoryEra(this.userId, {
       interval: 1000 * 60 * 15, // 15 minutes
       maxTime: 1000 * 60 * 60 * 24, // 24 hours
       name: 'hourSnapshot',
@@ -81,7 +83,7 @@ class HistoryService extends EventEmitter {
       nextEra: this.daySnapshot
     });
 
-    this.thirtyMinSnapshot = new HistoryEra({
+    this.thirtyMinSnapshot = new HistoryEra(this.userId, {
       interval: 1000 * 20, // 20 seconds
       maxTime: 1000 * 60 * 30, // 30 minutes
       name: 'thirtyMinSnapshot',
@@ -89,7 +91,7 @@ class HistoryService extends EventEmitter {
       nextEra: this.hourSnapshot
     });
 
-    this.fiveMinSnapshot = new HistoryEra({
+    this.fiveMinSnapshot = new HistoryEra(this.userId, {
       interval: 1000 * 5, // 5 seconds
       maxTime: 1000 * 60 * 5, // 5 minutes
       name: 'fiveMinSnapshot',
@@ -98,7 +100,7 @@ class HistoryService extends EventEmitter {
     });
 
     this.fetchCurrentTransferSummary();
-  }
+ }
 
   checkSnapshotDiffs() {
     Object.keys(historySnapshotTypes).forEach(snapshotType => {
@@ -113,14 +115,15 @@ class HistoryService extends EventEmitter {
           const {timestamps = []} = lastSnapshot;
           const nextLastTimestamp = timestamps[timestamps.length - 1];
           const prevLastTimestamp = nextSnapshot.timestamps[
-            nextSnapshot.timestamps.length - 1
-          ];
+          nextSnapshot.timestamps.length - 1
+            ];
 
           if (nextLastTimestamp !== prevLastTimestamp) {
             this.emit(
               historyServiceEvents[`${snapshotType}_SNAPSHOT_FULL_UPDATE`],
               {
                 id: nextLastTimestamp,
+                eventUserId: this.userId,
                 data: nextSnapshot
               }
             );
@@ -135,7 +138,7 @@ class HistoryService extends EventEmitter {
   deferFetchTransferSummary(
     interval = (config.torrentClientPollInterval || 2000)
   ) {
-    this.pollTimeout = setTimeout(this.fetchCurrentTransferSummary, interval);
+    this.pollTimeout = setTimeout(this.fetchCurrentTransferSummary.bind(this), interval);
   }
 
   fetchCurrentTransferSummary() {
@@ -144,7 +147,7 @@ class HistoryService extends EventEmitter {
     }
 
     clientRequestService
-      .fetchTransferSummary(transferSummaryMethodCallConfig)
+      .fetchTransferSummary(this.userId, transferSummaryMethodCallConfig)
       .then(this.handleFetchTransferSummarySuccess.bind(this))
       .catch(this.handleFetchTransferSummaryError.bind(this));
   }
@@ -187,6 +190,7 @@ class HistoryService extends EventEmitter {
         historyServiceEvents.TRANSFER_SUMMARY_DIFF_CHANGE,
         {
           diff: summaryDiff,
+          eventUserId: this.userId,
           id: Date.now()
         }
       );
@@ -195,6 +199,7 @@ class HistoryService extends EventEmitter {
     this.errorCount = 0;
     this.transferSummary = nextTransferSummary;
     this.fiveMinSnapshot.addData({
+      userId: this.userId,
       upload: nextTransferSummary.upRate,
       download: nextTransferSummary.downRate
     });
@@ -223,4 +228,4 @@ class HistoryService extends EventEmitter {
   }
 }
 
-module.exports = new HistoryService();
+module.exports = HistoryService;

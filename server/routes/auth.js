@@ -6,6 +6,7 @@ const passport = require('passport');
 
 const config = require('../../config');
 const router = express.Router();
+const loggedUsers = require('../models/loggedUsers');
 const Users = require('../models/Users');
 
 const failedLoginResponse = 'Failed login.';
@@ -51,10 +52,6 @@ router.post('/authenticate', (req, res) => {
   });
 });
 
-router.get('/logout', (req, res) => {
-  res.clearCookie('jwt').send();
-});
-
 // Allow unauthenticated registration if no users are currently registered.
 router.use('/register', (req, res, next) => {
   Users.initialUserGate({
@@ -75,7 +72,13 @@ router.use('/register', (req, res, next) => {
 router.post('/register', (req, res) => {
   // Attempt to save the user
   Users.createUser(
-    {username: req.body.username, password: req.body.password},
+    {
+      username: req.body.username,
+      password: req.body.password,
+      host: req.body.host,
+      port: req.body.port,
+      socketPath: req.body.socketPath
+    },
     (createUserResponse, createUserError) => {
       if (createUserError) {
         ajaxUtil.getResponseFn(res)(createUserResponse, createUserError);
@@ -108,6 +111,12 @@ router.get('/verify', (req, res, next) => {
 // All subsequent routes are protected.
 router.use('/', passport.authenticate('jwt', {session: false}));
 
+router.get('/logout', (req, res) => {
+  loggedUsers.removeLoggedUser(req.user._id);
+
+  res.clearCookie('jwt').send();
+});
+
 router.get('/users', (req, res, next) => {
   Users.listUsers(ajaxUtil.getResponseFn(res));
 });
@@ -119,7 +128,10 @@ router.delete('/users/:username', (req, res, next) => {
 router.put('/users', (req, res, next) => {
   Users.createUser({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    host: req.body.host,
+    port: req.body.port,
+    socketPath: req.body.socketPath
   }, ajaxUtil.getResponseFn(res));
 });
 

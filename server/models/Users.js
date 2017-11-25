@@ -67,7 +67,13 @@ class Users {
   }
 
   createUser(credentials, callback) {
-    const {password, username} = credentials;
+    const {
+      password,
+      username,
+      host,
+      port,
+      socketPath
+    } = credentials;
 
     if (!this.ready) {
       return callback(null, 'Users database is not ready.');
@@ -77,10 +83,12 @@ class Users {
       return callback(null, 'Username cannot be empty.');
     }
 
+    const socket = 0 < socketPath.trim().length;
+
     argon2
       .hash(password)
       .then(hash => {
-        this.db.insert({ username, password: hash }, (error, user) => {
+        this.db.insert({ username, password: hash, host, port, socket, socketPath }, (error, user) => {
           if (error) {
             if (error.errorType === 'uniqueViolated') {
               error = 'Username already exists.';
@@ -129,6 +137,16 @@ class Users {
 
   lookupUser(credentials, callback) {
     this.db.findOne({username: credentials.username}, (err, user) => {
+      if (err) {
+        return callback(err);
+      }
+
+      return callback(null, user);
+    });
+  }
+
+  fetchById(userId, callback) {
+    this.db.findOne({_id: userId}, (err, user) => {
       if (err) {
         return callback(err);
       }

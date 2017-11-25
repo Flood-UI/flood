@@ -57,6 +57,8 @@ class TorrentDetailsModal extends React.Component {
   }
 
   onReceiveTorrentsSuccess() {
+    console.log("onReceiveTorrentsSuccess", UIStore.getTorrentDetailsHash());
+    console.log("onReceiveTorrentsSuccess", TorrentStore.getTorrent(UIStore.getTorrentDetailsHash()));
     this.setState({
       torrent: TorrentStore.getTorrent(UIStore.getTorrentDetailsHash())
     });

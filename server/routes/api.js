@@ -11,9 +11,9 @@ const clientActivityStream = require('../middleware/clientActivityStream');
 const eventStream = require('../middleware/eventStream');
 const feedService = require('../services/feedService');
 const Filesystem = require('../models/Filesystem');
-const historyService = require('../services/historyService');
+const HistoryService = require('../services/historyService');
 const mediainfo = require('../util/mediainfo');
-const notificationService = require('../services/notificationService');
+const NotificationService = require('../services/notificationService');
 const settings = require('../models/settings');
 
 router.use('/', passport.authenticate('jwt', {session: false}));
@@ -23,31 +23,31 @@ router.use('/client', clientRoutes);
 router.get('/activity-stream', eventStream, clientActivityStream);
 
 router.get('/download', (req, res, next) => {
-  client.downloadFiles(req.query.hash, req.query.files, res);
+  client.downloadFiles(req.user._id, req.query.hash, req.query.files, res);
 });
 
 router.delete('/feed-monitor/:id', (req, res, next) => {
-  feedService.removeItem(req.params.id, ajaxUtil.getResponseFn(res));
+  feedService.removeItem(req.user._id, req.params.id, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/feed-monitor', (req, res, next) => {
-  feedService.getAll(req.body.query, ajaxUtil.getResponseFn(res));
+  feedService.getAll(req.user._id, req.body.query, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/feed-monitor/feeds', (req, res, next) => {
-  feedService.getFeeds(req.body.query, ajaxUtil.getResponseFn(res));
+  feedService.getFeeds(req.user._id, req.body.query, ajaxUtil.getResponseFn(res));
 });
 
 router.put('/feed-monitor/feeds', (req, res, next) => {
-  feedService.addFeed(req.body, ajaxUtil.getResponseFn(res));
+  feedService.addFeed(req.user._id, req.body, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/feed-monitor/rules', (req, res, next) => {
-  feedService.getRules(req.body.query, ajaxUtil.getResponseFn(res));
+  feedService.getRules(req.user._id, req.body.query, ajaxUtil.getResponseFn(res));
 });
 
 router.put('/feed-monitor/rules', (req, res, next) => {
-  feedService.addRule(req.body, ajaxUtil.getResponseFn(res));
+  feedService.addRule(req.user._id, req.body, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/directory-list', (req, res, next) => {
@@ -55,27 +55,30 @@ router.get('/directory-list', (req, res, next) => {
 });
 
 router.get('/history', (req, res, next) => {
+  const historyService = new HistoryService(req.user._id);
   historyService.getHistory(req.query, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/mediainfo', (req, res, next) => {
-  mediainfo.getMediainfo(req.query, ajaxUtil.getResponseFn(res));
+  mediainfo.getMediainfo(req.user._id, req.query, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/notifications', (req, res, next) => {
+  const notificationService = new NotificationService(req.user._id);
   notificationService.getNotifications(req.query, ajaxUtil.getResponseFn(res));
 });
 
 router.delete('/notifications', (req, res, next) => {
+  const notificationService = new NotificationService(req.user._id);
   notificationService.clearNotifications(req.query, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/settings', (req, res, next) => {
-  settings.get(req.query, ajaxUtil.getResponseFn(res));
+  settings.get(req.user._id, req.query, ajaxUtil.getResponseFn(res));
 });
 
 router.patch('/settings', (req, res, next) => {
-  settings.set(req.body, ajaxUtil.getResponseFn(res));
+  settings.set(req.user._id, req.body, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/stats', (req, res, next) => {

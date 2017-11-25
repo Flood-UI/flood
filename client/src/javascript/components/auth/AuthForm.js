@@ -91,7 +91,10 @@ class AuthForm extends React.Component {
     } else {
       AuthStore.register({
         username: submission.formData.username,
-        password: submission.formData.password
+        password: submission.formData.password,
+        host: submission.formData.rtorrentHost,
+        port: submission.formData.rtorrentPort,
+        socketPath: submission.formData.rtorrentSocketPath
       });
     }
   }
@@ -99,17 +102,33 @@ class AuthForm extends React.Component {
   render() {
     let actionText = null;
     let errorRow;
+    let registerFields;
 
     if (this.props.mode === 'login') {
       actionText = this.props.intl.formatMessage({
         id: 'auth.log.in',
         defaultMessage: 'Log In'
       });
+
     } else {
       actionText = this.props.intl.formatMessage({
         id: 'auth.create.account',
         defaultMessage: 'Create Account'
       });
+
+      registerFields = (
+        <PanelContent>
+          <FormRow>
+            <Textbox placeholder="rTorrent Host" id="rtorrentHost" />
+          </FormRow>
+          <FormRow>
+            <Textbox placeholder="rTorrent Port" id="rtorrentPort" />
+          </FormRow>
+          <FormRow>
+            <Textbox placeholder="rTorrent Socket" id="rtorrentSocketPath" />
+          </FormRow>
+        </PanelContent>
+      );
     }
 
     if (this.state.error) {
@@ -138,6 +157,7 @@ class AuthForm extends React.Component {
               <FormRow>
                 <Textbox placeholder="Passsword" id="password" type="password" />
               </FormRow>
+              {registerFields}
             </PanelContent>
             <PanelFooter>
               <FormRow justify="end">
