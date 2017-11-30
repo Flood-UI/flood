@@ -62,7 +62,7 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
   * `npm run start:development:server` uses [nodemon](https://github.com/remy/nodemon) to watch for changes to the server-side JavaScript.
   * `npm run start:development:client` watches for changes in the client-side source.
 3. Access the UI through the [WebpackDevServer](https://webpack.js.org/configuration/dev-server/). It expects to proxy requests to the Flood server you have running, defined in `config.js` as `floodServerProxy`.
-4. Build the documentation `./node_modules/.bin/jsdoc -c ./.jsdoc.json`.
+4. Build the documentation `npm run build-docs`.
 
 #### Environment Variables
 
