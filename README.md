@@ -2,7 +2,7 @@
 
 ![Flood logo](flood.png)
 
-[![Talk about Flood on Slack](https://join-flood-talk.herokuapp.com/badge.svg)](https://join-flood-talk.herokuapp.com/)
+[![Build Status](https://travis-ci.org/jfurrow/flood.svg?branch=master)](https://travis-ci.org/jfurrow/flood) [![Talk about Flood on Slack](https://join-flood-talk.herokuapp.com/badge.svg)](https://join-flood-talk.herokuapp.com/)
 
 Flood is another web interface for [rtorrent](https://github.com/rakshasa/rtorrent). It implements a Node.js server for communicating with the rTorrent API, storing historical data, and serving the web UI.
 
@@ -21,6 +21,9 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
   * For Windows, try [this guide](https://rtwi.jmk.hu/wiki/rTorrentOnWindows) (I haven't tested this, let me know if you have problems).
 2. Install NodeJS version `7.x.x` or higher:
   * I recommend managing different Node versions with [nvm](https://github.com/creationix/nvm) or [n](https://github.com/tj/n).
+3. Since #523 [node-gyp](https://www.npmjs.com/package/node-gyp) is needed.
+  * `sudo npm install -g node-gyp`
+  * Check you match node-gyp [dependencies](https://github.com/nodejs/node-gyp#installation) (ex: gcc, make, python2).
 
 #### Configuring
 
@@ -35,6 +38,8 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 #### Compiling assets and starting the server
 
 1. Run `npm install`.
+  * Note: Since #523 [node-gyp](https://www.npmjs.com/package/node-gyp) is needed. **IF** you need `sudo`, use `sudo npm i --unsafe-perm` (see [here](https://github.com/nodejs/node-gyp/issues/454) for why `--unsafe-perm`) else installation will fail. If you dont need sudo just use `npm i` as usual.
+  * If your system use python3 as default you will need to install python2 and use `npm i --python="/usr/bin/python2"`.
 1. Run `npm run build`.
 1. Run `npm start`.
 1. Access the UI in your browser. Defaults to `localhost:3000`.
