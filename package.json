@@ -16,7 +16,6 @@
     "start:development:client": "node client/scripts/start.js"
   },
   "dependencies": {
-    "argon2": "^0.16.2",
     "autoprefixer": "^7.1.2",
     "axios": "^0.16.2",
     "babel-core": "6.25.0",
@@ -29,7 +28,7 @@
     "babel-preset-react-app": "^3.0.1",
     "babel-preset-stage-2": "^6.18.0",
     "babel-runtime": "^6.25.0",
-    "bcrypt": "^1.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.12.4",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
     "chalk": "^2.0.1",
