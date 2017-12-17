@@ -11,8 +11,13 @@ class Users {
     this.db = this.loadDatabase();
   }
 
+  caselessUserRegex(user) {
+    var escapedUser = user.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'); // escape regex characters
+    return new RegExp('^' + escapedUser + '$', 'i');
+  }
+
   comparePassword(credentials, callback) {
-    this.db.findOne({username: {$regex: new RegExp(credentials.username, 'i')}}).exec((err, user) => {
+    this.db.findOne({username: {$regex: this.caselessUserRegex(credentials.username)}}).exec((err, user) => {
       if (err) {
         return callback(null, err);
       }
@@ -80,7 +85,7 @@ class Users {
     argon2
       .hash(password)
       .then(hash => {
-        this.db.findOne({ username: {$regex: new RegExp(credentials.username, 'i')} }, (error, user) => { // check if this username already exists with any case
+        this.db.findOne({ username: {$regex: this.caselessUserRegex(credentials.username)} }, (error, user) => { // check if this username already exists with any case
 
           if(error) return callback(null, error);
 
@@ -132,7 +137,7 @@ class Users {
   }
 
   lookupUser(credentials, callback) {
-    this.db.findOne({username: {$regex: new RegExp(credentials.username, 'i')}}, (err, user) => {
+    this.db.findOne({username: {$regex: this.caselessUserRegex(credentials.username)}}, (err, user) => {
       if (err) {
         return callback(err);
       }
