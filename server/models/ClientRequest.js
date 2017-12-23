@@ -185,7 +185,7 @@ class ClientRequest {
   }
 
   checkHash(userId, options) {
-    const torrentService = new TorrentService(userId);
+    const torrentService = new TorrentService(userId, false);
     torrentService.fetchTorrentList().then(
       () => {
         const hashes = this.getEnsuredArray(options.hashes);

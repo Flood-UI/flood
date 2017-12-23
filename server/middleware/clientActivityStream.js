@@ -20,7 +20,9 @@ module.exports = (req, res) => {
   const historyService = new HistoryService(userId);
   const notificationService = new NotificationService(userId);
   const taxonomyService = new TaxonomyService(userId);
-  const torrentService = new TorrentService(userId);
+  const torrentService = new TorrentService(userId, true);
+
+  torrentService.fetchTorrentList();
 
   const serverEvent = new ServerEvent(res);
   const taxonomy = taxonomyService.getTaxonomy();

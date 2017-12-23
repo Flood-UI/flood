@@ -6,7 +6,7 @@ const TorrentService = require('../services/torrentService');
 
 module.exports = {
   getMediainfo(userId, options, callback) {
-    const torrentService = new TorrentService(userId);
+    const torrentService = new TorrentService(userId, false);
     torrentService.fetchTorrentList().then(
       () => {
         let hash = options.hash;

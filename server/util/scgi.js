@@ -4,11 +4,10 @@ const Deserializer = require('xmlrpc/lib/deserializer');
 const net = require('net');
 const Serializer = require('xmlrpc/lib/serializer');
 
-const config = require('../../config');
-
 const nullChar = String.fromCharCode(0);
 
 let Users = require('../models/Users');
+let rTorrentUserData = require('../models/rTorrentUserData');
 let isRequestPending = false;
 let lastResponseTimestamp = 0;
 const pendingRequests = [];
@@ -19,64 +18,93 @@ const sendDefferedMethodCall = () => {
 
     const nextRequest = pendingRequests.shift();
 
-    sendMethodCall(nextRequest.userId, nextRequest.methodName, nextRequest.parameters)
+    proxyByUserMethodCall(nextRequest.userId, nextRequest.methodName, nextRequest.parameters)
       .then(nextRequest.resolve)
       .catch(nextRequest.reject);
   }
 };
 
-const sendMethodCall = (userId, methodName, parameters) => {
+const proxyByUserMethodCall = (userId, methodName, parameters) => {
   return new Promise((resolve, reject) => {
+    let user = rTorrentUserData.getrTorrentData(userId);
+    if (user) {
+      sendMethodCall(user, methodName, parameters, function (response, error) {
+        if (!response || error) {
+          return reject(error);
+        }
+
+        return resolve(response);
+      });
+    }
+
     Users.fetchById(userId, function(error, user) {
       if (error || !user) {
         return reject(error);
       }
 
-      const connectMethod = user.socket
-        ? {path: user.socketPath}
-        : {port: user.port, host: user.host};
+      rTorrentUserData.addrTorrentData(userId,
+        {
+          socket: user.socket,
+          socketPath: user.socketPath,
+          port: user.port,
+          host: user.host
+        });
 
-      const deserializer = new Deserializer('utf8');
-      const stream = net.connect(connectMethod);
-      const xml = Serializer.serializeMethodCall(methodName, parameters);
-
-      stream.setEncoding('UTF8');
-
-      const headerItems = [
-        `CONTENT_LENGTH${nullChar}${xml.length}${nullChar}`,
-        `SCGI${nullChar}1${nullChar}`
-      ];
-
-      const headerLength = headerItems.reduce((accumulator, headerItem) => {
-        return accumulator += headerItem.length;
-      }, 0);
-
-      stream.write(`${headerLength}:${headerItems.join('')},${xml}`);
-
-      deserializer.deserializeMethodResponse(stream, (error, response) => {
-        isRequestPending = false;
-
-        // We avoid initiating any deffered requests until at least 250ms have
-        // since the previous response.
-        const currentTimestamp = Date.now();
-        const timeSinceLastResponse = currentTimestamp - lastResponseTimestamp;
-
-        if (timeSinceLastResponse <= 250) {
-          const delay = 250 - timeSinceLastResponse;
-          setTimeout(sendDefferedMethodCall, delay);
-          lastResponseTimestamp = currentTimestamp + delay;
-        } else {
-          sendDefferedMethodCall();
-          lastResponseTimestamp = currentTimestamp;
-        }
-
-        if (error) {
+      sendMethodCall(user, methodName, parameters, function(response, error) {
+        if (!response || error) {
           return reject(error);
         }
 
         return resolve(response);
       });
     });
+  });
+};
+
+const sendMethodCall = (user, methodName, parameters, cb) => {
+  const connectMethod = user.socket
+    ? {path: user.socketPath}
+    : {port: user.port, host: user.host};
+
+  const deserializer = new Deserializer('utf8');
+  const stream = net.connect(connectMethod);
+  const xml = Serializer.serializeMethodCall(methodName, parameters);
+
+  stream.setEncoding('UTF8');
+
+  const headerItems = [
+    `CONTENT_LENGTH${nullChar}${xml.length}${nullChar}`,
+    `SCGI${nullChar}1${nullChar}`
+  ];
+
+  const headerLength = headerItems.reduce((accumulator, headerItem) => {
+    return accumulator += headerItem.length;
+  }, 0);
+
+  stream.write(`${headerLength}:${headerItems.join('')},${xml}`);
+
+  deserializer.deserializeMethodResponse(stream, (error, response) => {
+    isRequestPending = false;
+
+    // We avoid initiating any deffered requests until at least 250ms have
+    // since the previous response.
+    const currentTimestamp = Date.now();
+    const timeSinceLastResponse = currentTimestamp - lastResponseTimestamp;
+
+    if (timeSinceLastResponse <= 250) {
+      const delay = 250 - timeSinceLastResponse;
+      setTimeout(sendDefferedMethodCall, delay);
+      lastResponseTimestamp = currentTimestamp + delay;
+    } else {
+      sendDefferedMethodCall();
+      lastResponseTimestamp = currentTimestamp;
+    }
+
+    if (error) {
+      return cb(null, error);
+    }
+
+    return cb(response, null);
   });
 };
 
@@ -89,7 +117,7 @@ module.exports = {
       });
     } else {
       isRequestPending = true;
-      return sendMethodCall(userId, methodName, parameters);
+      return proxyByUserMethodCall(userId, methodName, parameters);
     }
   }
 };

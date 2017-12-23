@@ -31,7 +31,7 @@ var client = {
     request.createDirectory({path});
     request.send();
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = new TorrentService(userId, false);
 
     // Each torrent is sent individually because rTorrent accepts a total
     // filesize of 524 kilobytes or less. This allows the user to send many
@@ -76,7 +76,7 @@ var client = {
   checkHash (userId, hashes, callback) {
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = new TorrentService(userId, false);
 
     request.checkHash(userId, {hashes});
     request.onComplete((response, error) => {
@@ -89,7 +89,7 @@ var client = {
 
   downloadFiles (userId, hash, fileString, res) {
     try {
-      const torrentService = new TorrentService(userId);
+      const torrentService = new TorrentService(userId, false);
       torrentService.fetchTorrentList().then(
         () => {
           const selectedTorrent = torrentService.getTorrent(hash);
@@ -253,7 +253,7 @@ var client = {
     let sourcePaths = data.sources;
     let mainRequest = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = new TorrentService(userId, false);
     torrentService.fetchTorrentList().then(
       () => {
         const hashesToRestart = hashes.filter((hash) => {
@@ -306,7 +306,7 @@ var client = {
     let fileIndices = data.fileIndices;
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = new TorrentService(userId, false);
 
     request.setFilePriority({hashes, fileIndices, priority: data.priority});
     request.onComplete((response, error) => {

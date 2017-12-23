@@ -6,7 +6,6 @@ const passport = require('passport');
 
 const config = require('../../config');
 const router = express.Router();
-const loggedUsers = require('../models/loggedUsers');
 const Users = require('../models/Users');
 
 const failedLoginResponse = 'Failed login.';
@@ -112,8 +111,6 @@ router.get('/verify', (req, res, next) => {
 router.use('/', passport.authenticate('jwt', {session: false}));
 
 router.get('/logout', (req, res) => {
-  loggedUsers.removeLoggedUser(req.user._id);
-
   res.clearCookie('jwt').send();
 });
 

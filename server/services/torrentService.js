@@ -16,10 +16,11 @@ const torrentListMethodCallConfig = methodCallUtil
   .getMethodCallConfigFromPropMap(torrentListPropMap);
 
 class TorrentService extends EventEmitter {
-  constructor(userId, ...args) {
+  constructor(userId, enableDefer, ...args) {
     super(...args);
 
     this.userId = userId;
+    this.enableDefer = enableDefer;
 
     this.errorCount = 0;
     this.pollTimeout = null;
@@ -53,8 +54,6 @@ class TorrentService extends EventEmitter {
       clientRequestServiceEvents.TORRENTS_REMOVED,
       this.handleTorrentsRemoved
     );
-
-    this.fetchTorrentList();
   }
 
   assignDeletedTorrentsToDiff(diff, nextTorrentListSummary, options = {}) {
@@ -101,6 +100,10 @@ class TorrentService extends EventEmitter {
   deferFetchTorrentList(
     interval = (config.torrentClientPollInterval || 2000)
   ) {
+    if (!this.enableDefer) {
+      return;
+    }
+
     this.pollTimeout = setTimeout(this.fetchTorrentList.bind(this), interval);
   }
 
