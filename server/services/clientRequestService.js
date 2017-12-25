@@ -2,6 +2,7 @@
 const EventEmitter = require('events');
 const path = require('path');
 const rimraf = require('rimraf');
+const fs = require('fs');
 
 const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
 const fileListPropMap = require('../constants/fileListPropMap');
@@ -106,16 +107,30 @@ class ClientRequestService extends EventEmitter {
                 },
                 []
               );
-
-              return accumulator.concat(filesToDelete);
+              accumulator.dirs = accumulator.dirs.concat(directoryBase);
+              accumulator.files = accumulator.files.concat(filesToDelete);
+              return accumulator;
             },
-            []
+            {dirs:[],files:[]}
           );
 
-          filesToDelete.forEach(file => {
+          let counter = 0;
+          filesToDelete.files.forEach((file, index, array) => {
+            counter++;
             rimraf(file, {disableGlob: true}, error => {
               if (error) {
                 console.error(`Error deleting file: ${file}\n${error}`);
+              }
+              if(counter === array.length){
+                filesToDelete.dirs.forEach(dir => {
+                  fs.readdir(dir, (err, files) => {
+                    if (err) {} else {
+                      if (!files.length) {
+                        fs.rmdir(dir, err => {});
+                      }
+                    }
+                  });
+                });
               }
             });
           });
