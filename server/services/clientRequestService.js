@@ -133,13 +133,7 @@ class ClientRequestService extends EventEmitter {
               }
               if (counter === array.length) {
                 filesToDelete.dirs.forEach(dir => {
-                  fs.readdir(dir, (err, files) => {
-                    if (err) {} else {
-                      if (!files.length) {
-                        fs.rmdir(dir, err => {});
-                      }
-                    }
-                  });
+                  fs.rmdir(dir, err => {});
                 });
               }
             });
