@@ -2,6 +2,7 @@
 const EventEmitter = require('events');
 const path = require('path');
 const rimraf = require('rimraf');
+const fs = require('fs');
 
 const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
 const fileListPropMap = require('../constants/fileListPropMap');
@@ -54,9 +55,10 @@ class ClientRequestService extends EventEmitter {
           // We offset the indices of these method calls so that we know exactly
           // where to retrieve the responses in the future.
           const directoryBaseMethodCallIndex = index + options.hashes.length;
+          const basePathMethodCallIndex = index + options.hashes.length * 2;
           // We also need to ensure that the erase method call occurs after
           // our request for information.
-          eraseFileMethodCallIndex = index + options.hashes.length * 2;
+          eraseFileMethodCallIndex = index + options.hashes.length * 3;
 
           accumulator[index] = {
             methodName: 'f.multicall',
@@ -65,6 +67,11 @@ class ClientRequestService extends EventEmitter {
 
           accumulator[directoryBaseMethodCallIndex] = {
             methodName: 'd.directory_base',
+            params: [hash]
+          };
+
+          accumulator[basePathMethodCallIndex] = {
+            methodName: 'd.base_path',
             params: [hash]
           };
         }
@@ -88,6 +95,7 @@ class ClientRequestService extends EventEmitter {
             (accumulator, hash, hashIndex) => {
               const fileList = response[hashIndex][0];
               const directoryBase = response[hashIndex + torrentCount][0];
+              const basePath = response[hashIndex + torrentCount * 2][0];
 
               const filesToDelete = fileList.reduce(
                 (fileListAccumulator, file) => {
@@ -106,16 +114,27 @@ class ClientRequestService extends EventEmitter {
                 },
                 []
               );
-
-              return accumulator.concat(filesToDelete);
+              accumulator.dirs = accumulator.dirs.concat(basePath);
+              accumulator.files = accumulator.files.concat(filesToDelete);
+              return accumulator;
             },
-            []
+            {
+              dirs:[],
+              files:[]
+            }
           );
 
-          filesToDelete.forEach(file => {
+          let counter = 0;
+          filesToDelete.files.forEach((file, index, array) => {
+            counter++;
             rimraf(file, {disableGlob: true}, error => {
               if (error) {
                 console.error(`Error deleting file: ${file}\n${error}`);
+              }
+              if (counter === array.length) {
+                filesToDelete.dirs.forEach(dir => {
+                  fs.rmdir(dir, err => {});
+                });
               }
             });
           });
