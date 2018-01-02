@@ -88,7 +88,7 @@ class Users {
     argon2
       .hash(password)
       .then(hash => {
-        this.db.insert({ username, password: hash }, (error, user) => {
+        this.db.insert({ username, password: hash, host, port, socket, socketPath }, (error, user) => {
           if (error) {
             if (error.errorType === 'uniqueViolated') {
               error = 'Username already exists.';
