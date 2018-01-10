@@ -75,13 +75,13 @@ class Tooltip extends React.Component {
   }
 
   handleMouseEnter(options = {}) {
-    let {props} = this;
+    const {props} = this;
 
     if (props.suppress && !options.forceOpen) {
       return;
     }
 
-    let {anchor, position, coordinates} = this.getIdealLocation(
+    const {anchor, position, coordinates} = this.getIdealLocation(
       props.anchor,
       props.position
     );
@@ -150,7 +150,7 @@ class Tooltip extends React.Component {
   }
 
   getCoordinates(position, clearance, tooltipWidth, tooltipHeight) {
-    let {align, offset} = this.props;
+    const {align, offset} = this.props;
     let left = null;
     let top = null;
 
@@ -205,29 +205,29 @@ class Tooltip extends React.Component {
   }
 
   getIdealLocation(anchor, position) {
-    let clearance = this.getNodeClearance(this.refs.triggerNode);
-    let isVertical = this.isVertical(position);
-    let tooltipRect = this.refs.tooltipNode.getBoundingClientRect();
-    let tooltipHeight = tooltipRect.height + ARROW_SIZE;
-    let tooltipWidth = tooltipRect.width + ARROW_SIZE;
+    const clearance = this.getNodeClearance(this.refs.triggerNode);
+    const isVertical = this.isVertical(position);
+    const tooltipRect = this.refs.tooltipNode.getBoundingClientRect();
+    const tooltipHeight = tooltipRect.height + ARROW_SIZE;
+    const tooltipWidth = tooltipRect.width + ARROW_SIZE;
 
     anchor = this.getAnchor(isVertical, anchor, clearance, tooltipWidth,
       tooltipHeight);
     position = this.getPosition(position, clearance, tooltipWidth,
       tooltipHeight);
 
-    let coordinates = this.getCoordinates(position, clearance, tooltipWidth,
+    const coordinates = this.getCoordinates(position, clearance, tooltipWidth,
       tooltipHeight);
 
     return {anchor, position, coordinates};
   }
 
   getNodeClearance(domNode) {
-    let viewportHeight = Math.max(document.documentElement.clientHeight || 0,
+    const viewportHeight = Math.max(document.documentElement.clientHeight || 0,
       window.innerHeight || 0);
-    let viewportWidth = Math.max(document.documentElement.clientWidth || 0,
+    const viewportWidth = Math.max(document.documentElement.clientWidth || 0,
       window.innerWidth || 0);
-    let boundingRect = domNode.getBoundingClientRect();
+    const boundingRect = domNode.getBoundingClientRect();
 
     return {
       bottom: viewportHeight - boundingRect.bottom,
@@ -269,7 +269,7 @@ class Tooltip extends React.Component {
     }
 
     if (anchor === 'center') {
-      let tooltipOverflow = (tooltipDimension - triggerDimension) / 2;
+      const tooltipOverflow = (tooltipDimension - triggerDimension) / 2;
 
       if (clearanceStart < tooltipOverflow) {
         return 'start';
@@ -284,18 +284,18 @@ class Tooltip extends React.Component {
   }
 
   render() {
-    let {props, state} = this;
-    let tooltipStyle = {};
+    const {props, state} = this;
+    const tooltipStyle = {};
 
-    let align = props.align;
+    const align = props.align;
     // Get the anchor and position from state if possible. If not, get it from
     // the props.
-    let anchor = state.anchor || props.anchor;
-    let position = state.position || props.position;
+    const anchor = state.anchor || props.anchor;
+    const position = state.position || props.position;
     // Pass along any props that aren't specific to the Tooltip.
-    let elementProps = _.omit(props, Object.keys(Tooltip.propTypes));
+    const elementProps = _.omit(props, Object.keys(Tooltip.propTypes));
 
-    let tooltipClasses = classnames(props.className,
+    const tooltipClasses = classnames(props.className,
       `tooltip--anchor--${anchor}`, `tooltip--position--${position}`,
       `tooltip--align--${align}`, {
         'is-interactive': props.interactive,

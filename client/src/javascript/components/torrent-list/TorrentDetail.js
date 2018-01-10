@@ -49,6 +49,7 @@ const sizeRenderer = value => <Size value={value} />;
 const icons = {
   checkmark: <Checkmark className="torrent__detail__icon torrent__detail__icon--checkmark" />,
   comment: <CommentIcon />,
+  detailNotAvailable: <DetailNotAvailableIcon />,
   eta: <ClockIcon />,
   sizeBytes: <DiskIcon />,
   downRate: <DownloadThickIcon />,
@@ -128,7 +129,7 @@ class TorrentDetail extends React.PureComponent {
     }
 
     if (!value) {
-      value = <DetailNotAvailableIcon />;
+      value = icons.detailNotAvailable;
     }
 
     if (icon) {

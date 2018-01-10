@@ -9,6 +9,7 @@ import Modals from '../modals/Modals';
 import SettingsStore from '../../stores/SettingsStore';
 import Sidebar from '../sidebar/Sidebar';
 import TorrentList from '../torrent-list/TorrentList';
+import NewTorrentListContainer from '../torrent-list/NewTorrentListContainer';
 
 export default class TorrentCLientOverview extends React.Component {
   componentDidMount() {
@@ -23,7 +24,7 @@ export default class TorrentCLientOverview extends React.Component {
         <ApplicationContent>
           <ApplicationPanel modifier="torrent-list" className="view--torrent-list">
             <ActionBar />
-            <TorrentList />
+            <NewTorrentListContainer />
           </ApplicationPanel>
           <Modals />
           <Alerts />
