@@ -10,10 +10,9 @@ const clientRoutes = require('./client');
 const clientActivityStream = require('../middleware/clientActivityStream');
 const eventStream = require('../middleware/eventStream');
 const feedService = require('../services/feedService');
+const ServicesHandler = require('../services/servicesHandler');
 const Filesystem = require('../models/Filesystem');
-const HistoryService = require('../services/historyService');
 const mediainfo = require('../util/mediainfo');
-const NotificationService = require('../services/notificationService');
 const settings = require('../models/settings');
 
 router.use('/', passport.authenticate('jwt', {session: false}));
@@ -55,7 +54,7 @@ router.get('/directory-list', (req, res, next) => {
 });
 
 router.get('/history', (req, res, next) => {
-  const historyService = new HistoryService(req.user._id);
+  const historyService = ServicesHandler.getHistoryService(req.user._id);
   historyService.getHistory(req.query, ajaxUtil.getResponseFn(res));
 });
 
@@ -64,12 +63,12 @@ router.get('/mediainfo', (req, res, next) => {
 });
 
 router.get('/notifications', (req, res, next) => {
-  const notificationService = new NotificationService(req.user._id);
+  const notificationService = ServicesHandler.getNotificationService(req.user._id);
   notificationService.getNotifications(req.query, ajaxUtil.getResponseFn(res));
 });
 
 router.delete('/notifications', (req, res, next) => {
-  const notificationService = new NotificationService(req.user._id);
+  const notificationService = ServicesHandler.getNotificationService(req.user._id);
   notificationService.clearNotifications(req.query, ajaxUtil.getResponseFn(res));
 });
 

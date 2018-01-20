@@ -6,7 +6,7 @@ const Datastore = require('nedb');
 const client = require('../models/client');
 const config = require('../../config');
 const Feed = require('../models/Feed');
-const NotificationService = require('./notificationService');
+const ServicesHandler = require('./servicesHandler');
 
 class FeedService {
   constructor() {
@@ -197,7 +197,7 @@ class FeedService {
             {upsert: true}
           );
 
-          const notificationService = new NotificationService(userId);
+          const notificationService = ServicesHandler.getNotificationService(userId);
           notificationService.addNotification(itemsToDownload.map(item => {
             return {
               id: 'notification.feed.downloaded.torrent',

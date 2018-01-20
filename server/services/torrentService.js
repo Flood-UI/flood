@@ -1,26 +1,26 @@
 const deepEqual = require('deep-equal');
 const EventEmitter = require('events');
 
-const clientRequestService = require('./clientRequestService.js');
+const clientRequestService = require('./clientRequestService');
 const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
-const config = require('../../config.js');
+const config = require('../../config');
 const formatUtil = require('../../shared/util/formatUtil');
 const methodCallUtil = require('../util/methodCallUtil');
-const NotificationService = require('./notificationService.js');
+const ServicesHandler = require('./servicesHandler');
 const serverEventTypes = require('../../shared/constants/serverEventTypes');
 const torrentListPropMap = require('../constants/torrentListPropMap');
-const torrentServiceEvents = require('../constants/torrentServiceEvents.js');
+const torrentServiceEvents = require('../constants/torrentServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 const torrentListMethodCallConfig = methodCallUtil
   .getMethodCallConfigFromPropMap(torrentListPropMap);
 
 class TorrentService extends EventEmitter {
-  constructor(userId, enableDefer, ...args) {
+  constructor(userId, ...args) {
     super(...args);
 
     this.userId = userId;
-    this.enableDefer = enableDefer;
+    this.enableDefer = false;
 
     this.errorCount = 0;
     this.pollTimeout = null;
@@ -105,6 +105,10 @@ class TorrentService extends EventEmitter {
     }
 
     this.pollTimeout = setTimeout(this.fetchTorrentList.bind(this), interval);
+  }
+
+  setEnableDefer(flag) {
+    this.enableDefer = flag;
   }
 
   fetchTorrentList() {
@@ -312,7 +316,7 @@ class TorrentService extends EventEmitter {
     );
 
     if (this.hasTorrentFinished(prevTorrentDetails, nextTorrentDetails)) {
-      const notificationService = new NotificationService(this.userId);
+      const notificationService = ServicesHandler.getNotificationService(this.userId);
       notificationService.addNotification({
         id: 'notification.torrent.finished',
         data: {name: nextTorrentDetails.name}

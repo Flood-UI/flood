@@ -1,9 +1,9 @@
 const EventEmitter = require('events');
 
-const clientRequestService = require('./clientRequestService.js');
+const clientRequestService = require('./clientRequestService');
 const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
 const objectUtil = require('../../shared/util/objectUtil');
-const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents.js');
+const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 class TaxonomyService extends EventEmitter {

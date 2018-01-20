@@ -11,7 +11,7 @@ let util = require('util');
 let clientSettingsMap = require('../../shared/constants/clientSettingsMap');
 let rTorrentPropMap = require('../util/rTorrentPropMap');
 let scgi = require('../util/scgi');
-const TorrentService = require('../services/torrentService');
+const ServicesHandler = require('../services/servicesHandler');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 class ClientRequest {
@@ -185,7 +185,7 @@ class ClientRequest {
   }
 
   checkHash(userId, options) {
-    const torrentService = new TorrentService(userId, false);
+    const torrentService = ServicesHandler.getTorrentService(userId);
     torrentService.fetchTorrentList().then(
       () => {
         const hashes = this.getEnsuredArray(options.hashes);

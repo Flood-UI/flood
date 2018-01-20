@@ -25,6 +25,7 @@ class NotificationService extends EventEmitter {
   }
 
   addNotification(notifications) {
+    console.log("add notification: ", notifications);
 
     notifications = _.castArray(notifications);
 

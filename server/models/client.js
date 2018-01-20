@@ -12,7 +12,7 @@ const settings = require('./settings');
 const torrentFilePropsMap = require('../../shared/constants/torrentFilePropsMap');
 const torrentPeerPropsMap = require('../../shared/constants/torrentPeerPropsMap');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
-const TorrentService = require('../services/torrentService');
+const ServicesHandler = require('../services/servicesHandler');
 const torrentTrackerPropsMap = require('../../shared/constants/torrentTrackerPropsMap');
 
 var client = {
@@ -31,7 +31,7 @@ var client = {
     request.createDirectory({path});
     request.send();
 
-    const torrentService = new TorrentService(userId, false);
+    const torrentService = ServicesHandler.getTorrentService(userId);
 
     // Each torrent is sent individually because rTorrent accepts a total
     // filesize of 524 kilobytes or less. This allows the user to send many
@@ -76,7 +76,7 @@ var client = {
   checkHash (userId, hashes, callback) {
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId, false);
+    const torrentService = ServicesHandler.getTorrentService(userId);
 
     request.checkHash(userId, {hashes});
     request.onComplete((response, error) => {
@@ -89,7 +89,7 @@ var client = {
 
   downloadFiles (userId, hash, fileString, res) {
     try {
-      const torrentService = new TorrentService(userId, false);
+      const torrentService = ServicesHandler.getTorrentService(userId);
       torrentService.fetchTorrentList().then(
         () => {
           const selectedTorrent = torrentService.getTorrent(hash);
@@ -253,7 +253,7 @@ var client = {
     let sourcePaths = data.sources;
     let mainRequest = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId, false);
+    const torrentService = ServicesHandler.getTorrentService(userId);
     torrentService.fetchTorrentList().then(
       () => {
         const hashesToRestart = hashes.filter((hash) => {
@@ -306,7 +306,7 @@ var client = {
     let fileIndices = data.fileIndices;
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId, false);
+    const torrentService = ServicesHandler.getTorrentService(userId);
 
     request.setFilePriority({hashes, fileIndices, priority: data.priority});
     request.onComplete((response, error) => {
@@ -320,7 +320,7 @@ var client = {
   setPriority (userId, hashes, data, callback) {
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = ServicesHandler.getTorrentService(userId);
 
     request.setPriority({hashes, priority: data.priority});
     request.onComplete((response, error) => {
@@ -383,7 +383,7 @@ var client = {
   setTaxonomy (userId, data, callback) {
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = ServicesHandler.getTorrentService(userId);
 
     request.setTaxonomy(data);
     request.onComplete((response, error) => {
@@ -398,7 +398,7 @@ var client = {
   stopTorrent (userId, hashes, callback) {
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = ServicesHandler.getTorrentService(userId);
 
     request.stopTorrents({hashes});
     request.onComplete((response, error) => {
@@ -412,7 +412,7 @@ var client = {
   startTorrent (userId, hashes, callback) {
     let request = new ClientRequest(userId);
 
-    const torrentService = new TorrentService(userId);
+    const torrentService = ServicesHandler.getTorrentService(userId);
 
     request.startTorrents({hashes});
     request.onComplete((response, error) => {

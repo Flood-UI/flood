@@ -2,11 +2,11 @@
 
 let child_process = require('child_process');
 
-const TorrentService = require('../services/torrentService');
+const ServicesHandler = require('../services/servicesHandler');
 
 module.exports = {
   getMediainfo(userId, options, callback) {
-    const torrentService = new TorrentService(userId, false);
+    const torrentService = ServicesHandler.getTorrentService(userId);
     torrentService.fetchTorrentList().then(
       () => {
         let hash = options.hash;
