@@ -42,42 +42,68 @@ $more-info--box-shadow--hue: #1a2f3d;
 $more-info--border: $textbox-repeater--button--border;
 
 .torrent {
-  cursor: default;
-  position: relative;
+  // cursor: default;
+  // position: relative;
 
-  &:after {
-    background: transparent;
-    content: '';
-    height: 100%;
-    position: absolute;
-    left: 0;
-    opacity: 0;
-    top: 0;
-    width: 100%;
-    z-index: -1;
-  }
+  // &:after {
+  //   background: transparent;
+  //   content: '';
+  //   height: 100%;
+  //   position: absolute;
+  //   left: 0;
+  //   opacity: 0;
+  //   top: 0;
+  //   width: 100%;
+  //   z-index: -1;
+  // }
 
-  &:hover {
+  // &:hover {
 
-    &:after {
-      background: $torrent--background--hover;
-    }
+  //   &:after {
+  //     background: $torrent--background--hover;
+  //   }
 
-    .torrent {
+  //   .torrent {
 
-      &__more-info {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateX(0);
-      }
-    }
-  }
+  //     &__more-info {
+  //       opacity: 1;
+  //       pointer-events: auto;
+  //       transform: translateX(0);
+  //     }
+  //   }
+  // }
 
   &__detail {
+    align-items: center;
     color: $torrent--secondary--foreground;
+    display: flex;
+    border-top: 1px solid $torrent--border;
+    font-size: $font-size--small;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 1;
+
+    &--is-selected {
+      background: $torrent--background--selected;
+      border-top: 1px solid $torrent--border--selected;
+      z-index: 2;
+
+      &:after {
+        background: $torrent--border--selected;
+        bottom: -1px;
+        content: '';
+        height: 1px;
+        left: 0;
+        position: absolute;
+        width: 100%;
+        z-index: 3;
+      }
+    }
 
     &--name {
       color: $torrent--primary--foreground;
+      font-size: $font-size--medium;
       font-weight: 500;
     }
 

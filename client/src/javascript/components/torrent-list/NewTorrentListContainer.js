@@ -7,6 +7,7 @@ import SettingsStore from '../../stores/SettingsStore';
 import TorrentDetail from '../../components/torrent-list/TorrentDetail';
 import { torrentStatusIcons } from '../../util/torrentStatusIcons';
 import TorrentStore from '../../stores/TorrentStore';
+import UIActions from '../../actions/UIActions';
 
 const condensedValueTransformers = {
   downloadTotal: torrent => torrent.bytesDone,
@@ -33,10 +34,12 @@ const defaultPropWidths = {
 class TorrentListContainer extends Component {
   state = {
     displayedProperties: SettingsStore.getFloodSettings('torrentDetails'),
-    torrentListColumnWidths:
-      SettingsStore.getFloodSettings('torrentListColumnWidths'),
-    torrentListViewSize:
-      SettingsStore.getFloodSettings('torrentListViewSize')
+    torrentCount: TorrentStore.getTorrents().length,
+    torrents: TorrentStore.getTorrents(),
+    torrentListColumnWidths: SettingsStore.getFloodSettings('torrentListColumnWidths'),
+    torrentListViewSize: SettingsStore.getFloodSettings('torrentListViewSize'),
+    selectedTorrents: TorrentStore.getSelectedTorrents(),
+    selectedTorrentsKey: TorrentStore.getSelectedTorrents().join()
   };
 
   componentDidMount() {
@@ -48,17 +51,33 @@ class TorrentListContainer extends Component {
       EventTypes.CLIENT_TORRENTS_REQUEST_SUCCESS,
       this.handleTorrentRequestSuccess
     );
+    TorrentStore.listen(
+      EventTypes.UI_TORRENT_SELECTION_CHANGE,
+      this.handleTorrentSelectionChange
+    );
+  }
+
+  componentWillUnmount() {
+    SettingsStore.unlisten(
+      EventTypes.SETTINGS_CHANGE,
+      this.handleSettingsChange
+    );
+    TorrentStore.unlisten(
+      EventTypes.CLIENT_TORRENTS_REQUEST_SUCCESS,
+      this.handleTorrentRequestSuccess
+    );
+    TorrentStore.unlisten(
+      EventTypes.UI_TORRENT_SELECTION_CHANGE,
+      this.handleTorrentSelectionChange
+    );
   }
 
   cellRenderer = ({columnIndex, key, rowIndex, style}) => {
     const torrent = this.state.torrents[rowIndex];
     const displayedProp = this.state.displayedProperties[columnIndex];
-
-    console.log('render cell', columnIndex, rowIndex);
-
     const propId = displayedProp.id;
-    let value = torrent[propId];
 
+    let value = torrent[propId];
     let secondaryValue;
 
     if (propId in condensedValueTransformers) {
@@ -69,45 +88,49 @@ class TorrentListContainer extends Component {
       secondaryValue = condensedSecondaryValueTransformers[propId](torrent);
     }
 
-    // return <div key={key} style={style}>{value}</div>;
+    const isSelected = this.state.selectedTorrents.indexOf(torrent.hash) !== -1;
+
     return (
       <TorrentDetail
         className="table__cell"
+        hash={torrent.hash}
+        isSelected={isSelected}
         key={key}
         preventTransform={propId === 'percentComplete'}
         secondaryValue={secondaryValue}
         slug={propId}
+        style={style}
         value={value}
-        width={this.getColumnWidth({ index: columnIndex })}
       />
     );
   };
 
   handleTorrentRequestSuccess = () => {
-    console.log('torrents request success');
     const torrents = TorrentStore.getTorrents();
 
     this.setState({
       torrents,
-      torrentCount: torrents.length,
-      torrentRequestError: false,
-      torrentRequestSuccess: true
+      torrentCount: torrents.length
     });
+  };
+
+  handleTorrentSelectionChange = () => {
+    const selectedTorrents = TorrentStore.getSelectedTorrents();
+    const selectedTorrentsKey = selectedTorrents.join();
+
+    this.setState({selectedTorrents, selectedTorrentsKey})
   };
 
   noContentRenderer() {
     return <div>no content</div>;
   }
 
-  getColumnWidth({index}) {
-    console.log(this.state.displayedProperties);
-    // console.log('displayed prop', this.state.displayedProperties[index]);
-    console.log('getColumnWidth', this.state.torrentListColumnWidths);
-    return 100;
-  }
+  getColumnWidth = ({index}) => {
+    const displayedProp = this.state.displayedProperties[index].id;
+    return this.state.torrentListColumnWidths[displayedProp] || 100;
+  };
 
   getRowHeight() {
-    console.log('getRowHeight', arguments);
     return 30;
   }
 
@@ -121,14 +144,31 @@ class TorrentListContainer extends Component {
     });
   };
 
+  handleTorrentListClick = (event) => {
+    let elementWithHashData = event.target;
+    let count = 0;
+
+    while (elementWithHashData && elementWithHashData.dataset && !elementWithHashData.dataset.hash) {
+      count++;
+      elementWithHashData = elementWithHashData.parentNode;
+    }
+
+    if (count > 3) {
+      console.log('Count above 3');
+      console.log(event.target);
+    }
+
+    UIActions.handleTorrentClick({ hash: elementWithHashData.dataset.hash, event });
+  };
+
   render() {
-    console.log(this.state.displayedProperties.length);
     return (
-      <div style={{flex: '1 1 auto'}}>
+      <div className="torrents" onClick={this.handleTorrentListClick}>
         <AutoSizer>
           {({ height, width }) => (
             <Grid
               cellRenderer={this.cellRenderer}
+              selectedTorrentsKey={this.state.selectedTorrentsKey}
               className="foo"
               columnWidth={this.getColumnWidth}
               columnCount={this.state.displayedProperties.length}

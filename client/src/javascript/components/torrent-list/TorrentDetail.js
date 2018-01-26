@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import {FormattedDate, FormattedMessage, FormattedNumber} from 'react-intl';
 import React from 'react';
 
@@ -112,16 +113,18 @@ const transformers = {
   }
 };
 
-class TorrentDetail extends React.PureComponent {
+class TorrentDetail extends React.Component {
   render() {
     let {
       className,
+      hash,
       icon,
+      isSelected,
       preventTransform,
       secondaryValue,
       slug,
-      value,
-      width
+      style,
+      value
     } = this.props;
 
     if (!preventTransform && slug in transformers) {
@@ -136,9 +139,18 @@ class TorrentDetail extends React.PureComponent {
       icon = icons[slug];
     }
 
+    const classes = classnames('torrent__detail', {
+      [`torrent__detail--${slug}`]: slug,
+      [className]: className,
+      'torrent__detail--is-selected': isSelected
+    });
+
     return (
-      <div className={`torrent__detail torrent__detail--${slug} ${className}`}
-        style={{width: `${width}px`}}>
+      <div
+        className={classes}
+        data-hash={hash}
+        style={style}
+      >
         {icon}
         {value}
       </div>
