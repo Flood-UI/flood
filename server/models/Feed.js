@@ -17,6 +17,22 @@ class Feed {
       maxHistory: this.options.maxItemHistory,
       interval: options.interval ? Number(options.interval) : 15,
       forceInterval: true,
+      readEveryItem: true
+    });
+
+    this.initReader();
+  }
+
+  modify(options){
+    Object.assign(this.options, options);
+    this.items = [];
+
+    this.reader = new FeedSub(options.url, {
+      autoStart: true,
+      emitOnStart: true,
+      maxHistory: this.options.maxItemHistory,
+      interval: options.interval ? Number(options.interval) : 15,
+      forceInterval: true,
       readEveryItem: true,
     });
 

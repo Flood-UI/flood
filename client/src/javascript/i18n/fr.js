@@ -12,6 +12,7 @@ export default {
   'button.add': 'Ajouter',
   'button.cancel': 'Annuler',
   'button.no': 'Non',
+  'button.save.feed': 'Enregistrer',
   'button.save': 'Enregistrer',
   'button.state.adding': 'Ajout...',
   'button.yes': 'Oui',
