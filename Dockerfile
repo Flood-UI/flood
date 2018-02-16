@@ -27,7 +27,7 @@ COPY package.json /usr/src/app/package.json
 COPY --from=nodebuild /tmp/node_modules /usr/src/app/node_modules
 COPY client /usr/src/app/client
 COPY server /usr/src/app/server
-copy shared /usr/src/app/shared
+COPY shared /usr/src/app/shared
 
 # Copy docker configuration file. This allows for specifying common configs with
 # just environment variables.
