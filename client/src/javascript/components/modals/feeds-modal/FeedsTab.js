@@ -4,6 +4,8 @@ import {Button, Form, FormError, FormRow, FormRowGroup, FormRowItem, Select, Sel
 import formatUtil from 'universally-shared-code/util/formatUtil';
 import React from 'react';
 
+import ArrowIcon from '../../icons/ArrowIcon';
+import Add from '../../icons/Add';
 import Close from '../../icons/Close';
 import EventTypes from '../../../constants/EventTypes';
 import FeedMonitorStore from '../../../stores/FeedMonitorStore';
@@ -71,7 +73,8 @@ class FeedsTab extends React.Component {
       }
     ],
     feeds: FeedMonitorStore.getFeeds(),
-    rules: FeedMonitorStore.getRules()
+    rules: FeedMonitorStore.getRules(),
+    currentlyEditingFeed: 'none'
   };
 
   componentDidMount() {
@@ -113,56 +116,168 @@ class FeedsTab extends React.Component {
     });
   }
 
+  getModifyFeedForm(feed) {
+    return (
+      <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={feed._id}>
+        <FormRowGroup>
+          <FormRow>
+            <Textbox
+              id="label"
+              label={this.props.intl.formatMessage(MESSAGES.label)}
+              placeholder={this.props.intl.formatMessage(MESSAGES.label)}
+              defaultValue={feed.label}
+            />
+              <Select
+                defaultID={parseInt(feed.interval, 10)}
+                label={this.props.intl.formatMessage({
+                  id: 'feeds.interval',
+                  defaultMessage: 'Interval'
+                })}
+                id="interval"
+                width="one-quarter"
+              >
+                {this.getIntervalSelectOptions()}
+              </Select>
+          </FormRow>
+          <FormRow>
+            <Textbox
+              id="url"
+              label={this.props.intl.formatMessage({
+                id: 'feeds.url',
+                defaultMessage: 'URL'
+              })}
+              placeholder={this.props.intl.formatMessage(MESSAGES.url)}
+              defaultValue={feed.url}
+            />
+            <Button labelOffset onClick={() => this.setState({currentlyEditingFeed: 'none'})}>
+              <FormattedMessage
+                id="button.cancel"
+                defaultMessage="Cancel"
+              />
+            </Button>
+            <Button labelOffset type="submit">
+              <FormattedMessage
+                id="button.save.feed"
+                defaultMessage="Save"
+              />
+            </Button>
+          </FormRow>
+        </FormRowGroup>
+      </li>
+    );
+  }
+
   getAddFeedForm() {
     return (
-      <FormRowGroup>
-        <FormRow>
-          <Textbox
-            id="label"
-            label={this.props.intl.formatMessage(MESSAGES.label)}
-            placeholder={this.props.intl.formatMessage(MESSAGES.label)}
-          />
-            <Select
-              defaultID={this.state.intervals[0].value}
-              label={this.props.intl.formatMessage({
-                id: 'feeds.interval',
-                defaultMessage: 'Interval'
-              })}
-              id="interval"
-              width="one-quarter"
-            >
-              {this.getIntervalSelectOptions()}
-            </Select>
-        </FormRow>
-        <FormRow>
-          <Textbox
-            id="url"
-            label={this.props.intl.formatMessage({
-              id: 'feeds.url',
-              defaultMessage: 'URL'
-            })}
-            placeholder={this.props.intl.formatMessage(MESSAGES.url)}
-          />
-          <Button labelOffset type="submit">
-            <FormattedMessage
-              id="button.add"
-              defaultMessage="Add"
+      <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key="new">
+        <FormRowGroup>
+          <FormRow>
+            <Textbox
+              id="label"
+              label={this.props.intl.formatMessage(MESSAGES.label)}
+              placeholder={this.props.intl.formatMessage(MESSAGES.label)}
             />
-          </Button>
-        </FormRow>
-      </FormRowGroup>
+              <Select
+                defaultID={this.state.intervals[0].value}
+                label={this.props.intl.formatMessage({
+                  id: 'feeds.interval',
+                  defaultMessage: 'Interval'
+                })}
+                id="interval"
+                width="one-quarter"
+              >
+                {this.getIntervalSelectOptions()}
+              </Select>
+          </FormRow>
+          <FormRow>
+            <Textbox
+              id="url"
+              label={this.props.intl.formatMessage({
+                id: 'feeds.url',
+                defaultMessage: 'URL'
+              })}
+              placeholder={this.props.intl.formatMessage(MESSAGES.url)}
+            />
+            <Button labelOffset onClick={() => this.setState({currentlyEditingFeed: 'none'})}>
+              <FormattedMessage
+                id="button.cancel"
+                defaultMessage="Cancel"
+              />
+            </Button>
+            <Button labelOffset type="submit">
+              <FormattedMessage
+                id="button.add"
+                defaultMessage="Add"
+              />
+            </Button>
+          </FormRow>
+        </FormRowGroup>
+      </li>
+    );
+  }
+
+  getFeedsListItem(feed, matchedCount){
+    return (
+      <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={feed._id}>
+        <div className="interactive-list__label">
+          <ul className="interactive-list__detail-list">
+            <li className="interactive-list__detail-list__item
+              interactive-list__detail--primary">
+              {feed.label}
+            </li>
+            <li className="interactive-list__detail-list__item
+              interactive-list__detail-list__item--overflow
+              interactive-list__detail interactive-list__detail--secondary">
+              <FormattedMessage id="feeds.match.count"
+                defaultMessage="{count, plural, =1 {# match} other
+                  {# matches}}" values={{count: matchedCount}} />
+            </li>
+          </ul>
+          <ul className="interactive-list__detail-list">
+            <li className="interactive-list__detail-list__item
+              interactive-list__detail interactive-list__detail--tertiary">
+              {formatUtil.minToHumanReadable(feed.interval)}
+            </li>
+            <li className="interactive-list__detail-list__item
+              interactive-list__detail-list__item--overflow
+              interactive-list__detail interactive-list__detail--tertiary">
+              <a href={feed.url} target="_blank">{feed.url}</a>
+            </li>
+          </ul>
+        </div>
+        <span
+          className="interactive-list__icon interactive-list__icon--action"
+          onClick={() => this.handleModifyFeedClick(feed)}
+        >
+          <ArrowIcon />
+        </span>
+        <span
+          className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
+          onClick={() => this.handleRemoveFeedClick(feed)}
+        >
+          <Close />
+        </span>
+      </li>
     );
   }
 
   getFeedsList() {
-    if (this.state.feeds.length === 0) {
+    if (this.state.feeds.length === 0 && this.state.currentlyEditingFeed === 'none') {
       return (
         <ul className="interactive-list">
           <li className="interactive-list__item">
-            <FormattedMessage
-              defaultMessage="No feeds defined."
-              id="feeds.no.feeds.defined"
-            />
+            <div className="interactive-list__label">
+              <FormattedMessage
+                defaultMessage="No feeds defined."
+                id="feeds.no.feeds.defined"
+              />
+            </div>
+            <span
+            className="interactive-list__icon interactive-list__icon--action"
+            onClick={() => this.handleAddFeedClick()}
+            >
+              <Add/>
+            </span>
           </li>
         </ul>
       );
@@ -171,50 +286,32 @@ class FeedsTab extends React.Component {
     const feedsList = this.state.feeds.map((feed, index) => {
       let matchedCount = feed.count || 0;
 
-      return (
-        <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={feed._id}>
-          <div className="interactive-list__label">
-            <ul className="interactive-list__detail-list">
-              <li className="interactive-list__detail-list__item
-                interactive-list__detail--primary">
-                {feed.label}
-              </li>
-              <li className="interactive-list__detail-list__item
-                interactive-list__detail-list__item--overflow
-                interactive-list__detail interactive-list__detail--secondary">
-                <FormattedMessage id="feeds.match.count"
-                  defaultMessage="{count, plural, =1 {# match} other
-                    {# matches}}" values={{count: matchedCount}} />
-              </li>
-            </ul>
-            <ul className="interactive-list__detail-list">
-              <li className="interactive-list__detail-list__item
-                interactive-list__detail interactive-list__detail--tertiary">
-                {formatUtil.minToHumanReadable(feed.interval)}
-              </li>
-              <li className="interactive-list__detail-list__item
-                interactive-list__detail-list__item--overflow
-                interactive-list__detail interactive-list__detail--tertiary">
-                <a href={feed.url} target="_blank">{feed.url}</a>
-              </li>
-            </ul>
-          </div>
-          <span
-            className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
-            onClick={() => this.handleRemoveFeedClick(feed)}
-          >
-            <Close />
-          </span>
-        </li>
-      );
+      if (feed._id === this.state.currentlyEditingFeed){
+        return this.getModifyFeedForm(feed);
+      } else {
+        return this.getFeedsListItem(feed, matchedCount);
+      }
     });
 
     return (
       <ul className="interactive-list feed-list">
         {feedsList}
+        {(this.state.currentlyEditingFeed === 'new') ? this.getAddFeedForm() :
+          <li className="interactive-list__item">
+            <div className="interactive-list__label">
+            </div>
+            <span
+            className="interactive-list__icon interactive-list__icon--action"
+            onClick={() => this.handleAddFeedClick()}
+            >
+              <Add />
+            </span>
+          </li>}
       </ul>
     );
   }
+
+  
 
   getSelectedDropdownItem(itemSet) {
     return this.state[itemSet].find((item) => {
@@ -228,9 +325,15 @@ class FeedsTab extends React.Component {
     if (!isValid) {
       this.setState({errors});
     } else {
+      let currentFeed = this.state.currentlyEditingFeed;
+      if (currentFeed !== 'none' && currentFeed !== 'new'){
+        FeedMonitorStore.removeFeed(currentFeed);
+      }
       FeedMonitorStore.addFeed(this.formRef.getFormData());
       this.formRef.resetForm();
     }
+
+    this.setState({currentlyEditingFeed: 'none'})
   };
 
   handleFeedMonitorsFetchSuccess = () => {
@@ -247,6 +350,15 @@ class FeedsTab extends React.Component {
   handleRemoveFeedClick = (feed) => {
     FeedMonitorStore.removeFeed(feed._id);
   };
+
+  handleAddFeedClick = () => {
+    this.setState({currentlyEditingFeed: 'new'})
+  };
+
+  handleModifyFeedClick = (feed) => {
+    this.setState({currentlyEditingFeed: feed._id})
+  }
+  
 
   validateForm() {
     const formData = this.formRef.getFormData();
@@ -287,19 +399,19 @@ class FeedsTab extends React.Component {
           <FormattedMessage id="feeds.existing.feeds"
             defaultMessage="Existing Feeds" />
         </ModalFormSectionHeader>
+        {errors}
         <FormRow>
           <FormRowItem>
             {this.getFeedsList()}
           </FormRowItem>
         </FormRow>
-        <ModalFormSectionHeader>
+        {/*<ModalFormSectionHeader>
           <FormattedMessage
             id="feeds.add.feed"
             defaultMessage="Add Feed"
           />
         </ModalFormSectionHeader>
-        {errors}
-        {this.getAddFeedForm()}
+        {this.getAddFeedForm()}*/}
       </Form>
     );
   }
