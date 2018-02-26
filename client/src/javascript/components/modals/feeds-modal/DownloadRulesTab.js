@@ -220,7 +220,7 @@ class DownloadRulesTab extends React.Component {
               id: 'feeds.torrent.destination',
               defaultMessage: 'Torrent Destination'
             })}
-            defaultValue={rule.destination}
+            suggested={rule.destination}
           />
           <FormRow>
             <FormRowItem width="auto" />
