@@ -216,7 +216,8 @@ class FeedsTab extends React.Component {
     );
   }
 
-  getFeedsListItem(feed, matchedCount){
+  getFeedsListItem(feed){
+    let matchedCount = feed.count || 0;
     return (
       <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={feed._id}>
         <div className="interactive-list__label">
@@ -284,12 +285,10 @@ class FeedsTab extends React.Component {
     }
 
     const feedsList = this.state.feeds.map((feed, index) => {
-      let matchedCount = feed.count || 0;
-
       if (feed._id === this.state.currentlyEditingFeed){
         return this.getModifyFeedForm(feed);
       } else {
-        return this.getFeedsListItem(feed, matchedCount);
+        return this.getFeedsListItem(feed);
       }
     });
 
@@ -331,9 +330,8 @@ class FeedsTab extends React.Component {
       }
       FeedMonitorStore.addFeed(this.formRef.getFormData());
       this.formRef.resetForm();
+      this.setState({currentlyEditingFeed: 'none'})
     }
-
-    this.setState({currentlyEditingFeed: 'none'})
   };
 
   handleFeedMonitorsFetchSuccess = () => {
