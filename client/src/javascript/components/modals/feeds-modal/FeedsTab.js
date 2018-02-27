@@ -68,8 +68,16 @@ class FeedsTab extends React.Component {
         value: 30
       },
       {
-        displayName: this.props.intl.formatMessage(MESSAGES.hr, {durationValue: 5}),
+        displayName: this.props.intl.formatMessage(MESSAGES.hr, {durationValue: 1}),
         value: 60
+      },
+      {
+        displayName: this.props.intl.formatMessage(MESSAGES.hr, {durationValue: 2}),
+        value: 120
+      },
+      {
+        displayName: this.props.intl.formatMessage(MESSAGES.hr, {durationValue: 5}),
+        value: 300
       }
     ],
     feeds: FeedMonitorStore.getFeeds(),
