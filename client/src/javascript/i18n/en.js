@@ -41,6 +41,7 @@ export default {
   'button.cancel': 'Cancel',
   'button.no': 'No',
   'button.save': 'Save Settings',
+  'button.save.feed': 'Save',
   'button.state.adding': 'Adding...',
   'button.yes': 'Yes',
 
