@@ -29,7 +29,7 @@ const CONFIG = {
   // How often (in milliseconds) Flood will check for updates to torrent detail.
   pollInterval: 1000 * 5,
   // How often (in milliseconds) Flood will check rtorrent for status updates.
-  torrentClientPollInterval: 1000 * 2
+  torrentClientPollInterval: 1000 * 2,
   // A unique secret for signing messages with JWT (see https://jwt.io). Change
   // this to something unique and hard to guess.
   secret: 'flood',
