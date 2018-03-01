@@ -71,6 +71,22 @@ let SettingsActions = {
       });
   },
 
+  fetchItems: (query) => {
+    return axios.get(`${baseURI}api/feed-monitor/items`, query)
+      .then((json = {}) => json.data)
+      .then((data) => {
+        AppDispatcher.dispatchServerAction({
+          type: ActionTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS,
+          data
+        });
+      }, (error) => {
+        AppDispatcher.dispatchServerAction({
+          type: ActionTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_ERROR,
+          error
+        });
+      });
+  },
+
   fetchRules: (query) => {
     return axios.get(`${baseURI}api/feed-monitor/rules`, query)
       .then((json = {}) => json.data)

@@ -94,6 +94,17 @@ class FeedService {
     this.queryItem('feed', query, callback);
   }
 
+  getItems(query, callback) {
+    let feed = this.feeds.find((feed)=>{
+      return (feed.options._id===query.id);
+    });
+    if (feed){
+      callback(feed.getItems());
+    } else {
+      callback(null);
+    }
+  }
+
   getItemsMatchingRules(feedItems, rules, feed) {
     return feedItems.reduce(
       (matchedItems, feedItem) => {

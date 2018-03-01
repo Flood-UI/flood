@@ -50,6 +50,10 @@ router.put('/feed-monitor/rules', (req, res, next) => {
   feedService.addRule(req.body, ajaxUtil.getResponseFn(res));
 });
 
+router.get('/feed-monitor/items', (req, res, next) => {
+  feedService.getItems(req.query, ajaxUtil.getResponseFn(res));
+});
+
 router.get('/directory-list', (req, res, next) => {
   Filesystem.getDirectoryList(req.query, ajaxUtil.getResponseFn(res));
 });

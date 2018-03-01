@@ -9,6 +9,7 @@ class FeedsStoreClass extends BaseStore {
     super();
     this.feeds = [];
     this.rules = [];
+    this.items = [];
   }
 
   addFeed(feed) {
@@ -27,6 +28,10 @@ class FeedsStoreClass extends BaseStore {
     SettingsActions.fetchFeeds(query);
   }
 
+  fetchItems(query) {
+    SettingsActions.fetchItems(query);
+  }
+
   fetchRules(query) {
     SettingsActions.fetchRules(query);
   }
@@ -37,6 +42,10 @@ class FeedsStoreClass extends BaseStore {
 
   getRules() {
     return this.rules;
+  }
+
+  getItems() {
+    return this.items;
   }
 
   handleFeedAddError(error) {
@@ -92,6 +101,15 @@ class FeedsStoreClass extends BaseStore {
   handleRulesFetchSuccess(rules) {
     this.setRules(rules);
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_RULES_FETCH_SUCCESS);
+  }
+
+  handleItemsFetchError(error) {
+    this.emit(EventTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_ERROR, error);
+  }
+
+  handleItemsFetchSuccess(items) {
+    this.setItems(items);
+    this.emit(EventTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS);
   }
 
   removeFeed(id) {
@@ -163,6 +181,12 @@ FeedsStore.dispatcherID = AppDispatcher.register((payload) => {
       break;
     case ActionTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS:
       FeedsStore.handleFeedMonitorsFetchSuccess(action.data);
+      break;
+    case ActionTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_ERROR:
+      FeedsStore.handleItemsFetchError(action.error);
+      break;
+    case ActionTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS:
+      FeedsStore.handleItemsFetchSuccess(action.data);
       break;
     default:
       break;
