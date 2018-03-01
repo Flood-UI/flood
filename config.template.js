@@ -7,7 +7,7 @@ const CONFIG = {
   // The URL that Flood will be served from. For example, if you intend to
   // serve from http://example.com/flood, set this to '/flood'.
   baseURI: '/',
-  // Flood uses a local nedb database to keep tracking of users, torrents,
+  // Flood uses a local nedb database to keep track of users, torrents,
   // and activity. The database is regularly purged to remove outdated data.
   // This value dictates how old data is, in milliseconds, before being purged.
   dbCleanInterval: 1000 * 60 * 60,
