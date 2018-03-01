@@ -47,6 +47,17 @@ const MESSAGES = defineMessages({
   }
 });
 
+const defaultRule = {
+  _id: 'new',
+  label: '',
+  feedID: '',
+  match: '',
+  exclude: '',
+  tags: [],
+  destination: '',
+  startOnLoad: false
+};
+
 class DownloadRulesTab extends React.Component {
   validatedFields = {
     destination: {
@@ -249,85 +260,7 @@ class DownloadRulesTab extends React.Component {
   }
 
   getAddRuleForm() {
-    return (
-      <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key="new">
-        <FormRowGroup>
-          <FormRow>
-            <Textbox
-              id="label"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.label',
-                defaultMessage: 'Label'
-              })}
-            />
-            <Select
-              disabled={!this.state.feeds.length}
-              id="feedID"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.applicable.feed',
-                defaultMessage: 'Applicable Feed'
-              })}
-            >
-              {this.getAvailableFeedsOptions()}
-            </Select>
-          </FormRow>
-          <FormRow>
-            <Textbox
-              id="match"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.match.pattern',
-                defaultMessage: 'Match Pattern'
-              })}
-              placeholder={this.props.intl.formatMessage(MESSAGES.regEx)}
-            />
-            <Textbox
-              id="exclude"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.exclude.pattern',
-                defaultMessage: 'Exclude Pattern'
-              })}
-              placeholder={this.props.intl.formatMessage(MESSAGES.regEx)}
-            />
-            <Textbox
-              id="tags"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.apply.tags',
-                defaultMessage: 'Apply Tags'
-              })}
-              placeholder={this.props.intl.formatMessage(MESSAGES.tags)}
-            />
-          </FormRow>
-          <TorrentDestination
-            id="destination"
-            label={this.props.intl.formatMessage({
-              id: 'feeds.torrent.destination',
-              defaultMessage: 'Torrent Destination'
-            })}
-          />
-          <FormRow>
-            <FormRowItem width="auto" />
-            <Checkbox id="startOnLoad" matchTextboxHeight>
-              <FormattedMessage
-                id="feeds.start.on.load"
-                defaultMessage="Start on load"
-              />
-            </Checkbox>
-            <Button onClick={() => this.setState({currentlyEditingRule: 'none'})}>
-              <FormattedMessage
-                id="button.cancel"
-                defaultMessage="Cancel"
-              />
-            </Button>
-            <Button type="submit">
-              <FormattedMessage
-                id="button.add"
-                defaultMessage="Add"
-              />
-            </Button>
-          </FormRow>
-        </FormRowGroup>
-      </li>
-    );
+    return this.getModifyRuleForm(defaultRule);
   }
 
   getRulesListItem(rule){

@@ -21,13 +21,21 @@ const MESSAGES = defineMessages({
     id: 'feeds.validation.must.specify.label',
     defaultMessage: 'You must specify a label.'
   },
+  intervalNotPositive: {
+    id: 'feeds.validation.interval.not.positive',
+    defaultMessage: 'The interval must be a positive integer.'
+  },
   min: {
     id: 'feeds.time.min',
-    defaultMessage: '{durationValue} min'
+    defaultMessage: 'Minutes'
   },
   hr: {
     id: 'feeds.time.hr',
-    defaultMessage: '{durationValue} hr'
+    defaultMessage: 'Hours'
+  },
+  day: {
+    id: 'feeds.time.day',
+    defaultMessage: 'Days'
   },
   url: {
     id: 'feeds.url',
@@ -36,8 +44,19 @@ const MESSAGES = defineMessages({
   label: {
     id: 'feeds.label',
     defaultMessage: 'Label'
+  },
+  interval: {
+    id: 'feeds.interval',
+    defaultMessage: 'Interval'
   }
 });
+
+const defaultFeed = {
+  _id: 'new',
+  label: '',
+  interval: 5,
+  url: ''
+};
 
 class FeedsTab extends React.Component {
   formRef;
@@ -49,35 +68,27 @@ class FeedsTab extends React.Component {
     label: {
       isValid: Validator.isNotEmpty,
       error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel)
+    },
+    interval: {
+      isValid: Validator.isPositiveInteger,
+      error: this.props.intl.formatMessage(MESSAGES.intervalNotPositive)
     }
   };
 
   state = {
     errors: {},
-    intervals: [
+    intervalmultipliers: [
       {
-        displayName: this.props.intl.formatMessage(MESSAGES.min, {durationValue: 5}),
-        value: 5
+        displayName: this.props.intl.formatMessage(MESSAGES.min),
+        value: 1
       },
       {
-        displayName: this.props.intl.formatMessage(MESSAGES.min, {durationValue: 15}),
-        value: 15
-      },
-      {
-        displayName: this.props.intl.formatMessage(MESSAGES.min, {durationValue: 30}),
-        value: 30
-      },
-      {
-        displayName: this.props.intl.formatMessage(MESSAGES.hr, {durationValue: 1}),
+        displayName: this.props.intl.formatMessage(MESSAGES.hr),
         value: 60
       },
       {
-        displayName: this.props.intl.formatMessage(MESSAGES.hr, {durationValue: 2}),
-        value: 120
-      },
-      {
-        displayName: this.props.intl.formatMessage(MESSAGES.hr, {durationValue: 5}),
-        value: 300
+        displayName: this.props.intl.formatMessage(MESSAGES.day),
+        value: 1440
       }
     ],
     feeds: FeedMonitorStore.getFeeds(),
@@ -115,7 +126,7 @@ class FeedsTab extends React.Component {
   );
 
   getIntervalSelectOptions() {
-    return this.state.intervals.map((interval, index) => {
+    return this.state.intervalmultipliers.map((interval, index) => {
       return (
         <SelectItem key={index} id={interval.value}>
           {interval.displayName}
@@ -135,17 +146,24 @@ class FeedsTab extends React.Component {
               placeholder={this.props.intl.formatMessage(MESSAGES.label)}
               defaultValue={feed.label}
             />
-              <Select
-                defaultID={parseInt(feed.interval, 10)}
-                label={this.props.intl.formatMessage({
-                  id: 'feeds.interval',
-                  defaultMessage: 'Interval'
-                })}
-                id="interval"
-                width="one-quarter"
-              >
-                {this.getIntervalSelectOptions()}
-              </Select>
+            <Textbox
+              id="interval"
+              label={this.props.intl.formatMessage({
+                id: 'feeds.interval',
+                defaultMessage: 'Interval'
+              })}
+              placeholder={this.props.intl.formatMessage(MESSAGES.interval)}
+              defaultValue={feed.interval/((feed.interval%1440)?(feed.interval%60)?1:60:1440)}
+              width="one-eighth"
+            />
+            <Select
+              labelOffset 
+              defaultID={(feed.interval%1440)?(feed.interval%60)?1:60:1440}
+              id="intervalMultiplier"
+              width="one-eighth"
+            >
+              {this.getIntervalSelectOptions()}
+            </Select>
           </FormRow>
           <FormRow>
             <Textbox
@@ -176,52 +194,7 @@ class FeedsTab extends React.Component {
   }
 
   getAddFeedForm() {
-    return (
-      <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key="new">
-        <FormRowGroup>
-          <FormRow>
-            <Textbox
-              id="label"
-              label={this.props.intl.formatMessage(MESSAGES.label)}
-              placeholder={this.props.intl.formatMessage(MESSAGES.label)}
-            />
-              <Select
-                defaultID={this.state.intervals[0].value}
-                label={this.props.intl.formatMessage({
-                  id: 'feeds.interval',
-                  defaultMessage: 'Interval'
-                })}
-                id="interval"
-                width="one-quarter"
-              >
-                {this.getIntervalSelectOptions()}
-              </Select>
-          </FormRow>
-          <FormRow>
-            <Textbox
-              id="url"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.url',
-                defaultMessage: 'URL'
-              })}
-              placeholder={this.props.intl.formatMessage(MESSAGES.url)}
-            />
-            <Button labelOffset onClick={() => this.setState({currentlyEditingFeed: 'none'})}>
-              <FormattedMessage
-                id="button.cancel"
-                defaultMessage="Cancel"
-              />
-            </Button>
-            <Button labelOffset type="submit">
-              <FormattedMessage
-                id="button.add"
-                defaultMessage="Add"
-              />
-            </Button>
-          </FormRow>
-        </FormRowGroup>
-      </li>
-    );
+    return this.getModifyFeedForm(defaultFeed);
   }
 
   getFeedsListItem(feed){
@@ -336,7 +309,12 @@ class FeedsTab extends React.Component {
       if (currentFeed !== 'none' && currentFeed !== 'new'){
         FeedMonitorStore.removeFeed(currentFeed);
       }
-      FeedMonitorStore.addFeed(this.formRef.getFormData());
+
+      let formData = this.formRef.getFormData();
+      formData.interval = (formData.interval*formData.intervalMultiplier).toString();
+      formData.intervalMultiplier = undefined;
+
+      FeedMonitorStore.addFeed(formData);
       this.formRef.resetForm();
       this.setState({currentlyEditingFeed: 'none'})
     }
