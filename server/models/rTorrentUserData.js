@@ -15,7 +15,7 @@ if (!hasSymbol){
       global[RTORRENT_USER_DATA_KEY].rTorrentData[userId] = rtorrentData;
     },
     removerTorrentData: (userId) => {
-      global[RTORRENT_USER_DATA_KEY].rTorrentData[userId];
+      delete(global[RTORRENT_USER_DATA_KEY].rTorrentData[userId]);
     }
   };
 }

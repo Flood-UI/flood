@@ -123,7 +123,6 @@ class HistoryService extends EventEmitter {
               historyServiceEvents[`${snapshotType}_SNAPSHOT_FULL_UPDATE`],
               {
                 id: nextLastTimestamp,
-                eventUserId: this.userId,
                 data: nextSnapshot
               }
             );
@@ -190,7 +189,6 @@ class HistoryService extends EventEmitter {
         historyServiceEvents.TRANSFER_SUMMARY_DIFF_CHANGE,
         {
           diff: summaryDiff,
-          eventUserId: this.userId,
           id: Date.now()
         }
       );

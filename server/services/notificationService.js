@@ -25,8 +25,6 @@ class NotificationService extends EventEmitter {
   }
 
   addNotification(notifications) {
-    console.log("add notification: ", notifications);
-
     notifications = _.castArray(notifications);
 
     this.count.total = this.count.total + notifications.length;
@@ -85,7 +83,6 @@ class NotificationService extends EventEmitter {
       notificationServiceEvents.NOTIFICATION_COUNT_CHANGE,
       {
         id: Date.now(),
-        eventUserId: this.userId,
         data: this.count
       }
     );

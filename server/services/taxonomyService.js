@@ -52,7 +52,7 @@ class TaxonomyService extends EventEmitter {
   }
 
   handleProcessTorrentListStart(userId) {
-    if (userId != this.userId) {
+    if (userId !== this.userId) {
       return;
     }
 
@@ -70,7 +70,7 @@ class TaxonomyService extends EventEmitter {
   }
 
   handleProcessTorrentListEnd(userId, torrentList) {
-    if (userId != this.userId) {
+    if (userId !== this.userId) {
       return;
     }
 
@@ -104,7 +104,6 @@ class TaxonomyService extends EventEmitter {
         taxonomyServiceEvents.TAXONOMY_DIFF_CHANGE,
         {
           diff: taxonomyDiffs,
-          eventUserId: userId,
           id: Date.now()
         }
       );
@@ -112,7 +111,7 @@ class TaxonomyService extends EventEmitter {
   }
 
   handleProcessTorrent(userId, torrentDetails) {
-    if (userId != this.userId) {
+    if (userId !== this.userId) {
       return;
     }
 

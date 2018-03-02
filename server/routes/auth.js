@@ -6,6 +6,7 @@ const passport = require('passport');
 
 const config = require('../../config');
 const router = express.Router();
+const rTorrentUserData = require('../models/rTorrentUserData');
 const Users = require('../models/Users');
 
 const failedLoginResponse = 'Failed login.';
@@ -76,7 +77,8 @@ router.post('/register', (req, res) => {
       password: req.body.password,
       host: req.body.host,
       port: req.body.port,
-      socketPath: req.body.socketPath
+      socketPath: req.body.socketPath,
+      isAdmin: true
     },
     (createUserResponse, createUserError) => {
       if (createUserError) {
@@ -111,6 +113,7 @@ router.get('/verify', (req, res, next) => {
 router.use('/', passport.authenticate('jwt', {session: false}));
 
 router.get('/logout', (req, res) => {
+  rTorrentUserData.removerTorrentData(req.user._id);
   res.clearCookie('jwt').send();
 });
 
@@ -128,7 +131,8 @@ router.put('/users', (req, res, next) => {
     password: req.body.password,
     host: req.body.host,
     port: req.body.port,
-    socketPath: req.body.socketPath
+    socketPath: req.body.socketPath,
+    isAdmin: false
   }, ajaxUtil.getResponseFn(res));
 });
 

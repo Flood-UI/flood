@@ -1,6 +1,7 @@
 'use strict';
 const argon2 = require('argon2');
 const bcrypt = require('bcrypt');
+const fs = require('fs-extra');
 const Datastore = require('nedb');
 
 const config = require('../../config');
@@ -72,7 +73,8 @@ class Users {
       username,
       host,
       port,
-      socketPath
+      socketPath,
+      isAdmin
     } = credentials;
 
     if (!this.ready) {
@@ -88,7 +90,7 @@ class Users {
     argon2
       .hash(password)
       .then(hash => {
-        this.db.insert({ username, password: hash, host, port, socket, socketPath }, (error, user) => {
+        this.db.insert({ username, password: hash, host, port, socket, socketPath, isAdmin }, (error, user) => {
           if (error) {
             if (error.errorType === 'uniqueViolated') {
               error = 'Username already exists.';
@@ -104,12 +106,25 @@ class Users {
   }
 
   removeUser(username, callback) {
-    this.db.remove({username: username}, {}, (err, numRemoved) => {
+    this.db.findOne({username: username}).exec((err, user) => {
       if (err) {
         return callback(null, err);
       }
 
-      return callback({username: username});
+      // Username not found.
+      if (user == null) {
+        return callback(null, user);
+      }
+
+      this.db.remove({username: username}, {}, (err, numRemoved) => {
+        if (err) {
+          return callback(null, err);
+        }
+
+        fs.removeSync(`${config.dbPath}${user._id}/`);
+
+        return callback({username: username});
+      });
     });
   }
 

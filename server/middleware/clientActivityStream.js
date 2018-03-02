@@ -75,10 +75,7 @@ module.exports = (req, res) => {
       `${historySnapshotTypes[historySnapshot]}_SNAPSHOT_FULL_UPDATE`
     ],
     payload => {
-      const {data, id, eventUserId} = payload;
-      if (userId != eventUserId) {
-        return;
-      }
+      const {data, id} = payload;
 
       serverEvent.setID(id);
       serverEvent.setType(serverEventTypes.TRANSFER_HISTORY_FULL_UPDATE);
@@ -90,10 +87,7 @@ module.exports = (req, res) => {
   notificationService.on(
     notificationServiceEvents.NOTIFICATION_COUNT_CHANGE,
     payload => {
-      const {data, id, eventUserId} = payload;
-      if (userId != eventUserId) {
-        return;
-      }
+      const {data, id} = payload;
 
       serverEvent.setID(id);
       serverEvent.setType(serverEventTypes.NOTIFICATION_COUNT_CHANGE);
@@ -106,10 +100,7 @@ module.exports = (req, res) => {
   historyService.on(
     historyServiceEvents.TRANSFER_SUMMARY_DIFF_CHANGE,
     (payload) => {
-      const {diff, id, eventUserId} = payload;
-      if (userId != eventUserId) {
-        return;
-      }
+      const {diff, id} = payload;
 
       serverEvent.setID(id);
       serverEvent.setType(serverEventTypes.TRANSFER_SUMMARY_DIFF_CHANGE);
@@ -121,10 +112,7 @@ module.exports = (req, res) => {
   taxonomyService.on(
     taxonomyServiceEvents.TAXONOMY_DIFF_CHANGE,
     (payload) => {
-      const {diff, id, eventUserId} = payload;
-      if (userId != eventUserId) {
-        return;
-      }
+      const {diff, id} = payload;
 
       serverEvent.setID(id);
       serverEvent.setType(serverEventTypes.TAXONOMY_DIFF_CHANGE);
@@ -136,10 +124,7 @@ module.exports = (req, res) => {
   torrentService.on(
     torrentServiceEvents.TORRENT_LIST_DIFF_CHANGE,
     (payload) => {
-      const {diff, id, eventUserId} = payload;
-      if (userId != eventUserId) {
-        return;
-      }
+      const {diff, id} = payload;
 
       serverEvent.setID(id);
       serverEvent.setType(serverEventTypes.TORRENT_LIST_DIFF_CHANGE);

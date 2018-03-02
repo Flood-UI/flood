@@ -65,11 +65,8 @@ module.exports.getTorrentService = function getTorrentService(userId) {
   if (!torrentService) {
     torrentService = new TorrentService(userId);
     torrentServices.set(userId, torrentService);
-    if (!torrentServicesInterval.get(userId)) {
-      torrentServicesInterval.set(userId,
-        setInterval(() => torrentServices.delete(userId), servicesPurgeInterval)
-      );
-    }
+    // NOTE IF WE PURGE TORRENT SERVICE WE LOSE NOTIFICATION ON FINISHED TORRENT
+    // A CACHED RESUMABLE SERVICE MUST BE IMPLEMENTED IN ORDER TO BE ABLE TO PURGE IT
   }
 
   return torrentService;

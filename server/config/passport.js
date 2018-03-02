@@ -34,7 +34,8 @@ module.exports = (passport) => {
             socket: user.socket,
             socketPath: user.socketPath,
             port: user.port,
-            host: user.host
+            host: user.host,
+            isAdmin: user.isAdmin
           });
 
         return callback(null, user);

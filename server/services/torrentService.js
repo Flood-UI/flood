@@ -294,7 +294,7 @@ class TorrentService extends EventEmitter {
     if (Object.keys(diff).length > 0) {
       this.emit(
         torrentServiceEvents.TORRENT_LIST_DIFF_CHANGE,
-        {diff, id: nextTorrentListSummary.id, eventUserId: this.userId}
+        {diff, id: nextTorrentListSummary.id}
       );
     }
 
@@ -307,7 +307,7 @@ class TorrentService extends EventEmitter {
   }
 
   handleTorrentProcessed(userId, nextTorrentDetails) {
-    if (userId != this.userId) {
+    if (userId !== this.userId) {
       return;
     }
 
@@ -335,7 +335,7 @@ class TorrentService extends EventEmitter {
   }
 
   handleTorrentsRemoved(userId) {
-    if (userId != this.userId) {
+    if (userId !== this.userId) {
       return;
     }
 
