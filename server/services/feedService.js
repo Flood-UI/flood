@@ -98,8 +98,15 @@ class FeedService {
     let feed = this.feeds.find((feed)=>{
       return (feed.options._id===query.id);
     });
+
     if (feed){
-      callback(feed.getItems());
+      if (query.search){
+        callback(feed.getItems().filter( (item) => {
+          return (item.title.toLowerCase().indexOf(query.search.toLowerCase()) !== -1);
+        }));
+      } else {
+        callback(feed.getItems());
+      }
     } else {
       callback(null);
     }
