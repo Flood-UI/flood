@@ -108,7 +108,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleItemsFetchSuccess(items) {
-    this.setItems(items);
+    this.items = items;
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS);
   }
 
