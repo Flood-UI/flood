@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {defineMessages, FormattedMessage, injectIntl} from 'react-intl';
-import {Button, Form, FormError, FormRow, FormRowGroup, FormRowItem, Select, SelectItem, Textbox} from 'flood-ui-kit';
+import {Button, Checkbox, Form, FormError, FormRow, FormRowGroup, FormRowItem, Select, SelectItem, Textbox} from 'flood-ui-kit';
 import formatUtil from 'universally-shared-code/util/formatUtil';
 import React from 'react';
 
@@ -10,7 +10,9 @@ import Close from '../../icons/Close';
 import EventTypes from '../../../constants/EventTypes';
 import FeedMonitorStore from '../../../stores/FeedMonitorStore';
 import ModalFormSectionHeader from '../ModalFormSectionHeader';
+import TorrentDestination from '../../general/filesystem/TorrentDestination';
 import Validator from '../../../util/Validator';
+import TorrentActions from '../../../actions/TorrentActions';
 
 const MESSAGES = defineMessages({
   mustSpecifyURL: {
@@ -48,6 +50,14 @@ const MESSAGES = defineMessages({
   interval: {
     id: 'feeds.interval',
     defaultMessage: 'Interval'
+  },
+  tags: {
+    id: 'feeds.tags',
+    defaultMessage: 'Tags'
+  },
+  search: {
+    id: 'feeds.search',
+    defaultMessage: 'Search term'
   }
 });
 
@@ -60,6 +70,7 @@ const defaultFeed = {
 
 class FeedsTab extends React.Component {
   formRef;
+  manualAddingFormRef;
   validatedFields = {
     url: {
       isValid: Validator.isURLValid,
@@ -93,7 +104,9 @@ class FeedsTab extends React.Component {
     ],
     feeds: FeedMonitorStore.getFeeds(),
     rules: FeedMonitorStore.getRules(),
-    currentlyEditingFeed: 'none'
+    items: FeedMonitorStore.getItems(),
+    currentlyEditingFeed: 'none',
+    selectedFeed: null
   };
 
   componentDidMount() {
@@ -101,12 +114,20 @@ class FeedsTab extends React.Component {
       EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS,
       this.handleFeedMonitorsFetchSuccess
     );
+    FeedMonitorStore.listen(
+      EventTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS,
+      this.handleFeedItemsFetchSuccess
+    );
   }
 
   componentWillUnmount() {
     FeedMonitorStore.unlisten(
       EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS,
       this.handleFeedMonitorsFetchSuccess
+    );
+    FeedMonitorStore.unlisten(
+      EventTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS,
+      this.handleFeedItemsFetchSuccess
     );
   }
 
@@ -125,6 +146,14 @@ class FeedsTab extends React.Component {
     150
   );
 
+  getAmendedFormData() {
+    const formData = this.formRef.getFormData();
+    formData.interval = (formData.interval*formData.intervalMultiplier).toString();
+    delete formData.intervalMultiplier;
+    
+    return formData;
+  }
+
   getIntervalSelectOptions() {
     return this.state.intervalmultipliers.map((interval, index) => {
       return (
@@ -133,6 +162,38 @@ class FeedsTab extends React.Component {
         </SelectItem>
       );
     });
+  }
+
+  getAvailableFeedsOptions() {
+    if (!this.state.feeds.length) {
+      return [
+        <SelectItem key="empty" id="placeholder" placeholder>
+          <em>
+            <FormattedMessage
+              id="feeds.no.feeds.available"
+              defaultMessage="No feeds available."
+            />
+          </em>
+        </SelectItem>
+      ];
+    }
+
+    return this.state.feeds.reduce((feedOptions, feed) => {
+      return feedOptions.concat(
+        <SelectItem key={feed._id} id={feed._id}>
+          {feed.label}
+        </SelectItem>
+      );
+    }, [
+      <SelectItem key="select-feed" id="placeholder" placeholder>
+        <em>
+          <FormattedMessage
+            id="feeds.select.feed"
+            defaultMessage="Select feed"
+          />
+        </em>
+      </SelectItem>
+    ]);
   }
 
   getModifyFeedForm(feed) {
@@ -291,7 +352,118 @@ class FeedsTab extends React.Component {
     );
   }
 
+  getFeedItemsForm(){
+    return(
+      <Form
+          className="inverse"
+          onChange={this.handleBrowseFeedChange}
+          ref={ref => this.manualAddingFormRef = ref}
+        >
+          <ModalFormSectionHeader>
+            <FormattedMessage id="feeds.browse.feeds"
+              defaultMessage="Browse feeds" />
+          </ModalFormSectionHeader>
+          <FormRow>
+            <Select
+              disabled={!this.state.feeds.length}
+              id="feedID"
+              label={this.props.intl.formatMessage({
+                id: 'feeds.select.feed',
+                defaultMessage: 'Select feed'
+              })}
+              width="one-quarter"
+            >
+              {this.getAvailableFeedsOptions()}
+            </Select>
+            { this.state.selectedFeed && [
+                <Textbox
+                  id="search"
+                  label={this.props.intl.formatMessage({
+                    id: 'feeds.search.term',
+                    defaultMessage: 'Search term'
+                  })}
+                  placeholder={this.props.intl.formatMessage(MESSAGES.search)}
+                />,
+                <Textbox
+                  id="tags"
+                  label={this.props.intl.formatMessage({
+                    id: 'feeds.apply.tags',
+                    defaultMessage: 'Apply Tags'
+                  })}
+                  placeholder={this.props.intl.formatMessage(MESSAGES.tags)}
+                />
+              ]
+            }
+          </FormRow>
+            { this.state.selectedFeed && [
+                <FormRow>
+                  <TorrentDestination
+                    id="destination"
+                    label={this.props.intl.formatMessage({
+                      id: 'feeds.torrent.destination',
+                      defaultMessage: 'Torrent Destination'
+                    })}
+                  />
+                  <Checkbox id="startOnLoad" matchTextboxHeight labelOffset >
+                    <FormattedMessage
+                      id="feeds.start.on.load"
+                      defaultMessage="Start on load"
+                    />
+                  </Checkbox>
+                </FormRow>,
+                <FormRow>
+                  {this.getFeedItemsList()}
+                </FormRow>
+              ]
+            }
+        </Form>
+   
+    );
+  }
   
+  getFeedItemsList() {
+    if (this.state.items.length === 0 ) {
+      return (
+        <ul className="interactive-list">
+          <li className="interactive-list__item">
+            <div className="interactive-list__label">
+              <FormattedMessage
+                defaultMessage="No items matching search term."
+                id="feeds.no.items.matching"
+              />
+            </div>
+          </li>
+        </ul>
+      );
+    }
+
+    const itemsList = this.state.items.map((item, index) => {
+      return (
+        <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={item.guid.text}>
+          <div className="interactive-list__label">
+            <ul className="interactive-list__detail-list">
+              <li className="interactive-list__detail-list__item
+                interactive-list__detail--primary">
+                {item.title}
+              </li>
+            </ul>
+          </div>
+          <span
+            className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
+            onClick={() => this.handleAddTorrentClick(item)}
+          >
+            <Add />
+          </span>
+        </li>
+      );
+    });
+
+    return (
+      <ul className="interactive-list feed-list">
+        {itemsList}
+      </ul>
+    );
+  }
 
   getSelectedDropdownItem(itemSet) {
     return this.state[itemSet].find((item) => {
@@ -310,9 +482,7 @@ class FeedsTab extends React.Component {
         FeedMonitorStore.removeFeed(currentFeed);
       }
 
-      let formData = this.formRef.getFormData();
-      formData.interval = (formData.interval*formData.intervalMultiplier).toString();
-      formData.intervalMultiplier = undefined;
+      const formData = this.getAmendedFormData();
 
       FeedMonitorStore.addFeed(formData);
       this.formRef.resetForm();
@@ -324,6 +494,12 @@ class FeedsTab extends React.Component {
     this.setState({
       feeds: FeedMonitorStore.getFeeds(),
       rules: FeedMonitorStore.getRules()
+    });
+  };
+
+  handleFeedItemsFetchSuccess = () => {
+    this.setState({
+      items: FeedMonitorStore.getItems() || []
     });
   };
 
@@ -341,8 +517,32 @@ class FeedsTab extends React.Component {
 
   handleModifyFeedClick = (feed) => {
     this.setState({currentlyEditingFeed: feed._id})
-  }
+  };
+
+  handleAddTorrentClick = (item) => {
+    const formData = this.manualAddingFormRef.getFormData();
+    console.log(formData);
+    TorrentActions.addTorrentsByUrls({
+      urls: [item.link],
+      destination: formData.destination,
+      isBasePath: formData.useBasePath,
+      start: formData.startOnLoad,
+      tags: formData.tags.split(',')
+    });
+
+  };
   
+  handleBrowseFeedChange = (input) => {
+    this.setState({
+      selectedFeed: input.formData.feedID
+    });
+    FeedMonitorStore.fetchItems({
+      params: {
+        id: input.formData.feedID,
+        search: input.formData.search
+      }
+    });
+  };
 
   validateForm() {
     const formData = this.formRef.getFormData();
@@ -371,32 +571,27 @@ class FeedsTab extends React.Component {
         );
       }
     );
-
     return (
-      <Form
-        className="inverse"
-        onChange={this.handleFormChange}
-        onSubmit={this.handleFormSubmit}
-        ref={ref => this.formRef = ref}
-      >
-        <ModalFormSectionHeader>
-          <FormattedMessage id="feeds.existing.feeds"
-            defaultMessage="Existing Feeds" />
-        </ModalFormSectionHeader>
-        {errors}
-        <FormRow>
-          <FormRowItem>
-            {this.getFeedsList()}
-          </FormRowItem>
-        </FormRow>
-        {/*<ModalFormSectionHeader>
-          <FormattedMessage
-            id="feeds.add.feed"
-            defaultMessage="Add Feed"
-          />
-        </ModalFormSectionHeader>
-        {this.getAddFeedForm()}*/}
-      </Form>
+      <div>
+        <Form
+          className="inverse"
+          onChange={this.handleFormChange}
+          onSubmit={this.handleFormSubmit}
+          ref={ref => this.formRef = ref}
+        >
+          <ModalFormSectionHeader>
+            <FormattedMessage id="feeds.existing.feeds"
+              defaultMessage="Existing Feeds" />
+          </ModalFormSectionHeader>
+          {errors}
+          <FormRow>
+            <FormRowItem>
+              {this.getFeedsList()}
+            </FormRowItem>
+          </FormRow>
+        </Form>
+        {this.getFeedItemsForm()}
+      </div>
     );
   }
 }
