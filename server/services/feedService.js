@@ -24,6 +24,17 @@ class FeedService {
     });
   }
 
+  modifyFeed(id, feed, callback) {
+    let modifiedFeed = this.feeds.find( (feed) => {
+      return feed.options._id === id;
+    });
+    modifiedFeed.stopReader();
+    modifiedFeed.modify(feed);
+    this.modifyItem(id, feed, (err) => {
+      callback(err);
+    });
+  }
+
   addItem(type, item, callback) {
     if (!this.isDBReady) {
       return;
@@ -36,6 +47,21 @@ class FeedService {
       }
 
       callback(newDoc);
+    });
+  }
+
+  modifyItem(id, newItem, callback) {
+    if (!this.isDBReady) {
+      return;
+    }
+
+    this.db.update({_id: id}, {$set: newItem}, {}, (err) => {
+      if (err) {
+        callback(null, err);
+        return;
+      }
+
+      callback(null);
     });
   }
 

@@ -42,6 +42,10 @@ router.put('/feed-monitor/feeds', (req, res, next) => {
   feedService.addFeed(req.body, ajaxUtil.getResponseFn(res));
 });
 
+router.put('/feed-monitor/feeds/:id', (req, res, next) => {
+  feedService.modifyFeed(req.params.id, req.body, ajaxUtil.getResponseFn(res));
+});
+
 router.get('/feed-monitor/rules', (req, res, next) => {
   feedService.getRules(req.body.query, ajaxUtil.getResponseFn(res));
 });

@@ -478,13 +478,16 @@ class FeedsTab extends React.Component {
       this.setState({errors});
     } else {
       let currentFeed = this.state.currentlyEditingFeed;
-      if (currentFeed !== 'none' && currentFeed !== 'new'){
-        FeedMonitorStore.removeFeed(currentFeed);
+      const formData = this.getAmendedFormData();
+      if (currentFeed === 'new'){
+        FeedMonitorStore.addFeed(formData);
+      } else {
+        FeedMonitorStore.modifyFeed(currentFeed, formData);
       }
 
-      const formData = this.getAmendedFormData();
-
-      FeedMonitorStore.addFeed(formData);
+      
+      console.log(formData);
+      
       this.formRef.resetForm();
       this.setState({currentlyEditingFeed: 'none'})
     }

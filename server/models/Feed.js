@@ -24,6 +24,21 @@ class Feed {
     this.initReader();
   }
 
+  modify(options){
+    Object.assign(this.options, options);
+    this.items = [];
+
+    this.reader = new FeedSub(options.url, {
+      autoStart: true,
+      emitOnStart: true,
+      maxHistory: this.options.maxItemHistory,
+      interval: options.interval ? Number(options.interval) : 15,
+      readEveryItem: true
+    });
+
+    this.initReader();
+  }
+
   getItems() {
     return this.items;
   }

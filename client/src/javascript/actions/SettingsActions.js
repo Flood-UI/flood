@@ -23,6 +23,22 @@ let SettingsActions = {
       });
   },
 
+  modifyFeed: (id, feed) => {
+    return axios.put(`${baseURI}api/feed-monitor/feeds/${id}`, feed)
+      .then((json = {}) => json.data)
+      .then((data) => {
+        AppDispatcher.dispatchServerAction({
+          type: ActionTypes.SETTINGS_FEED_MONITOR_FEED_MODIFY_SUCCESS,
+          data
+        });
+      }, (error) => {
+        AppDispatcher.dispatchServerAction({
+          type: ActionTypes.SETTINGS_FEED_MONITOR_FEED_MODiFY_ERROR,
+          error
+        });
+      });
+  },
+
   addRule: (rule) => {
     return axios.put(`${baseURI}api/feed-monitor/rules`, rule)
       .then((json = {}) => json.data)

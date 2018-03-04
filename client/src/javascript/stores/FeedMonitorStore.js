@@ -16,6 +16,10 @@ class FeedsStoreClass extends BaseStore {
     SettingsActions.addFeed(feed);
   }
 
+  modifyFeed(id, feed) {
+    SettingsActions.modifyFeed(id, feed);
+  }
+
   addRule(feed) {
     SettingsActions.addRule(feed);
   }
@@ -55,6 +59,15 @@ class FeedsStoreClass extends BaseStore {
   handleFeedAddSuccess() {
     this.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_FEED_ADD_SUCCESS);
+  }
+
+  handleFeedModifyError(error) {
+    this.emit(EventTypes.SETTINGS_FEED_MONITOR_FEED_MODIFY_ERROR, error);
+  }
+
+  handleFeedModifySuccess() {
+    this.fetchFeedMonitors();
+    this.emit(EventTypes.SETTINGS_FEED_MONITOR_FEED_MODIFY_SUCCESS);
   }
 
   handleRuleAddError(error) {
@@ -151,6 +164,12 @@ FeedsStore.dispatcherID = AppDispatcher.register((payload) => {
       break;
     case ActionTypes.SETTINGS_FEED_MONITOR_FEED_ADD_SUCCESS:
       FeedsStore.handleFeedAddSuccess();
+      break;
+    case ActionTypes.SETTINGS_FEED_MONITOR_FEED_MODIFY_ERROR:
+      FeedsStore.handleFeedModifyError(action.error);
+      break;
+    case ActionTypes.SETTINGS_FEED_MONITOR_FEED_MODIFY_SUCCESS:
+      FeedsStore.handleFeedModifySuccess();
       break;
     case ActionTypes.SETTINGS_FEED_MONITOR_RULE_ADD_ERROR:
       FeedsStore.handleRuleAddError(action.error);
