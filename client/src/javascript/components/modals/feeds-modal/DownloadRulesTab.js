@@ -44,6 +44,10 @@ const MESSAGES = defineMessages({
   tags: {
     id: 'feeds.tags',
     defaultMessage: 'Tags'
+  },
+  check: {
+    id: 'feeds.check',
+    defaultMessage: 'Check matching'
   }
 });
 
@@ -59,6 +63,7 @@ const defaultRule = {
 };
 
 class DownloadRulesTab extends React.Component {
+  formRef;
   validatedFields = {
     destination: {
       isValid: Validator.isNotEmpty,
@@ -94,7 +99,10 @@ class DownloadRulesTab extends React.Component {
     errors: {},
     feeds: FeedMonitorStore.getFeeds(),
     rules: FeedMonitorStore.getRules(),
-    currentlyEditingRule: 'none'
+    currentlyEditingRule: 'none',
+    checkMatchStyle: {
+      backgroundColor: '#e95779'
+    }
   };
 
   componentDidMount() {
@@ -126,15 +134,42 @@ class DownloadRulesTab extends React.Component {
     150
   );
 
+  checkMatch(match, exclude, check){
+    let checkMatchTextbox;
+    for (let i = 0; i < this.formRef.formRef.length; i++) {
+      let element = this.formRef.formRef[i];
+      if (element.name === 'check'){
+        checkMatchTextbox = element;
+      }
+    };
+
+    if (!Validator.isNotEmpty(match) || 
+      !Validator.isRegExValid(match) || 
+      !Validator.isRegExValid(exclude)){
+      checkMatchTextbox.style = {};
+      return;
+    }
+
+    const isMatched = (new RegExp(match, 'gi')).test(check);
+    const isExcluded = exclude !== '' && (new RegExp(exclude, 'gi')).test(check);
+    
+    if(isMatched && !isExcluded){
+      checkMatchTextbox.style.background = '#39ce83';
+    } else {
+      checkMatchTextbox.style.background = '#e95779';
+    }
+  }
+
   getAmendedFormData() {
     const formData = this.formRef.getFormData();
+    delete formData.check;
 
     return Object.assign(
       {},
       formData,
       {
         field: 'title',
-        tags: formData.tags.split(',')
+        tags: formData.tags.split(','),
       }
     );
   }
@@ -216,6 +251,25 @@ class DownloadRulesTab extends React.Component {
               defaultValue={rule.exclude}
             />
             <Textbox
+              style={{backgroundColor: '#222222'}}
+              id="check"
+              label={this.props.intl.formatMessage({
+                id: 'feeds.test.match',
+                defaultMessage: 'Check matching.'
+              })}
+              placeholder={this.props.intl.formatMessage(MESSAGES.check)}
+            />
+          </FormRow>
+          <FormRow>
+            <TorrentDestination
+              id="destination"
+              label={this.props.intl.formatMessage({
+                id: 'feeds.torrent.destination',
+                defaultMessage: 'Torrent Destination'
+              })}
+              suggested={rule.destination}
+            />
+            <Textbox
               id="tags"
               label={this.props.intl.formatMessage({
                 id: 'feeds.apply.tags',
@@ -225,14 +279,6 @@ class DownloadRulesTab extends React.Component {
               defaultValue={rule.tags.join(', ')}
             />
           </FormRow>
-          <TorrentDestination
-            id="destination"
-            label={this.props.intl.formatMessage({
-              id: 'feeds.torrent.destination',
-              defaultMessage: 'Torrent Destination'
-            })}
-            suggested={rule.destination}
-          />
           <FormRow>
             <FormRowItem width="auto" />
             <Checkbox id="startOnLoad" checked={rule.startOnLoad} matchTextboxHeight>
@@ -398,6 +444,7 @@ class DownloadRulesTab extends React.Component {
 
   handleFormChange = ({event, formData}) => {
     this.checkFieldValidity(event.target.name, formData[event.target.name]);
+    this.checkMatch(formData.match, formData.exclude, formData.check);
   };
 
   handleFormSubmit = () => {

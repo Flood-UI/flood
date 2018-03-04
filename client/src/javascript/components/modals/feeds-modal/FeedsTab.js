@@ -484,7 +484,6 @@ class FeedsTab extends React.Component {
       } else {
         FeedMonitorStore.modifyFeed(currentFeed, formData);
       }
-
       
       console.log(formData);
       
