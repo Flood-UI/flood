@@ -19,7 +19,7 @@ class ClientRequestService extends EventEmitter {
   constructor() {
     super(...arguments);
 
-    this.torrentListReducers = [];
+    this.torrentListReducers = new Set();
   }
 
   /**
@@ -41,7 +41,9 @@ class ClientRequestService extends EventEmitter {
       throw new Error('reducer.reduce must be a function.');
     }
 
-    this.torrentListReducers.push(reducer);
+    if (!this.torrentListReducers.has(reducer)) {
+      this.torrentListReducers.add(reducer);
+    }
   }
 
   removeTorrents(userId, options = {hashes: [], deleteData: false}) {
@@ -159,7 +161,7 @@ class ClientRequestService extends EventEmitter {
     return scgi
       .methodCall(userId, 'system.multicall', [methodCalls])
       .then(transferRate => {
-        return this.processTransferRateResponse(transferRate, options);
+        return this.processTransferRateResponse(userId, transferRate, options);
       })
       .catch(clientError => {
         return this.processClientError(clientError);
@@ -242,8 +244,8 @@ class ClientRequestService extends EventEmitter {
     return processedTorrentList;
   }
 
-  processTransferRateResponse(transferRate = [], options) {
-    this.emit(clientRequestServiceEvents.PROCESS_TRANSFER_RATE_START);
+  processTransferRateResponse(userId, transferRate = [], options) {
+    this.emit(clientRequestServiceEvents.PROCESS_TRANSFER_RATE_START, userId);
 
     return transferRate.reduce(
       (accumulator, value, index) => {
