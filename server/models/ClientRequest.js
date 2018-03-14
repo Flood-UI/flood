@@ -3,7 +3,6 @@
 /**
  * This file is deprecated in favor of clientRequestService.
  */
-
 let mkdirp = require('mkdirp');
 let mv = require('mv');
 let path = require('path');
@@ -12,12 +11,14 @@ let util = require('util');
 let clientSettingsMap = require('../../shared/constants/clientSettingsMap');
 let rTorrentPropMap = require('../util/rTorrentPropMap');
 let scgi = require('../util/scgi');
-const torrentService = require('../services/torrentService');
+const ServicesHandler = require('../services/servicesHandler');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 class ClientRequest {
-  constructor(options) {
+  constructor(userId, options) {
     options = options || {};
+
+    this.userId = userId;
 
     this.onCompleteFn = null;
     this.postProcessFn = null;
@@ -109,7 +110,7 @@ class ClientRequest {
     let handleSuccess = this.handleSuccess.bind(this);
     let handleError = this.handleError.bind(this);
 
-    scgi.methodCall('system.multicall', [this.requests])
+    scgi.methodCall(this.userId, 'system.multicall', [this.requests])
       .then(handleSuccess)
       .catch(handleError);
   }
@@ -183,26 +184,32 @@ class ClientRequest {
     });
   }
 
-  checkHash(options) {
-    const hashes = this.getEnsuredArray(options.hashes);
-    const stoppedHashes = hashes.filter(hash => {
-      return torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped);
-    });
-    const hashesToStart = [];
+  checkHash(userId, options) {
+    const torrentService = ServicesHandler.getTorrentService(userId);
+    torrentService.fetchTorrentList().then(
+      () => {
+        const hashes = this.getEnsuredArray(options.hashes);
+        const stoppedHashes = hashes.filter(hash => {
+          return torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped);
+        });
 
-    this.stopTorrents({ hashes });
+        const hashesToStart = [];
 
-    hashes.forEach(hash => {
-      this.requests.push(this.getMethodCall('d.check_hash', [hash]));
+        this.stopTorrents({hashes});
 
-      if (!stoppedHashes.includes(hash)) {
-        hashesToStart.push(hash);
+        hashes.forEach(hash => {
+          this.requests.push(this.getMethodCall('d.check_hash', [hash]));
+
+          if (!stoppedHashes.includes(hash)) {
+            hashesToStart.push(hash);
+          }
+        });
+
+        if (hashesToStart.length) {
+          this.startTorrents({hashes: hashesToStart});
+        }
       }
-    });
-
-    if (hashesToStart.length) {
-      this.startTorrents({ hashes: hashesToStart });
-    }
+    ).catch((err) => console.log(err));
   }
 
   createDirectory(options) {

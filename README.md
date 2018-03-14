@@ -27,7 +27,8 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 #### Configuring
 
 1. Copy `config.template.js` to `config.js`. This is required.
-2. Set your rTorrent SCGI hostname and port in `config.js`. Defaults are `localhost` and `5000`.
+2. ~~Set your rTorrent SCGI hostname and port in `config.js`. Defaults are `localhost` and `5000`.~~
+  (**This step will be now setup upon user registration**)
   * If you want to use a socket, change `socket` to true and set `socketPath` to the absolute file path of your rTorrent socket. Make sure Flood has read/write access. Specify the socket path in `.rtorrent.rc`. Example: `scgi_local = /Users/flood/rtorrent.sock`
   * If you wish to access an rTorrent instance running on a separate host from Flood (or in a Docker container), allow for incoming connections from external IPs by setting the host in `scgi_port` to `0.0.0.0` in `.rtorrent.rc`. Example: `scgi_port = 0.0.0.0:5000`
 3. Create a long, unique secret (used to sign [JWT auth tokens](https://github.com/auth0/node-jsonwebtoken)) in `config.js`.
@@ -83,9 +84,9 @@ If you have a specific issue or bug, please file a Github issue. If you want to 
 3. Other supported environment variables:
   * `FLOOD_BASE_URI`
   * `FLOOD_SECRET`
-  * `RTORRENT_SCGI_HOST`
-  * `RTORRENT_SCGI_PORT`
-  * `RTORRENT_SOCK`
+  * ~~`RTORRENT_SCGI_HOST`~~
+  * ~~`RTORRENT_SCGI_PORT`~~
+  * ~~`RTORRENT_SOCK`~~
   * `FLOOD_ENABLE_SSL`
 
 The docker container includes a volume at `/data`, which is where the database will be located.  Additionally, you can place your SSL files there, `/data/flood_ssl.key` and `/data/flood_ssl.cert`. Set `FLOOD_ENABLE_SSL` to `true` to enable their use if present. Additionally, a local rtorrent socket file located at `/data/rtorrent.sock` can be used if `RTORRENT_SOCK` is set to `true`.

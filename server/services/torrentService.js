@@ -1,23 +1,26 @@
 const deepEqual = require('deep-equal');
 const EventEmitter = require('events');
 
-const clientRequestService = require('./clientRequestService.js');
+const clientRequestService = require('./clientRequestService');
 const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
-const config = require('../../config.js');
+const config = require('../../config');
 const formatUtil = require('../../shared/util/formatUtil');
 const methodCallUtil = require('../util/methodCallUtil');
-const notificationService = require('./notificationService.js');
+const ServicesHandler = require('./servicesHandler');
 const serverEventTypes = require('../../shared/constants/serverEventTypes');
 const torrentListPropMap = require('../constants/torrentListPropMap');
-const torrentServiceEvents = require('../constants/torrentServiceEvents.js');
+const torrentServiceEvents = require('../constants/torrentServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 const torrentListMethodCallConfig = methodCallUtil
   .getMethodCallConfigFromPropMap(torrentListPropMap);
 
 class TorrentService extends EventEmitter {
-  constructor() {
-    super(...arguments);
+  constructor(userId, ...args) {
+    super(...args);
+
+    this.userId = userId;
+    this.enableDefer = false;
 
     this.errorCount = 0;
     this.pollTimeout = null;
@@ -51,8 +54,6 @@ class TorrentService extends EventEmitter {
       clientRequestServiceEvents.TORRENTS_REMOVED,
       this.handleTorrentsRemoved
     );
-
-    this.fetchTorrentList();
   }
 
   assignDeletedTorrentsToDiff(diff, nextTorrentListSummary, options = {}) {
@@ -99,7 +100,15 @@ class TorrentService extends EventEmitter {
   deferFetchTorrentList(
     interval = (config.torrentClientPollInterval || 2000)
   ) {
-    this.pollTimeout = setTimeout(this.fetchTorrentList, interval);
+    if (!this.enableDefer) {
+      return;
+    }
+
+    this.pollTimeout = setTimeout(this.fetchTorrentList.bind(this), interval);
+  }
+
+  setEnableDefer(flag) {
+    this.enableDefer = flag;
   }
 
   fetchTorrentList() {
@@ -107,8 +116,8 @@ class TorrentService extends EventEmitter {
       clearTimeout(this.pollTimeout);
     }
 
-    clientRequestService
-      .fetchTorrentList(torrentListMethodCallConfig)
+    return clientRequestService
+      .fetchTorrentList(this.userId, torrentListMethodCallConfig)
       .then(this.handleFetchTorrentListSuccess.bind(this))
       .catch(this.handleFetchTorrentListError.bind(this));
   }
@@ -255,7 +264,7 @@ class TorrentService extends EventEmitter {
     return diff;
   }
 
-  handleFetchTorrentListError() {
+  handleFetchTorrentListError(error) {
     let nextInterval = config.torrentClientPollInterval || 2000;
 
     // If more than consecutive errors have occurred, then we delay the next
@@ -273,12 +282,15 @@ class TorrentService extends EventEmitter {
   }
 
   getTorrentListSummary() {
+    if (!this.torrentListSummary) {
+      this.torrentListSummary = {torrents: {}};
+    }
+
     return this.torrentListSummary;
   }
 
   handleFetchTorrentListSuccess(nextTorrentListSummary) {
     const diff = this.getTorrentListDiff(nextTorrentListSummary);
-
     if (Object.keys(diff).length > 0) {
       this.emit(
         torrentServiceEvents.TORRENT_LIST_DIFF_CHANGE,
@@ -294,12 +306,17 @@ class TorrentService extends EventEmitter {
     this.emit(torrentServiceEvents.FETCH_TORRENT_LIST_SUCCESS);
   }
 
-  handleTorrentProcessed(nextTorrentDetails) {
+  handleTorrentProcessed(userId, nextTorrentDetails) {
+    if (userId !== this.userId) {
+      return;
+    }
+
     const prevTorrentDetails = (
       this.torrentListSummary.torrents[nextTorrentDetails.hash]
     );
 
     if (this.hasTorrentFinished(prevTorrentDetails, nextTorrentDetails)) {
+      const notificationService = ServicesHandler.getNotificationService(this.userId);
       notificationService.addNotification({
         id: 'notification.torrent.finished',
         data: {name: nextTorrentDetails.name}
@@ -317,9 +334,13 @@ class TorrentService extends EventEmitter {
     );
   }
 
-  handleTorrentsRemoved() {
+  handleTorrentsRemoved(userId) {
+    if (userId !== this.userId) {
+      return;
+    }
+
     this.fetchTorrentList();
   }
 }
 
-module.exports = new TorrentService();
+module.exports = TorrentService;

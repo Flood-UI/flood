@@ -4,6 +4,7 @@ let extractJWT = require('passport-jwt').ExtractJwt;
 let jwtStrategy = require('passport-jwt').Strategy;
 
 let config = require('../../config');
+let rTorrentUserData = require('../models/rTorrentUserData');
 let Users = require('../models/Users');
 
 // Setup work and export for the JWT passport strategy.
@@ -28,6 +29,15 @@ module.exports = (passport) => {
       }
 
       if (user) {
+        rTorrentUserData.addrTorrentData(user._id,
+          {
+            socket: user.socket,
+            socketPath: user.socketPath,
+            port: user.port,
+            host: user.host,
+            isAdmin: user.isAdmin
+          });
+
         return callback(null, user);
       }
 

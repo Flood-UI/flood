@@ -1,4 +1,5 @@
 'use strict';
+
 const EventEmitter = require('events');
 const path = require('path');
 const rimraf = require('rimraf');
@@ -18,7 +19,7 @@ class ClientRequestService extends EventEmitter {
   constructor() {
     super(...arguments);
 
-    this.torrentListReducers = [];
+    this.torrentListReducers = new Set();
   }
 
   /**
@@ -40,10 +41,12 @@ class ClientRequestService extends EventEmitter {
       throw new Error('reducer.reduce must be a function.');
     }
 
-    this.torrentListReducers.push(reducer);
+    if (!this.torrentListReducers.has(reducer)) {
+      this.torrentListReducers.add(reducer);
+    }
   }
 
-  removeTorrents(options = {hashes: [], deleteData: false}) {
+  removeTorrents(userId, options = {hashes: [], deleteData: false}) {
     const methodCalls = options.hashes.reduce(
       (accumulator, hash, index) => {
         let eraseFileMethodCallIndex = index;
@@ -80,7 +83,7 @@ class ClientRequestService extends EventEmitter {
     );
 
     return scgi
-      .methodCall('system.multicall', [methodCalls])
+      .methodCall(userId, 'system.multicall', [methodCalls])
       .then((response) => {
         if (options.deleteData) {
           const torrentCount = options.hashes.length;
@@ -121,7 +124,7 @@ class ClientRequestService extends EventEmitter {
           });
         }
 
-        this.emit(clientRequestServiceEvents.TORRENTS_REMOVED, options);
+        this.emit(clientRequestServiceEvents.TORRENTS_REMOVED, userId, options);
 
         return response;
       })
@@ -131,6 +134,7 @@ class ClientRequestService extends EventEmitter {
   /**
    * Sends a multicall request to rTorrent with the requested method calls.
    *
+   * @param  {String} userId - The user id for the request method calls
    * @param  {Object} options - An object of options...
    * @param  {Array} options.methodCalls - An array of strings representing
    *   method calls, which the client uses to retrieve details.
@@ -142,22 +146,22 @@ class ClientRequestService extends EventEmitter {
    * @return {Promise} - Resolves with the processed client response or rejects
    *   with the processed client error.
    */
-  fetchTorrentList(options) {
+  fetchTorrentList(userId, options) {
     return scgi
-      .methodCall('d.multicall2', ['', 'main'].concat(options.methodCalls))
-      .then(torrents => this.processTorrentListResponse(torrents, options))
+      .methodCall(userId, 'd.multicall2', ['', 'main'].concat(options.methodCalls))
+      .then(torrents => this.processTorrentListResponse(userId, torrents, options))
       .catch(clientError => this.processClientError(clientError));
   }
 
-  fetchTransferSummary(options) {
+  fetchTransferSummary(userId, options) {
     const methodCalls = options.methodCalls.map(methodName => {
       return {methodName, params: []};
     });
 
     return scgi
-      .methodCall('system.multicall', [methodCalls])
+      .methodCall(userId, 'system.multicall', [methodCalls])
       .then(transferRate => {
-        return this.processTransferRateResponse(transferRate, options);
+        return this.processTransferRateResponse(userId, transferRate, options);
       })
       .catch(clientError => {
         return this.processClientError(clientError);
@@ -182,8 +186,8 @@ class ClientRequestService extends EventEmitter {
    * @return {Object} - An object that represents all torrents with hashes as
    *   keys, each value being an object of detail labels and values.
    */
-  processTorrentListResponse(torrentList, options) {
-    this.emit(clientRequestServiceEvents.PROCESS_TORRENT_LIST_START);
+  processTorrentListResponse(userId, torrentList, options) {
+    this.emit(clientRequestServiceEvents.PROCESS_TORRENT_LIST_START, userId);
 
     // We map the array of details to objects with sensibly named keys. We want
     // to return an object with torrent hashes as keys and an object of torrent
@@ -217,6 +221,7 @@ class ClientRequestService extends EventEmitter {
 
         this.emit(
           clientRequestServiceEvents.PROCESS_TORRENT,
+          userId,
           processedTorrentDetailValues
         );
 
@@ -232,14 +237,15 @@ class ClientRequestService extends EventEmitter {
 
     this.emit(
       clientRequestServiceEvents.PROCESS_TORRENT_LIST_END,
+      userId,
       processedTorrentList
     );
 
     return processedTorrentList;
   }
 
-  processTransferRateResponse(transferRate = [], options) {
-    this.emit(clientRequestServiceEvents.PROCESS_TRANSFER_RATE_START);
+  processTransferRateResponse(userId, transferRate = [], options) {
+    this.emit(clientRequestServiceEvents.PROCESS_TRANSFER_RATE_START, userId);
 
     return transferRate.reduce(
       (accumulator, value, index) => {
