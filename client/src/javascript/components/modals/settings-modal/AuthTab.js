@@ -81,7 +81,7 @@ class AuthTab extends SettingsTab {
         removeIcon = (
           <span className="interactive-list__icon
             interactive-list__icon--action interactive-list__icon--action--warning"
-            onClick={this.handleDeleteUserClick.bind(this, user.username)}>
+                onClick={this.handleDeleteUserClick.bind(this, user.username)}>
             <Close />
           </span>
         );
@@ -134,7 +134,10 @@ class AuthTab extends SettingsTab {
       this.setState({isAddingUser: true});
       AuthStore.createUser({
         username: this.formData.username,
-        password: this.formData.password
+        password: this.formData.password,
+        host: this.formData.rtorrentHost,
+        port: this.formData.rtorrentPort,
+        socketPath: this.formData.rtorrentSocketPath
       });
     }
   };
@@ -251,6 +254,49 @@ class AuthTab extends SettingsTab {
               defaultMessage="Add"
             />
           </Button>
+        </FormRow>
+        <FormRow>
+          <Textbox
+            id="rtorrentHost"
+            label={(
+              <FormattedMessage
+                id="auth.rtorrentHost"
+                defaultMessage="rTorrent Host"
+              />
+            )}
+            placeholder={this.props.intl.formatMessage({
+              id: 'auth.rtorrentHost',
+              defaultMessage: 'rTorrent Host'
+            })}
+          />
+          <Textbox
+            id="rtorrentPort"
+            label={(
+              <FormattedMessage
+                id="auth.rtorrentPort"
+                defaultMessage="rTorrent Port"
+              />
+            )}
+            placeholder={this.props.intl.formatMessage({
+              id: 'auth.rtorrentPort',
+              defaultMessage: 'rTorrent Port'
+            })}
+          />
+        </FormRow>
+        <FormRow>
+          <Textbox
+            id="rtorrentSocketPath"
+            label={(
+              <FormattedMessage
+                id="auth.rtorrentSocketPath"
+                defaultMessage="rTorrent Socket"
+              />
+            )}
+            placeholder={this.props.intl.formatMessage({
+              id: 'auth.rtorrentSocketPath',
+              defaultMessage: 'rTorrent Socket'
+            })}
+          />
         </FormRow>
       </Form>
     );

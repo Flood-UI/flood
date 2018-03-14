@@ -1,14 +1,16 @@
 const EventEmitter = require('events');
 
-const clientRequestService = require('./clientRequestService.js');
+const clientRequestService = require('./clientRequestService');
 const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
 const objectUtil = require('../../shared/util/objectUtil');
-const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents.js');
+const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 class TaxonomyService extends EventEmitter {
-  constructor() {
-    super(...arguments);
+  constructor(userId, ...args) {
+    super(...args);
+
+    this.userId = userId;
 
     this.lastStatusCounts = {all: 0};
     this.lastTagCounts = {all: 0};
@@ -49,7 +51,11 @@ class TaxonomyService extends EventEmitter {
     };
   }
 
-  handleProcessTorrentListStart() {
+  handleProcessTorrentListStart(userId) {
+    if (userId !== this.userId) {
+      return;
+    }
+
     this.lastStatusCounts = Object.assign({}, this.statusCounts);
     this.lastTagCounts = Object.assign({}, this.tagCounts);
     this.lastTrackerCounts = Object.assign({}, this.trackerCounts);
@@ -63,7 +69,11 @@ class TaxonomyService extends EventEmitter {
     this.trackerCounts = {all: 0};
   }
 
-  handleProcessTorrentListEnd(torrentList) {
+  handleProcessTorrentListEnd(userId, torrentList) {
+    if (userId !== this.userId) {
+      return;
+    }
+
     const {length = 0} = torrentList;
 
     this.statusCounts.all = length;
@@ -100,7 +110,11 @@ class TaxonomyService extends EventEmitter {
     }
   }
 
-  handleProcessTorrent(torrentDetails) {
+  handleProcessTorrent(userId, torrentDetails) {
+    if (userId !== this.userId) {
+      return;
+    }
+
     this.incrementStatusCounts(torrentDetails.status);
     this.incrementTagCounts(torrentDetails.tags);
     this.incrementTrackerCounts(torrentDetails.trackerURIs);
@@ -137,4 +151,4 @@ class TaxonomyService extends EventEmitter {
   }
 }
 
-module.exports = new TaxonomyService();
+module.exports = TaxonomyService;
