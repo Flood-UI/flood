@@ -32,17 +32,21 @@ const setAuthToken = (res, username) => {
   return res.json({success: true, token: `JWT ${token}`, username});
 };
 
-const schema = joi.object().keys({
+const authValidation = joi.object().keys({
   username: joi.string(),
-  password: joi.string()
+  password: joi.string(),
+  host: joi.string(),
+  port: joi.string(),
+  socketPath: joi.string()
 });
 
 router.use('/', (req, res, next) => {
-  const validation = joi.validate(req.body, schema);
+  const validation = joi.validate(req.body, authValidation);
 
   if (!validation.error) {
     next();
   } else {
+
     res.status(422).json({
       message: 'Validation error.'
     });
@@ -77,9 +81,6 @@ router.use('/register', (req, res, next) => {
       next();
     },
     handleSubsequentUser: () => {
-      // This works:
-      // passport.authenticate('jwt', {session: false})(req, res, next);
-
       passport.authenticate('jwt', {session: false}, (req, res, next) => {
         res.json({username: req.username});
       });

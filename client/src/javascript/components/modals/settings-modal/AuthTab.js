@@ -8,6 +8,7 @@ import AuthStore from '../../../stores/AuthStore';
 import Close from '../../icons/Close';
 import EventTypes from '../../../constants/EventTypes';
 import ModalFormSectionHeader from '../ModalFormSectionHeader';
+import RtorrentConnectionTypeSelection from '../../general/RtorrentConnectionTypeSelection';
 import SettingsTab from './SettingsTab';
 
 class AuthTab extends SettingsTab {
@@ -118,7 +119,7 @@ class AuthTab extends SettingsTab {
     AuthStore.deleteUser(username);
   }
 
-  handleFormChange = ({event, formData}) => {
+  handleFormChange = ({formData}) => {
     this.formData = formData;
   };
 
@@ -248,55 +249,15 @@ class AuthTab extends SettingsTab {
               defaultMessage: 'Password'
             })}
           />
-          <Button isLoading={this.state.isAddingUser} labelOffset priority="primary" type="submit" width="auto">
+        </FormRow>
+        <RtorrentConnectionTypeSelection />
+        <FormRow justify="end">
+          <Button isLoading={this.state.isAddingUser} priority="primary" type="submit" width="auto">
             <FormattedMessage
               id="button.add"
               defaultMessage="Add"
             />
           </Button>
-        </FormRow>
-        <FormRow>
-          <Textbox
-            id="rtorrentHost"
-            label={(
-              <FormattedMessage
-                id="auth.rtorrentHost"
-                defaultMessage="rTorrent Host"
-              />
-            )}
-            placeholder={this.props.intl.formatMessage({
-              id: 'auth.rtorrentHost',
-              defaultMessage: 'rTorrent Host'
-            })}
-          />
-          <Textbox
-            id="rtorrentPort"
-            label={(
-              <FormattedMessage
-                id="auth.rtorrentPort"
-                defaultMessage="rTorrent Port"
-              />
-            )}
-            placeholder={this.props.intl.formatMessage({
-              id: 'auth.rtorrentPort',
-              defaultMessage: 'rTorrent Port'
-            })}
-          />
-        </FormRow>
-        <FormRow>
-          <Textbox
-            id="rtorrentSocketPath"
-            label={(
-              <FormattedMessage
-                id="auth.rtorrentSocketPath"
-                defaultMessage="rTorrent Socket"
-              />
-            )}
-            placeholder={this.props.intl.formatMessage({
-              id: 'auth.rtorrentSocketPath',
-              defaultMessage: 'rTorrent Socket'
-            })}
-          />
         </FormRow>
       </Form>
     );
