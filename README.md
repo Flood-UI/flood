@@ -2,7 +2,7 @@
 
 ![Flood logo](flood.png)
 
-[![Build Status](https://travis-ci.org/jfurrow/flood.svg?branch=master)](https://travis-ci.org/jfurrow/flood) [![Talk about Flood on Slack](https://join-flood-talk.herokuapp.com/badge.svg)](https://join-flood-talk.herokuapp.com/)
+[![Travis CI build status badge](https://img.shields.io/travis/jfurrow/flood/master.svg?style=flat-square)](https://travis-ci.org/jfurrow/flood) [![Discord server badge](https://img.shields.io/discord/418267176873623553.svg?style=flat-square)](https://discord.gg/Z7yR5Uf)
 
 Flood is another web interface for [rtorrent](https://github.com/rakshasa/rtorrent). It implements a Node.js server for communicating with the rTorrent API, storing historical data, and serving the web UI.
 
@@ -10,7 +10,7 @@ It's a work-in-progress, and it might not have all of the features you want (yet
 
 #### Feedback
 
-If you have a specific issue or bug, please file a Github issue. If you want to participate in discussions about Flood's future, please join the [Flood Slack team](https://flood-talk.slack.com) ([get an instant invite first](https://join-flood-talk.herokuapp.com/)).
+If you have a specific issue or bug, please file a Github issue. If you want to participate in discussions about Flood's future, please join the [Flood Discord server](https://discord.gg/Z7yR5Uf).
 
 # Usage
 
