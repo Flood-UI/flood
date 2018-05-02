@@ -1,5 +1,4 @@
 'use strict';
-const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const fs = require('fs');
 const path = require('path');
 
