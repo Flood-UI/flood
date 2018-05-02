@@ -9,6 +9,7 @@ const userConfig = require('../../config');
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve('./paths')];
 
+/** @const */
 const NODE_ENV = process.env.NODE_ENV;
 if (!NODE_ENV) {
   throw new Error('The NODE_ENV environment variable is required but was not specified.');
@@ -32,7 +33,15 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
 
 // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
 // injected into the application via DefinePlugin in Webpack configuration.
+/** @constant
+ *  @type {object}
+ */
 const REACT_APP = /^REACT_APP_/i;
+/** @constant
+ *  @desc The environment type.
+ *  @type {String}
+ *  @default 'development'
+ */
 const environment = process.env.NODE_ENV || 'development';
 
 function getClientEnvironment() {

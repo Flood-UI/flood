@@ -39,7 +39,15 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
 
+/** @constant
+ *  @type {number}
+ *  @default 4200
+ */
 const DEFAULT_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 4200;
+/** @constant
+ *  @type {String}
+ *  @default '0.0.0.0'
+ */
 const HOST = process.env.DEV_SERVER_HOST || '0.0.0.0';
 
 // We attempt to use the default port but if it is busy, we offer the user to

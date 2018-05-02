@@ -30,7 +30,15 @@ const measureFileSizesBeforeBuild =
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
 
 // These sizes are pretty large. We'll warn for bundles exceeding them.
+/** @constant
+ *  @type {number}
+ *  @default 524288
+ */
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
+/** @constant
+ *  @type {number}
+ *  @default 1048576
+ */
 const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 
 // Warn and crash if required files are missing
@@ -85,7 +93,12 @@ measureFileSizesBeforeBuild(paths.appBuild)
     }
   );
 
-// Create the production build and print the deployment instructions.
+/**
+ * Create the production build and print the deployment instructions.
+ * @param {number} previousFileSizes The previous file sizes
+ * @returns {to_complete} To complete.
+ * @requires webpack
+ */
 function build(previousFileSizes) {
   console.log('Creating an optimized production build...');
 
@@ -122,6 +135,9 @@ function build(previousFileSizes) {
   });
 }
 
+/**
+ * XXX
+ */
 function copyPublicFolder() {
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,

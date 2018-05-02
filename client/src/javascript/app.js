@@ -26,6 +26,7 @@ const appRoutes = (
     </Route>
   </Router>
 );
+/** @const */
 const METHODS_TO_BIND = ['handleSettingsChange'];
 
 class FloodApp extends React.Component {
