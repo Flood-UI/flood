@@ -1,6 +1,5 @@
 'use strict';
 
-let extractJWT = require('passport-jwt').ExtractJwt;
 let jwtStrategy = require('passport-jwt').Strategy;
 
 let config = require('../../config');
