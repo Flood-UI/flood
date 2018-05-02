@@ -1,7 +1,6 @@
 'use strict';
 
 let Datastore = require('nedb');
-let stringUtil = require('../../shared/util/stringUtil');
 
 let config = require('../../config');
 
