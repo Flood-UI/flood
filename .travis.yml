@@ -3,6 +3,7 @@ language: node_js
 node_js:
   - "8"
   - "9"
+  - "10"
 before_script:
   - cp config.template.js config.js
 script:
