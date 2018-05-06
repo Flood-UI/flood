@@ -16,8 +16,6 @@ $table--heading--resize--indicator--background: rgba(darken(#f6f8fA, 10%), 0.75)
   &__row {
 
     &--heading {
-      background: $table--heading--background;
-      box-shadow: 0 1px 0 $table--heading--border;
       color: $table--heading--color;
       display: flex;
       height: 24px;
@@ -29,7 +27,9 @@ $table--heading--resize--indicator--background: rgba(darken(#f6f8fA, 10%), 0.75)
 
   &__heading {
     align-items: center;
+    background: $table--heading--background;
     border-right: 1px solid $table--heading--border--horizontal;
+    box-shadow: 0 1px 0 $table--heading--border;
     cursor: pointer;
     display: flex;
     flex: 0 0 auto;

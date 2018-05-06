@@ -9,16 +9,23 @@ $torrents-list--alert--foreground: rgba(#8899a8, 0.5);
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
+  overflow: hidden;
   position: relative;
 
-  &__items {
+  &__list {
      flex: 1 1 100%;
+  }
+
+  &__grid {
+    outline: none;
   }
 
   &__heading {
     display: flex;
     flex: 0 0 auto;
     height: 20px;
+    transition: transform 50ms ease-out;
+    will-change: transform;
 
     &__cell {
       flex: 0 0 auto;

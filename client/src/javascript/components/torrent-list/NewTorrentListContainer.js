@@ -1,4 +1,4 @@
-import {defaultCellRangeRenderer, AutoSizer, Grid, ScrollSync} from 'react-virtualized';
+import {AutoSizer, Grid} from 'react-virtualized';
 import {FormattedMessage, injectIntl} from 'react-intl';
 import React, {Component} from 'react';
 
@@ -21,27 +21,29 @@ const condensedValueTransformers = {
   },
   seeds: torrent => torrent.seedsConnected,
 };
-
 const condensedSecondaryValueTransformers = {
   peers: torrent => torrent.peersTotal,
   seeds: torrent => torrent.seedsTotal,
 };
-
-const defaultPropWidths = {
-  name: 200,
-  eta: 100,
-};
+const filterInvisibleProperties = properties => properties.filter(property => property.visible);
 
 class TorrentListContainer extends Component {
-  state = {
-    displayedProperties: SettingsStore.getFloodSettings('torrentDetails'),
-    torrentCount: TorrentStore.getTorrents().length,
-    torrents: TorrentStore.getTorrents(),
-    torrentListColumnWidths: SettingsStore.getFloodSettings('torrentListColumnWidths'),
-    torrentListViewSize: SettingsStore.getFloodSettings('torrentListViewSize'),
-    selectedTorrents: TorrentStore.getSelectedTorrents(),
-    selectedTorrentsKey: TorrentStore.getSelectedTorrents().join(),
-  };
+  rafId = null;
+
+  constructor(props) {
+    super(props);
+    const torrentProperties = SettingsStore.getFloodSettings('torrentDetails');
+    this.state = {
+      visibleProperties: filterInvisibleProperties(torrentProperties),
+      properties: torrentProperties,
+      torrentCount: TorrentStore.getTorrents().length,
+      torrents: TorrentStore.getTorrents(),
+      torrentListColumnWidths: SettingsStore.getFloodSettings('torrentListColumnWidths'),
+      torrentListViewSize: SettingsStore.getFloodSettings('torrentListViewSize'),
+      selectedTorrents: TorrentStore.getSelectedTorrents(),
+      selectedTorrentsKey: TorrentStore.getSelectedTorrents().join(),
+    };
+  }
 
   componentDidMount() {
     SettingsStore.listen(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
@@ -53,11 +55,12 @@ class TorrentListContainer extends Component {
     SettingsStore.unlisten(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
     TorrentStore.unlisten(EventTypes.CLIENT_TORRENTS_REQUEST_SUCCESS, this.handleTorrentRequestSuccess);
     TorrentStore.unlisten(EventTypes.UI_TORRENT_SELECTION_CHANGE, this.handleTorrentSelectionChange);
+    global.cancelAnimationFrame(this.rafId);
   }
 
   cellRenderer = ({columnIndex, key, rowIndex, style}) => {
     const torrent = this.state.torrents[rowIndex];
-    const displayedProp = this.state.displayedProperties[columnIndex];
+    const displayedProp = this.state.visibleProperties[columnIndex];
     const propId = displayedProp.id;
 
     let value = torrent[propId];
@@ -89,7 +92,7 @@ class TorrentListContainer extends Component {
   };
 
   headingCellRenderer = ({columnIndex, key, rowIndex, style}) => {
-    const {id} = this.state.displayedProperties[columnIndex];
+    const {id} = this.state.visibleProperties[columnIndex];
 
     return (
       <div className="torrent-list__heading__cell" key={key} style={style}>
@@ -121,7 +124,7 @@ class TorrentListContainer extends Component {
   }
 
   getColumnWidthByIndex = ({index}) => {
-    const displayedProp = this.state.displayedProperties[index].id;
+    const displayedProp = this.state.properties[index].id;
     return this.state.torrentListColumnWidths[displayedProp] || 100;
   };
 
@@ -130,8 +133,10 @@ class TorrentListContainer extends Component {
   }
 
   handleSettingsChange = () => {
+    const torrentProperties = SettingsStore.getFloodSettings('torrentDetails');
     this.setState({
-      displayedProperties: SettingsStore.getFloodSettings('torrentDetails'),
+      visibleProperties: filterInvisibleProperties(torrentProperties),
+      properties: torrentProperties,
       torrentListColumnWidths: SettingsStore.getFloodSettings('torrentListColumnWidths'),
       torrentListViewSize: SettingsStore.getFloodSettings('torrentListViewSize'),
     });
@@ -146,75 +151,49 @@ class TorrentListContainer extends Component {
     UIActions.handleTorrentClick({hash: elementWithHashData.dataset.hash, event});
   };
 
-  renderCellRange = (props) => {
-    const {verticalOffsetAdjustment} = props;
-    if (verticalOffsetAdjustment != null) {
-      props.verticalOffsetAdjustment = 30;
-    }
-
-    const children = defaultCellRangeRenderer(props);
-    children.unshift(this.renderTorrentListHeadings());
-    return children;
-  };
-
-  // TODO: Remove the ScrollSync component and this header element
-  renderTorrentListHeadings = () => {
-    const headingItems = this.state.displayedProperties.map(({id}, index) => {
-      return (
-        <div className="torrent-list__heading__cell" key={id} style={{width: this.getColumnWidthByIndex({index})}}>
-          <FormattedMessage
-            id={TorrentProperties[id].id}
-            defaultMessage={TorrentProperties[id].defaultMessage} />
-        </div>
-      );
+  handleGridScroll = (scrollEvent) => {
+    this.rafId = global.requestAnimationFrame(() => {
+      this.headerRef.style.transform = `translateX(${scrollEvent.scrollLeft * -1}px)`;
     });
-
-    return (
-      <div className="torrent-list__heading">
-        {headingItems}
-      </div>
-    );
   };
 
-  doSomeShit = (width) => {
-    console.log(width);
-  };
-
-  handleScroll = event => {
-    this.setState({scrollLeft: event.target.scrollLeft, scrollTop: event.target.scrollTop});
+  setHeaderRef = ref => {
+    this.headerRef = ref;
   };
 
   render() {
-    // TODO: Re-enable nice header rendering but not fixed behavior, add this in Grid:
-    // cellRangeRenderer={this.renderCellRange}
     return (
-      <AutoSizer>
-        {({ height, width }) => (
-          <div style={{width, overflow: 'scroll'}} onScroll={this.handleScroll}>
-            {this.doSomeShit(width)}
-            <NewTableHeader
-              {...this.props}
-              displayedProperties={this.state.displayedProperties}
-              getColumnWidthByIndex={this.getColumnWidthByIndex}
-              sortProp={TorrentFilterStore.getTorrentsSort()} />
-            <Grid
-              cellRenderer={this.cellRenderer}
-              selectedTorrentsKey={this.state.selectedTorrentsKey}
-              columnWidth={this.getColumnWidthByIndex}
-              columnCount={this.state.displayedProperties.length}
-              height={height}
-              noContentRenderer={this.noContentRenderer}
-              overscanColumnCount={1}
-              overscanRowCount={1}
-              rowHeight={this.getRowHeight}
-              rowCount={this.state.torrentCount}
-              scrollLeft={this.state.scrollLeft}
-              scrollTop={this.state.scrollTop}
-              width={width}
-            />
-          </div>
-        )}
-      </AutoSizer>
+      <div className="torrent-list">
+        <NewTableHeader
+          {...this.props}
+          visibleProperties={this.state.visibleProperties}
+          getColumnWidthByIndex={this.getColumnWidthByIndex}
+          setRef={this.setHeaderRef}
+          sortProp={TorrentFilterStore.getTorrentsSort()} />
+        <div className="torrent-list__list" onClick={this.handleTorrentListClick}>
+          <AutoSizer>
+            {({ height, width }) => (
+              <Grid
+                cellRenderer={this.cellRenderer}
+                className="torrent-list__grid"
+                selectedTorrentsKey={this.state.selectedTorrentsKey}
+                columnWidth={this.getColumnWidthByIndex}
+                columnCount={this.state.visibleProperties.length}
+                height={height}
+                noContentRenderer={this.noContentRenderer}
+                onScroll={this.handleGridScroll}
+                overscanColumnCount={1}
+                overscanRowCount={1}
+                rowHeight={this.getRowHeight}
+                rowCount={this.state.torrentCount}
+                scrollLeft={this.state.scrollLeft}
+                scrollTop={this.state.scrollTop}
+                width={width}
+              />
+            )}
+          </AutoSizer>
+        </div>
+      </div>
     );
   }
 }
