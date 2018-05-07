@@ -7,7 +7,7 @@ node_js:
 matrix:
   fast_finish: true
   allow_failures:
-  - node: 10
+  - node_js: 10
 before_script:
   - cp config.template.js config.js
 script:
