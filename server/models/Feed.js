@@ -3,8 +3,7 @@
 let FeedSub = require('feedsub');
 
 class Feed {
-  constructor(userId, options) {
-    this.userId = userId;
+  constructor(options) {
     this.options = options || {};
     this.options.maxItemHistory = options.maxItemHistory || 100;
     this.items = [];
@@ -39,7 +38,7 @@ class Feed {
 
     this.items = this.items.concat(items);
 
-    this.options.onNewItems(this.userId, {feed: this.options, items});
+    this.options.onNewItems({feed: this.options, items});
   }
 
   initReader() {

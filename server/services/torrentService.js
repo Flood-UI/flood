@@ -1,12 +1,10 @@
 const deepEqual = require('deep-equal');
 const EventEmitter = require('events');
 
-const clientRequestService = require('./clientRequestService');
 const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
 const config = require('../../config');
 const formatUtil = require('../../shared/util/formatUtil');
 const methodCallUtil = require('../util/methodCallUtil');
-const ServicesHandler = require('./servicesHandler');
 const serverEventTypes = require('../../shared/constants/serverEventTypes');
 const torrentListPropMap = require('../constants/torrentListPropMap');
 const torrentServiceEvents = require('../constants/torrentServiceEvents');
@@ -16,11 +14,13 @@ const torrentListMethodCallConfig = methodCallUtil
   .getMethodCallConfigFromPropMap(torrentListPropMap);
 
 class TorrentService extends EventEmitter {
-  constructor(userId, ...args) {
+  constructor(user, services, ...args) {
     super(...args);
 
-    this.userId = userId;
-    this.enableDefer = false;
+    if (!user || !user._id) throw new Error(`Missing user ID in TorrentService`);
+
+    this.services = services;
+    this.user = user;
 
     this.errorCount = 0;
     this.pollTimeout = null;
@@ -29,6 +29,10 @@ class TorrentService extends EventEmitter {
     this.fetchTorrentList = this.fetchTorrentList.bind(this);
     this.handleTorrentProcessed = this.handleTorrentProcessed.bind(this);
     this.handleTorrentsRemoved = this.handleTorrentsRemoved.bind(this);
+    this.handleFetchTorrentListSuccess = this.handleFetchTorrentListSuccess.bind(this);
+    this.handleFetchTorrentListError = this.handleFetchTorrentListError.bind(this);
+
+    const clientRequestService = this.services.clientRequestService;
 
     clientRequestService.addTorrentListReducer({
       key: 'status',
@@ -54,6 +58,8 @@ class TorrentService extends EventEmitter {
       clientRequestServiceEvents.TORRENTS_REMOVED,
       this.handleTorrentsRemoved
     );
+
+    this.fetchTorrentList();
   }
 
   assignDeletedTorrentsToDiff(diff, nextTorrentListSummary, options = {}) {
@@ -100,15 +106,11 @@ class TorrentService extends EventEmitter {
   deferFetchTorrentList(
     interval = (config.torrentClientPollInterval || 2000)
   ) {
-    if (!this.enableDefer) {
-      return;
-    }
-
-    this.pollTimeout = setTimeout(this.fetchTorrentList.bind(this), interval);
+    this.pollTimeout = setTimeout(this.fetchTorrentList, interval);
   }
 
-  setEnableDefer(flag) {
-    this.enableDefer = flag;
+  destroy() {
+    clearTimeout(this.pollTimeout);
   }
 
   fetchTorrentList() {
@@ -116,10 +118,10 @@ class TorrentService extends EventEmitter {
       clearTimeout(this.pollTimeout);
     }
 
-    return clientRequestService
-      .fetchTorrentList(this.userId, torrentListMethodCallConfig)
-      .then(this.handleFetchTorrentListSuccess.bind(this))
-      .catch(this.handleFetchTorrentListError.bind(this));
+    return this.services.clientRequestService
+      .fetchTorrentList(torrentListMethodCallConfig)
+      .then(this.handleFetchTorrentListSuccess)
+      .catch(this.handleFetchTorrentListError);
   }
 
   getTorrentETAFromDetails(torrentDetails) {
@@ -264,7 +266,7 @@ class TorrentService extends EventEmitter {
     return diff;
   }
 
-  handleFetchTorrentListError(error) {
+  handleFetchTorrentListError() {
     let nextInterval = config.torrentClientPollInterval || 2000;
 
     // If more than consecutive errors have occurred, then we delay the next
@@ -282,10 +284,6 @@ class TorrentService extends EventEmitter {
   }
 
   getTorrentListSummary() {
-    if (!this.torrentListSummary) {
-      this.torrentListSummary = {torrents: {}};
-    }
-
     return this.torrentListSummary;
   }
 
@@ -306,18 +304,13 @@ class TorrentService extends EventEmitter {
     this.emit(torrentServiceEvents.FETCH_TORRENT_LIST_SUCCESS);
   }
 
-  handleTorrentProcessed(userId, nextTorrentDetails) {
-    if (userId !== this.userId) {
-      return;
-    }
-
+  handleTorrentProcessed(nextTorrentDetails) {
     const prevTorrentDetails = (
       this.torrentListSummary.torrents[nextTorrentDetails.hash]
     );
 
     if (this.hasTorrentFinished(prevTorrentDetails, nextTorrentDetails)) {
-      const notificationService = ServicesHandler.getNotificationService(this.userId);
-      notificationService.addNotification({
+      this.services.notificationService.addNotification({
         id: 'notification.torrent.finished',
         data: {name: nextTorrentDetails.name}
       });
@@ -334,11 +327,7 @@ class TorrentService extends EventEmitter {
     );
   }
 
-  handleTorrentsRemoved(userId) {
-    if (userId !== this.userId) {
-      return;
-    }
-
+  handleTorrentsRemoved() {
     this.fetchTorrentList();
   }
 }

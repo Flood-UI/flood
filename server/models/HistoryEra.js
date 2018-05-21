@@ -1,21 +1,15 @@
-'use strict';
+const Datastore = require('nedb');
+const path = require('path');
 
-let Datastore = require('nedb');
-
-let config = require('../../config');
+const config = require('../../config');
 
 const MAX_NEXT_ERA_UPDATE_INTERVAL = 1000 * 60 * 60 * 12; // 12 hours
 const CUMULATIVE_DATA_BUFFER_DIFF = 500; // 500 miliseconds
 const REQUIRED_FIELDS = ['interval', 'maxTime', 'name'];
 
 class HistoryEra {
-  constructor(userId, opts) {
+  constructor(user, opts) {
     opts = opts || {};
-
-    this.userId = userId;
-    opts = opts || {};
-
-    this.ready = false;
 
     if (!this.hasRequiredFields(opts)) {
       return;
@@ -23,9 +17,11 @@ class HistoryEra {
 
     this.data = [];
     this.opts = opts;
+    this.ready = false;
+    this.user = user;
     this.startedAt = Date.now();
+    this.db = this.loadDatabase(this.opts.name);
 
-    this.db = this.loadDatabase(this.userId, this.opts.name);
     this.setLastUpdate(this.db);
     this.removeOutdatedData(this.db);
 
@@ -47,12 +43,10 @@ class HistoryEra {
     this.startAutoCleanup(cleanupInterval, this.db);
   }
 
-  loadDatabase(userId, dbName) {
-    let dbPath = `${config.dbPath}${userId}/`;
-
-    let db = new Datastore({
+  loadDatabase(dbName) {
+    const db = new Datastore({
       autoload: true,
-      filename: `${dbPath}history/${dbName}.db`
+      filename: path.join(config.dbPath, this.user._id, 'history', `${dbName}.db`)
     });
 
     this.ready = true;

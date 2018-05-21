@@ -1,4 +1,3 @@
-'use strict';
 const ajaxUtil = require('../util/ajaxUtil');
 const express = require('express');
 const joi = require('joi');
@@ -7,7 +6,7 @@ const passport = require('passport');
 
 const config = require('../../config');
 const router = express.Router();
-const rTorrentUserData = require('../models/rTorrentUserData');
+const services = require('../services');
 const Users = require('../models/Users');
 
 const failedLoginResponse = 'Failed login.';
@@ -132,7 +131,6 @@ router.get('/verify', (req, res, next) => {
 router.use('/', passport.authenticate('jwt', {session: false}));
 
 router.get('/logout', (req, res) => {
-  rTorrentUserData.removerTorrentData(req.user._id);
   res.clearCookie('jwt').send();
 });
 
@@ -142,6 +140,7 @@ router.get('/users', (req, res, next) => {
 
 router.delete('/users/:username', (req, res, next) => {
   Users.removeUser(req.params.username, ajaxUtil.getResponseFn(res));
+  services.destroyUserServices(req.user);
 });
 
 router.put('/users', (req, res, next) => {
