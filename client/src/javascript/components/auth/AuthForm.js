@@ -3,6 +3,7 @@ import React from 'react';
 
 import AuthStore from '../../stores/AuthStore';
 import EventTypes from '../../constants/EventTypes';
+import RtorrentConnectionTypeSelection from '../general/RtorrentConnectionTypeSelection';
 
 import {
   Button,
@@ -117,16 +118,8 @@ class AuthForm extends React.Component {
       });
 
       registerFields = (
-        <PanelContent>
-          <FormRow>
-            <Textbox placeholder="rTorrent Host" id="rtorrentHost" />
-          </FormRow>
-          <FormRow>
-            <Textbox placeholder="rTorrent Port" id="rtorrentPort" />
-          </FormRow>
-          <FormRow>
-            <Textbox placeholder="rTorrent Socket" id="rtorrentSocketPath" />
-          </FormRow>
+        <PanelContent hasBorder={true}>
+          <RtorrentConnectionTypeSelection />
         </PanelContent>
       );
     }
@@ -157,9 +150,9 @@ class AuthForm extends React.Component {
               <FormRow>
                 <Textbox placeholder="Passsword" id="password" type="password" />
               </FormRow>
-              {registerFields}
             </PanelContent>
-            <PanelFooter>
+            {registerFields}
+            <PanelFooter hasBorder>
               <FormRow justify="end">
                 <Button children="Clear" priority="tertiary" onClick={() => this.formRef.resetForm()} />
                 <Button isLoading={this.state.isAuthStatusLoading} type="submit">
