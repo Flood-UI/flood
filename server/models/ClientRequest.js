@@ -1,5 +1,5 @@
 /**
- * This file is deprecated in favor of clientRequestService.
+ * This file is deprecated in favor of clientGatewayService.
  */
 const mkdirp = require('mkdirp');
 const mv = require('mv');

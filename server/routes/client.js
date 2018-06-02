@@ -69,7 +69,7 @@ router.post('/torrents/delete', function(req, res, next) {
   const {deleteData, hash: hashes} = req.body;
   const callback = ajaxUtil.getResponseFn(res);
 
-  req.services.clientRequestService
+  req.services.clientGatewayService
     .removeTorrents({hashes, deleteData})
     .then(callback)
     .catch((err) => {

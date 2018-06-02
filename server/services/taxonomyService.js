@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
 
-const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
+const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
 const objectUtil = require('../../shared/util/objectUtil');
 const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
@@ -26,39 +26,39 @@ class TaxonomyService extends EventEmitter {
     this.handleProcessTorrentListStart = this.handleProcessTorrentListStart.bind(this);
     this.handleProcessTorrentListEnd = this.handleProcessTorrentListEnd.bind(this);
 
-    const clientRequestService = this.services.clientRequestService;
+    const clientGatewayService = this.services.clientGatewayService;
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT_LIST_START,
+    clientGatewayService.on(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_START,
       this.handleProcessTorrentListStart
     );
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT_LIST_END,
+    clientGatewayService.on(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_END,
       this.handleProcessTorrentListEnd
     );
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT,
+    clientGatewayService.on(
+      clientGatewayServiceEvents.PROCESS_TORRENT,
       this.handleProcessTorrent
     );
   }
 
   destroy() {
-    const clientRequestService = this.services.clientRequestService;
+    const clientGatewayService = this.services.clientGatewayService;
 
-    clientRequestService.removeListener(
-      clientRequestServiceEvents.PROCESS_TORRENT_LIST_START,
+    clientGatewayService.removeListener(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_START,
       this.handleProcessTorrentListStart
     );
 
-    clientRequestService.removeListener(
-      clientRequestServiceEvents.PROCESS_TORRENT_LIST_END,
+    clientGatewayService.removeListener(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_END,
       this.handleProcessTorrentListEnd
     );
 
-    clientRequestService.removeListener(
-      clientRequestServiceEvents.PROCESS_TORRENT,
+    clientGatewayService.removeListener(
+      clientGatewayServiceEvents.PROCESS_TORRENT,
       this.handleProcessTorrent
     );
   }

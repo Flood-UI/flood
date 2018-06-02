@@ -45,7 +45,6 @@ router.use('/', (req, res, next) => {
   if (!validation.error) {
     next();
   } else {
-
     res.status(422).json({
       message: 'Validation error.'
     });

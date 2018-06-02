@@ -145,7 +145,7 @@ class HistoryService extends EventEmitter {
       clearTimeout(this.pollTimeout);
     }
 
-    this.services.clientRequestService
+    this.services.clientGatewayService
       .fetchTransferSummary(transferSummaryMethodCallConfig)
       .then(this.handleFetchTransferSummarySuccess.bind(this))
       .catch(this.handleFetchTransferSummaryError.bind(this));

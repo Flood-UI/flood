@@ -2,7 +2,7 @@ const EventEmitter = require('events');
 const path = require('path');
 const rimraf = require('rimraf');
 
-const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
+const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
 const fileListPropMap = require('../constants/fileListPropMap');
 const methodCallUtil = require('../util/methodCallUtil');
 
@@ -11,7 +11,7 @@ const fileListMethodCallConfig = methodCallUtil.getMethodCallConfigFromPropMap(
   ['pathComponents']
 );
 
-class ClientRequestService extends EventEmitter {
+class ClientGatewayService extends EventEmitter {
   constructor(user, services, ...args) {
     super(...args);
     this.services = services;
@@ -120,7 +120,7 @@ class ClientRequestService extends EventEmitter {
           });
         }
 
-        this.emit(clientRequestServiceEvents.TORRENTS_REMOVED);
+        this.emit(clientGatewayServiceEvents.TORRENTS_REMOVED);
 
         return response;
       })
@@ -180,7 +180,7 @@ class ClientRequestService extends EventEmitter {
    *   keys, each value being an object of detail labels and values.
    */
   processTorrentListResponse(torrentList, options) {
-    this.emit(clientRequestServiceEvents.PROCESS_TORRENT_LIST_START);
+    this.emit(clientGatewayServiceEvents.PROCESS_TORRENT_LIST_START);
 
     // We map the array of details to objects with sensibly named keys. We want
     // to return an object with torrent hashes as keys and an object of torrent
@@ -213,7 +213,7 @@ class ClientRequestService extends EventEmitter {
           processedTorrentDetailValues;
 
         this.emit(
-          clientRequestServiceEvents.PROCESS_TORRENT,
+          clientGatewayServiceEvents.PROCESS_TORRENT,
           processedTorrentDetailValues
         );
 
@@ -228,7 +228,7 @@ class ClientRequestService extends EventEmitter {
     processedTorrentList.id = Date.now();
 
     this.emit(
-      clientRequestServiceEvents.PROCESS_TORRENT_LIST_END,
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_END,
       processedTorrentList
     );
 
@@ -236,7 +236,7 @@ class ClientRequestService extends EventEmitter {
   }
 
   processTransferRateResponse(transferRate = [], options) {
-    this.emit(clientRequestServiceEvents.PROCESS_TRANSFER_RATE_START);
+    this.emit(clientGatewayServiceEvents.PROCESS_TRANSFER_RATE_START);
 
     return transferRate.reduce(
       (accumulator, value, index) => {
@@ -252,4 +252,4 @@ class ClientRequestService extends EventEmitter {
   }
 }
 
-module.exports = ClientRequestService;
+module.exports = ClientGatewayService;

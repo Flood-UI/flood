@@ -1,7 +1,7 @@
 const deepEqual = require('deep-equal');
 const EventEmitter = require('events');
 
-const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
+const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
 const config = require('../../config');
 const formatUtil = require('../../shared/util/formatUtil');
 const methodCallUtil = require('../util/methodCallUtil');
@@ -32,30 +32,30 @@ class TorrentService extends EventEmitter {
     this.handleFetchTorrentListSuccess = this.handleFetchTorrentListSuccess.bind(this);
     this.handleFetchTorrentListError = this.handleFetchTorrentListError.bind(this);
 
-    const clientRequestService = this.services.clientRequestService;
+    const clientGatewayService = this.services.clientGatewayService;
 
-    clientRequestService.addTorrentListReducer({
+    clientGatewayService.addTorrentListReducer({
       key: 'status',
       reduce: this.getTorrentStatusFromDetails
     });
 
-    clientRequestService.addTorrentListReducer({
+    clientGatewayService.addTorrentListReducer({
       key: 'percentComplete',
       reduce: this.getTorrentPercentCompleteFromDetails
     });
 
-    clientRequestService.addTorrentListReducer({
+    clientGatewayService.addTorrentListReducer({
       key: 'eta',
       reduce: this.getTorrentETAFromDetails
     });
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT,
+    clientGatewayService.on(
+      clientGatewayServiceEvents.PROCESS_TORRENT,
       this.handleTorrentProcessed
     );
 
-    clientRequestService.on(
-      clientRequestServiceEvents.TORRENTS_REMOVED,
+    clientGatewayService.on(
+      clientGatewayServiceEvents.TORRENTS_REMOVED,
       this.handleTorrentsRemoved
     );
 
@@ -118,7 +118,7 @@ class TorrentService extends EventEmitter {
       clearTimeout(this.pollTimeout);
     }
 
-    return this.services.clientRequestService
+    return this.services.clientGatewayService
       .fetchTorrentList(torrentListMethodCallConfig)
       .then(this.handleFetchTorrentListSuccess)
       .catch(this.handleFetchTorrentListError);

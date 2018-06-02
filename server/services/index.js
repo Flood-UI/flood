@@ -1,4 +1,4 @@
-const ClientRequestService = require('./clientRequestService');
+const ClientGatewayService = require('./clientGatewayService');
 const ClientRequestManager = require('./clientRequestManager');
 const FeedService = require('./feedService');
 const HistoryService = require('./historyService');
@@ -8,7 +8,7 @@ const TorrentService = require('./torrentService');
 const Users = require('../models/Users');
 
 const clientRequestManagers = new Map();
-const clientRequestServices = new Map();
+const clientGatewayServices = new Map();
 const feedServices = new Map();
 const historyServices = new Map();
 const notificationServices = new Map();
@@ -16,7 +16,7 @@ const taxonomyServices = new Map();
 const torrentServices = new Map();
 const allServiceMaps = [
   clientRequestManagers,
-  clientRequestServices,
+  clientGatewayServices,
   feedServices,
   historyServices,
   notificationServices,
@@ -38,8 +38,8 @@ const getClientRequestManager = user => {
   return getService({servicesMap: clientRequestManagers, service: ClientRequestManager, user});
 };
 
-const getClientRequestService = user => {
-  return getService({servicesMap: clientRequestServices, service: ClientRequestService, user});
+const getClientGatewayService = user => {
+  return getService({servicesMap: clientGatewayServices, service: ClientGatewayService, user});
 };
 
 const getFeedService = user => {
@@ -67,7 +67,7 @@ const bootstrapUserServices = () => {
     if (users && users.length) {
       users.forEach(user => {
         getClientRequestManager(user);
-        getClientRequestService(user);
+        getClientGatewayService(user);
         getFeedService(user);
         getHistoryService(user);
         getNotificationService(user);
@@ -96,8 +96,8 @@ const getAllServices = user => {
       return getClientRequestManager(user);
     },
 
-    get clientRequestService() {
-      return getClientRequestService(user);
+    get clientGatewayService() {
+      return getClientGatewayService(user);
     },
 
     get feedService() {
@@ -127,7 +127,7 @@ module.exports = {
   destroyUserServices,
   getAllServices,
   getClientRequestManager,
-  getClientRequestService,
+  getClientGatewayService,
   getHistoryService,
   getNotificationService,
   getTaxonomyService,
