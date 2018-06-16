@@ -1,25 +1,18 @@
-FROM node:7.8.0-alpine as nodebuild
+ARG NODE_IMAGE=node:10.1-alpine
+
+FROM ${NODE_IMAGE} as nodebuild
 
 # Generate node_modules.
 WORKDIR /tmp
 COPY package.json /tmp/package.json
 COPY package-lock.json /tmp/package-lock.json
-RUN apk --no-cache add python build-base
-RUN npm install
-
-# bcrypt needs to be rebuilt for musl
-RUN npm rebuild bcrypt --build-from-source
+RUN apk --no-cache add python build-base && \
+    npm install
 
 ################################################################################
-FROM node:7.8.0-alpine
 
-# Install runtime dependencies.
-RUN apk --no-cache \
-       --repository http://dl-cdn.alpinelinux.org/alpine/v3.7/community \
-       add mediainfo
+FROM ${NODE_IMAGE}
 
-# Create app working directory.
-RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Copy application files.
@@ -33,8 +26,11 @@ COPY shared /usr/src/app/shared
 # just environment variables.
 COPY config.docker.js /usr/src/app/config.js
 
-# Build static assets.
-RUN npm run build
+# Install runtime dependencies.
+RUN apk --no-cache add \
+       mediainfo \
+    && \
+    npm run build
 
 # Hints for consumers of the container.
 EXPOSE 3000
