@@ -1,4 +1,4 @@
-import {FormattedMessage, IntlProvider} from 'react-intl';
+import {IntlProvider} from 'react-intl';
 import {IndexRoute, Router, Route, browserHistory} from 'react-router';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -11,7 +11,6 @@ import Login from './components/views/Login';
 import Register from './components/views/Register';
 import SettingsStore from './stores/SettingsStore';
 import TorrentClientOverview from './components/views/TorrentClientOverview';
-import UIStore from './stores/UIStore';
 
 import '../sass/style.scss';
 
