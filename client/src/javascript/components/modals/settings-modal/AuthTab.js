@@ -80,9 +80,10 @@ class AuthTab extends SettingsTab {
 
       if (!isCurrentUser) {
         removeIcon = (
-          <span className="interactive-list__icon
-            interactive-list__icon--action interactive-list__icon--action--warning"
-                onClick={this.handleDeleteUserClick.bind(this, user.username)}>
+          <span
+            className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
+            onClick={this.handleDeleteUserClick.bind(this, user.username)}
+          >
             <Close />
           </span>
         );

@@ -2,10 +2,11 @@
 
 const _ = require('lodash');
 const Datastore = require('nedb');
+const path = require('path');
 
 const config = require('../../config');
 
-let settingsDB = {};
+const databases = new Map();
 
 const changedKeys = {
   downloadRate: 'downRate',
@@ -79,24 +80,25 @@ const transformLegacyKeys = settings => {
   return settings;
 };
 
-function getDb(userId) {
-  if (settingsDB[userId]) {
-    return settingsDB[userId];
+function getDb(user) {
+  const userId = user._id;
+
+  if (databases.has(userId)) {
+    return databases.get(userId);
   }
 
-  let dbPath = `${config.dbPath}${userId}/`;
-
-  settingsDB[userId] = new Datastore({
+  const database = new Datastore({
     autoload: true,
-    filename: `${dbPath}settings/settings.db`
+    filename: path.join(config.dbPath, userId, 'settings', 'settings.db')
   });
 
-  return settingsDB[userId];
+  databases.set(userId, database);
+
+  return database;
 };
 
-let settings = {
-
-  get: (userId, opts, callback) => {
+const settings = {
+  get: (user, opts, callback) => {
     let query = {};
     let settings = {};
 
@@ -104,7 +106,7 @@ let settings = {
       query.id = opts.property;
     }
 
-    getDb(userId).find(query).exec((err, docs) => {
+    getDb(user).find(query).exec((err, docs) => {
       if (err) {
         callback(null, err);
         return;
@@ -118,7 +120,7 @@ let settings = {
     });
   },
 
-  set: (userId, payloads, callback = _.noop) => {
+  set: (user, payloads, callback = _.noop) => {
     let docsResponse = [];
 
     if (!Array.isArray(payloads)) {
@@ -127,7 +129,7 @@ let settings = {
 
     if (payloads && payloads.length) {
       payloads.forEach((payload, index) => {
-        getDb(userId).update({id: payload.id}, {$set: {data: payload.data}}, {upsert: true}, (err, docs) => {
+        getDb(user).update({id: payload.id}, {$set: {data: payload.data}}, {upsert: true}, (err, docs) => {
           docsResponse.push(docs);
           if (index + 1 === payloads.length) {
             if (err) {
