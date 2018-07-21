@@ -175,8 +175,6 @@ class ClientGatewayService extends BaseService {
   }
 
   processClientRequestError(error) {
-    console.log(error);
-    console.log(this.user.username, this.user.port);
     if (!this.hasError) {
       this.hasError = true;
       this.emit(clientGatewayServiceEvents.CLIENT_CONNECTION_STATE_CHANGE);
