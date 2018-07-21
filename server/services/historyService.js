@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 
+const BaseService = require('./BaseService');
 const config = require('../../config');
 const HistoryEra = require('../models/HistoryEra');
 const historyServiceEvents = require('../constants/historyServiceEvents');
@@ -28,14 +29,10 @@ const processData = (opts, callback, data, error) => {
   }, {upload: [], download: [], timestamps: []}));
 };
 
-class HistoryService extends EventEmitter {
-  constructor(user, services, ...args) {
-    super(...args);
+class HistoryService extends BaseService {
+  constructor() {
+    super(...arguments);
 
-    if (!user || !user._id) throw new Error(`Missing user ID in HistoryService`);
-
-    this.services = services;
-    this.user = user;
     this.errorCount = 0;
     this.lastSnapshots = {};
     this.pollTimeout = null;
@@ -138,6 +135,10 @@ class HistoryService extends EventEmitter {
     interval = (config.torrentClientPollInterval || 2000)
   ) {
     this.pollTimeout = setTimeout(this.fetchCurrentTransferSummary, interval);
+  }
+
+  destroy() {
+    clearTimeout(this.pollTimeout);
   }
 
   fetchCurrentTransferSummary() {

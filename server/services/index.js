@@ -5,7 +5,6 @@ const HistoryService = require('./historyService');
 const NotificationService = require('./notificationService');
 const TaxonomyService = require('./taxonomyService');
 const TorrentService = require('./torrentService');
-const Users = require('../models/Users');
 
 const clientRequestManagers = new Map();
 const clientGatewayServices = new Map();
@@ -62,31 +61,24 @@ const getTorrentService = user => {
   return getService({servicesMap: torrentServices, service: TorrentService, user});
 };
 
-const bootstrapUserServices = () => {
-  Users.listUsers(users => {
-    if (users && users.length) {
-      users.forEach(user => {
-        getClientRequestManager(user);
-        getClientGatewayService(user);
-        getFeedService(user);
-        getHistoryService(user);
-        getNotificationService(user);
-        getTaxonomyService(user);
-        getTorrentService(user);
-      });
-    }
-  });
+const bootstrapServicesForUser = user => {
+  getClientRequestManager(user);
+  getClientGatewayService(user);
+  getFeedService(user);
+  getHistoryService(user);
+  getNotificationService(user);
+  getTaxonomyService(user);
+  getTorrentService(user);
 };
 
 const destroyUserServices = user => {
+  const userId = user._id;
   allServiceMaps.forEach(serviceMap => {
-    const currentService = serviceMap.get(user._id);
-
-    if (currentService && currentService.destroy) {
-      currentService.destroy();
+    const userService = serviceMap.get(userId);
+    if (userService != null) {
+      userService.destroy();
+      serviceMap.delete(userId);
     }
-
-    serviceMap.delete(user._id);
   });
 };
 
@@ -122,8 +114,19 @@ const getAllServices = user => {
   };
 };
 
+const updateUserServices = user => {
+  const userId = user._id;
+  allServiceMaps.forEach(serviceMap => {
+    const service = serviceMap.get(userId);
+    if (service != null) {
+      service.updateUser(user);
+      serviceMap.delete(userId);
+    }
+  });
+};
+
 module.exports = {
-  bootstrapUserServices,
+  bootstrapServicesForUser,
   destroyUserServices,
   getAllServices,
   getClientRequestManager,
@@ -131,5 +134,6 @@ module.exports = {
   getHistoryService,
   getNotificationService,
   getTaxonomyService,
-  getTorrentService
+  getTorrentService,
+  updateUserServices
 };
