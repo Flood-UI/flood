@@ -1,36 +1,34 @@
-'use strict';
-
 const _ = require('lodash');
+const path = require('path');
 const Datastore = require('nedb');
 
 const client = require('../models/client');
 const config = require('../../config');
 const Feed = require('../models/Feed');
-const ServicesHandler = require('./servicesHandler');
 
 class FeedService {
-  constructor() {
-    this.db = {};
-    this.feeds = {};
-    this.isDBReady = new Set();
-    this.rules = {};
+  constructor(user, services) {
+    if (!user || !user._id) throw new Error(`Missing user ID in FeedService`);
+
+    this.services = services;
+    this.user = user;
+    this.isDBReady = false;
+    this.db = this.loadDatabase();
+
+    this.init();
   }
 
-  addFeed(userId, feed, callback) {
-    this.addItem(userId, 'feed', feed, (newFeed) => {
-      this.startNewFeed(userId, newFeed);
+  addFeed(feed, callback) {
+    this.addItem('feed', feed, (newFeed) => {
+      this.startNewFeed(newFeed);
       callback(newFeed);
     });
   }
 
-  addItem(userId, type, item, callback) {
-    this.loadDatabase(userId);
+  addItem(type, item, callback) {
+    if (!this.isDBReady) return;
 
-    if (!this.isDBReady.has(userId)) {
-      return;
-    }
-
-    this.db[userId].insert(Object.assign(item, {type}), (err, newDoc) => {
+    this.db.insert(Object.assign(item, {type}), (err, newDoc) => {
       if (err) {
         callback(null, err);
         return;
@@ -40,8 +38,8 @@ class FeedService {
     });
   }
 
-  addRule(userId, rule, callback) {
-    this.addItem(userId, 'rule', rule, (newRule, error) => {
+  addRule(rule, callback) {
+    this.addItem('rule', rule, (newRule, error) => {
       if (error) {
         callback(null, error);
         return;
@@ -49,18 +47,18 @@ class FeedService {
 
       callback(newRule);
 
-      if (this.rules[userId][newRule.feedID] == null) {
-        this.rules[userId][newRule.feedID] = [];
+      if (this.rules[newRule.feedID] == null) {
+        this.rules[newRule.feedID] = [];
       }
 
-      this.rules[userId][newRule.feedID].push(newRule);
+      this.rules[newRule.feedID].push(newRule);
 
-      const associatedFeed = this.feeds[userId].find((feed) => {
+      const associatedFeed = this.feeds.find((feed) => {
         return feed.options._id === newRule.feedID;
       });
 
       if (associatedFeed) {
-        this.handleNewItems(userId, {
+        this.handleNewItems({
           feed: associatedFeed.options,
           items: associatedFeed.getItems()
         });
@@ -68,12 +66,10 @@ class FeedService {
     });
   }
 
-  getAll(userId, query, callback) {
-    this.loadDatabase(userId);
-
+  getAll(query, callback) {
     query = query || {};
 
-    this.db[userId].find({}, (err, docs) => {
+    this.db.find({}, (err, docs) => {
       if (err) {
         callback(null, err);
         return;
@@ -93,8 +89,8 @@ class FeedService {
     });
   }
 
-  getFeeds(userId, query, callback) {
-    this.queryItem(userId, 'feed', query, callback);
+  getFeeds(query, callback) {
+    this.queryItem('feed', query, callback);
   }
 
   getItemsMatchingRules(feedItems, rules, feed) {
@@ -132,9 +128,9 @@ class FeedService {
     );
   }
 
-  getPreviouslyMatchedUrls(userId) {
+  getPreviouslyMatchedUrls() {
     return new Promise((resolve, reject) => {
-      this.db[userId].find({type: 'matchedTorrents'}, (err, docs) => {
+      this.db.find({type: 'matchedTorrents'}, (err, docs) => {
         if (err) {
           reject(err);
         }
@@ -144,8 +140,8 @@ class FeedService {
     });
   }
 
-  getRules(userId, query, callback) {
-    this.queryItem(userId, 'rule', query, callback);
+  getRules(query, callback) {
+    this.queryItem('rule', query, callback);
   }
 
   // TODO: Allow users to specify which key contains the URLs.
@@ -182,10 +178,10 @@ class FeedService {
     return feedItems.reduce((urls, feedItem) => urls.concat(feedItem.urls), []);
   }
 
-  handleNewItems(userId, {items: feedItems, feed}) {
-    this.getPreviouslyMatchedUrls(userId)
+  handleNewItems({items: feedItems, feed}) {
+    this.getPreviouslyMatchedUrls()
       .then(previouslyMatchedUrls => {
-        const applicableRules = this.rules[userId][feed._id];
+        const applicableRules = this.rules[feed._id];
         if (!applicableRules) return;
 
         const itemsMatchingRules = this.getItemsMatchingRules(feedItems, applicableRules, feed);
@@ -196,14 +192,13 @@ class FeedService {
         const lastAddUrlCallback = () => {
           const urlsToAdd = this.getUrlsFromItems(itemsToDownload);
 
-          this.db[userId].update(
+          this.db.update(
             {type: 'matchedTorrents'},
             {$push: {urls: {$each: urlsToAdd}}},
             {upsert: true}
           );
 
-          const notificationService = ServicesHandler.getNotificationService(userId);
-          notificationService.addNotification(itemsToDownload.map(item => {
+          this.services.notificationService.addNotification(itemsToDownload.map(item => {
             return {
               id: 'notification.feed.downloaded.torrent',
               data: {
@@ -213,11 +208,13 @@ class FeedService {
               }
             };
           }));
+          this.services.torrentService.fetchTorrentList();
         };
 
         itemsToDownload.forEach((item, index) => {
           client.addUrls(
-            userId,
+            this.user,
+            this.services,
             {
               urls: item.urls,
               destination: item.destination,
@@ -229,13 +226,13 @@ class FeedService {
                 lastAddUrlCallback();
               }
 
-              this.db[userId].update(
+              this.db.update(
                 {_id: item.ruleID},
                 {$inc: {count: 1}},
                 {upsert: true}
               );
 
-              this.db[userId].update(
+              this.db.update(
                 {_id: item.feedID},
                 {$inc: {count: 1}},
                 {upsert: true}
@@ -247,10 +244,10 @@ class FeedService {
       .catch(console.error);
   }
 
-  init(userId) {
-    this.feeds[userId] = [];
-    this.rules[userId] = {};
-    this.db[userId].find({}, (err, docs) => {
+  init() {
+    this.feeds = [];
+    this.rules = {};
+    this.db.find({}, (err, docs) => {
       if (err) {
         return;
       }
@@ -266,16 +263,16 @@ class FeedService {
 
       // Add all download rules to the local state.
       feedsSummary.rules.forEach((rule) => {
-        if (this.rules[userId][rule.feedID] == null) {
-          this.rules[userId][rule.feedID] = [];
+        if (this.rules[rule.feedID] == null) {
+          this.rules[rule.feedID] = [];
         }
 
-        this.rules[userId][rule.feedID].push(rule);
+        this.rules[rule.feedID].push(rule);
       });
 
       // Initiate all feeds.
       feedsSummary.feeds.forEach((feed) => {
-        this.startNewFeed(userId, feed);
+        this.startNewFeed(feed);
       });
     });
   }
@@ -288,31 +285,22 @@ class FeedService {
     });
   }
 
-  loadDatabase(userId) {
-    if (this.isDBReady.has(userId)) {
-      return;
-    }
+  loadDatabase() {
+    if (this.isDBReady) return;
+    const {_id: userId} = this.user;
 
-    let dbPath = `${config.dbPath}${userId}/`;
-
-    let db = new Datastore({
+    const db = new Datastore({
       autoload: true,
-      filename: `${dbPath}settings/feeds.db`
+      filename: path.join(config.dbPath, userId, 'settings', 'feeds.db')
     });
-
-    this.db[userId] = db;
-
-    this.isDBReady.add(userId);
-
-    this.init(userId);
+    this.isDBReady = true;
+    return db;
   }
 
-  queryItem(userId, type, query, callback) {
-    this.loadDatabase(userId);
-
+  queryItem(type, query, callback) {
     query = query || {};
 
-    this.db[userId].find(Object.assign(query, {type}), (err, docs) => {
+    this.db.find(Object.assign(query, {type}), (err, docs) => {
       if (err) {
         callback(null, err);
         return;
@@ -322,21 +310,23 @@ class FeedService {
     });
   }
 
-  removeItem(userId, id, callback) {
-    this.loadDatabase(userId);
-
+  removeItem(id, callback) {
     let indexToRemove = -1;
-    let itemToRemove = this.feeds[userId].find((feed, index) => {
-      indexToRemove = index;
-      return feed.options._id === id;
+    let itemToRemove = this.feeds.find((feed, index) => {
+      if (feed.options._id === id) {
+        indexToRemove = index;
+        return true;
+      }
+
+      return false;
     });
 
     if (itemToRemove != null) {
       itemToRemove.stopReader();
-      this.feeds[userId].splice(indexToRemove, 1);
+      this.feeds.splice(indexToRemove, 1);
     }
 
-    this.db[userId].remove({_id: id}, {}, (err, docs) => {
+    this.db.remove({_id: id}, {}, (err, docs) => {
       if (err) {
         callback(null, err);
         return;
@@ -346,10 +336,10 @@ class FeedService {
     });
   }
 
-  startNewFeed(userId, feedConfig) {
+  startNewFeed(feedConfig) {
     feedConfig.onNewItems = this.handleNewItems.bind(this);
-    this.feeds[userId].push(new Feed(userId, feedConfig));
+    this.feeds.push(new Feed(feedConfig));
   }
 }
 
-module.exports = new FeedService();
+module.exports = FeedService;

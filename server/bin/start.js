@@ -6,7 +6,7 @@ const {startWebServer} = require('./web-server');
 
 enforcePrerequisites().then(startWebServer).catch((error) => {
   console.log(chalk.red('Failed to start web server:'));
-  console.log(chalk.cyan(error));
+  console.trace(error);
 
   process.exit(1);
 });

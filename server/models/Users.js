@@ -1,7 +1,7 @@
-'use strict';
 const argon2 = require('argon2');
-const fs = require('fs-extra');
 const Datastore = require('nedb');
+const fs = require('fs-extra');
+const path = require('path');
 
 const config = require('../../config');
 
@@ -74,7 +74,7 @@ class Users {
   }
 
   removeUser(username, callback) {
-    this.db.findOne({username: username}).exec((err, user) => {
+    this.db.findOne({username}).exec((err, user) => {
       if (err) {
         return callback(null, err);
       }
@@ -84,14 +84,14 @@ class Users {
         return callback(null, user);
       }
 
-      this.db.remove({username: username}, {}, (err, numRemoved) => {
+      this.db.remove({username}, {}, (err, numRemoved) => {
         if (err) {
           return callback(null, err);
         }
 
-        fs.removeSync(`${config.dbPath}${user._id}/`);
+        fs.removeSync(path.join(config.dbPath, user._id));
 
-        return callback({username: username});
+        return callback({username});
       });
     });
   }
@@ -109,7 +109,7 @@ class Users {
   loadDatabase() {
     let db = new Datastore({
       autoload: true,
-      filename: `${config.dbPath}users.db`
+      filename: path.join(config.dbPath, 'users.db')
     });
 
     db.ensureIndex({fieldName: 'username', unique: true});
@@ -128,25 +128,13 @@ class Users {
     });
   }
 
-  fetchById(userId, callback) {
-    this.db.findOne({_id: userId}, (err, user) => {
-      if (err) {
-        return callback(err);
-      }
-
-      return callback(null, user);
-    });
-  }
-
   listUsers(callback) {
     this.db.find({}, (err, users) => {
       if (err) {
         return callback(null, err);
       }
 
-      return callback(users.map((user) => {
-        return {username: user.username};
-      }));
+      return callback(users);
     });
   }
 }

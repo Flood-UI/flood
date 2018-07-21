@@ -1,16 +1,18 @@
 const EventEmitter = require('events');
 
-const clientRequestService = require('./clientRequestService');
-const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
+const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
 const objectUtil = require('../../shared/util/objectUtil');
 const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 class TaxonomyService extends EventEmitter {
-  constructor(userId, ...args) {
+  constructor(user, services, ...args) {
     super(...args);
 
-    this.userId = userId;
+    if (!user || !user._id) throw new Error(`Missing user ID in TaxonomyService`);
+
+    this.services = services;
+    this.user = user;
 
     this.lastStatusCounts = {all: 0};
     this.lastTagCounts = {all: 0};
@@ -24,18 +26,39 @@ class TaxonomyService extends EventEmitter {
     this.handleProcessTorrentListStart = this.handleProcessTorrentListStart.bind(this);
     this.handleProcessTorrentListEnd = this.handleProcessTorrentListEnd.bind(this);
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT_LIST_START,
+    const clientGatewayService = this.services.clientGatewayService;
+
+    clientGatewayService.on(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_START,
       this.handleProcessTorrentListStart
     );
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT_LIST_END,
+    clientGatewayService.on(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_END,
       this.handleProcessTorrentListEnd
     );
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT,
+    clientGatewayService.on(
+      clientGatewayServiceEvents.PROCESS_TORRENT,
+      this.handleProcessTorrent
+    );
+  }
+
+  destroy() {
+    const clientGatewayService = this.services.clientGatewayService;
+
+    clientGatewayService.removeListener(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_START,
+      this.handleProcessTorrentListStart
+    );
+
+    clientGatewayService.removeListener(
+      clientGatewayServiceEvents.PROCESS_TORRENT_LIST_END,
+      this.handleProcessTorrentListEnd
+    );
+
+    clientGatewayService.removeListener(
+      clientGatewayServiceEvents.PROCESS_TORRENT,
       this.handleProcessTorrent
     );
   }
@@ -51,11 +74,7 @@ class TaxonomyService extends EventEmitter {
     };
   }
 
-  handleProcessTorrentListStart(userId) {
-    if (userId !== this.userId) {
-      return;
-    }
-
+  handleProcessTorrentListStart() {
     this.lastStatusCounts = Object.assign({}, this.statusCounts);
     this.lastTagCounts = Object.assign({}, this.tagCounts);
     this.lastTrackerCounts = Object.assign({}, this.trackerCounts);
@@ -69,11 +88,7 @@ class TaxonomyService extends EventEmitter {
     this.trackerCounts = {all: 0};
   }
 
-  handleProcessTorrentListEnd(userId, torrentList) {
-    if (userId !== this.userId) {
-      return;
-    }
-
+  handleProcessTorrentListEnd(torrentList) {
     const {length = 0} = torrentList;
 
     this.statusCounts.all = length;
@@ -110,11 +125,7 @@ class TaxonomyService extends EventEmitter {
     }
   }
 
-  handleProcessTorrent(userId, torrentDetails) {
-    if (userId !== this.userId) {
-      return;
-    }
-
+  handleProcessTorrent(torrentDetails) {
     this.incrementStatusCounts(torrentDetails.status);
     this.incrementTagCounts(torrentDetails.tags);
     this.incrementTrackerCounts(torrentDetails.trackerURIs);
