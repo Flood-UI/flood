@@ -135,14 +135,14 @@ class AuthForm extends React.Component {
     }
 
     return (
-      <div style={{width: 500}}>
+      <div className="application__entry-barrier">
         <Panel spacing="large">
           <Form onSubmit={this.handleFormSubmit} ref={(ref) => this.formRef = ref}>
             <PanelHeader>
               <h1>{this.getHeaderText()}</h1>
             </PanelHeader>
             <PanelContent>
-              <p>{this.getIntroText()}</p>
+              <p className="copy--lead">{this.getIntroText()}</p>
               {errorRow}
               <FormRow>
                 <Textbox placeholder="Username" id="username" />

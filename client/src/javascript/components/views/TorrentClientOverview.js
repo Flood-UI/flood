@@ -11,11 +11,6 @@ import Sidebar from '../sidebar/Sidebar';
 import TorrentList from '../torrent-list/TorrentList';
 
 export default class TorrentCLientOverview extends React.Component {
-  componentDidMount() {
-    SettingsStore.fetchClientSettings();
-    SettingsStore.fetchFloodSettings();
-  }
-
   render() {
     return (
       <ApplicationView>

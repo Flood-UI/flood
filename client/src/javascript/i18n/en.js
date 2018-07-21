@@ -44,6 +44,9 @@ export default {
   'button.state.adding': 'Adding...',
   'button.yes': 'Yes',
 
+  'connectivity.modal.title': 'Connectivity Issue',
+  'connectivity.modal.content': 'Cannot connect to rTorrent. Please update the information now.',
+
   'feeds.add.automatic.download.rule': 'Add Download Rule',
   'feeds.add.feed': 'Add Feed',
   'feeds.applicable.feed': 'Applicable Feed',
