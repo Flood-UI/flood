@@ -260,7 +260,7 @@ const client = {
 
     const checkHash = () => {
       const checkHashRequest = new ClientRequest(user, services);
-      checkHashRequest.checkHash(user, {hashes});
+      checkHashRequest.checkHash({hashes});
       checkHashRequest.onComplete(afterCheckHash);
       checkHashRequest.send();
     };
