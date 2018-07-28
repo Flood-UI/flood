@@ -12,6 +12,24 @@ const upload = multer({
   storage: multer.memoryStorage()
 });
 
+router.get('/connection-test', function(req, res, next) {
+  req.services.clientGatewayService.testGateway()
+    .then((response) => {
+      res.status(200).json({isConnected: true});
+    }).catch(error => {
+      res.status(500).json({isConnected: false});
+    });
+});
+
+router.post('/connection-test', function(req, res, next) {
+  req.services.clientGatewayService.testGateway(req.body)
+    .then((response) => {
+      res.status(200).json({isConnected: true});
+    }).catch(error => {
+      res.status(500).json({isConnected: false});
+    });
+});
+
 router.post('/add', function(req, res, next) {
   client.addUrls(req.user, req.services, req.body, ajaxUtil.getResponseFn(res));
 });

@@ -3,20 +3,17 @@ const Datastore = require('nedb');
 const EventEmitter = require('events');
 const path = require('path');
 
+const BaseService = require('./BaseService');
 const config = require('../../config');
 const notificationServiceEvents = require('../constants/notificationServiceEvents');
 
 const DEFAULT_QUERY_LIMIT = 20;
 const INITIAL_COUNT_VALUE = {read: 0, total: 0, unread: 0};
 
-class NotificationService extends EventEmitter {
-  constructor(user, services, ...args) {
-    super(...args);
+class NotificationService extends BaseService {
+  constructor() {
+    super(...arguments);
 
-    if (!user || !user._id) throw new Error(`Missing user ID in NotificationService`);
-
-    this.services = services;
-    this.user = user;
     this.count = Object.assign({}, INITIAL_COUNT_VALUE);
     this.ready = false;
 

@@ -13,8 +13,9 @@ const apiRoutes = require('./routes/api');
 const authRoutes = require('./routes/auth');
 const paths = require('../client/config/paths');
 const services = require('./services');
+const Users = require('./models/Users');
 
-services.bootstrapUserServices();
+Users.bootstrapServicesForAllUsers();
 
 // Remove Express header
 if(process.env.NODE_ENV !== 'development') {

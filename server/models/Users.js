@@ -4,11 +4,21 @@ const fs = require('fs-extra');
 const path = require('path');
 
 const config = require('../../config');
+const services = require('../services');
 
 class Users {
   constructor() {
     this.ready = false;
     this.db = this.loadDatabase();
+  }
+
+  bootstrapServicesForAllUsers() {
+    this.listUsers((users, err) => {
+      if (err) throw err;
+      if (users && users.length) {
+        users.forEach(services.bootstrapServicesForUser);
+      }
+    });
   }
 
   comparePassword(credentials, callback) {
@@ -67,10 +77,14 @@ class Users {
             return callback(null, error);
           }
 
+          services.bootstrapServicesForUser(user);
+
           return callback({ username });
         });
       })
-      .catch(error => callback(null, error));
+      .catch(error => {
+        callback(null, error);
+      });
   }
 
   removeUser(username, callback) {
@@ -93,6 +107,22 @@ class Users {
 
         return callback({username});
       });
+    });
+  }
+
+  updateUser(username, userRecordPatch, callback) {
+    const nextUserRecordPatch = Object.assign({}, userRecordPatch, {
+      socket: userRecordPatch.socketPath != null
+    });
+
+    this.db.update({ username }, { $set: nextUserRecordPatch }, (err, numUsersUpdated, updatedUser) => {
+      if (err) return callback(null, err);
+      // Username not found.
+      if (numUsersUpdated === 0) {
+        return callback(null, err);
+      }
+
+      return callback(nextUserRecordPatch);
     });
   }
 

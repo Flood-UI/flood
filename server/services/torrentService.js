@@ -1,6 +1,7 @@
 const deepEqual = require('deep-equal');
 const EventEmitter = require('events');
 
+const BaseService = require('./BaseService');
 const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
 const config = require('../../config');
 const formatUtil = require('../../shared/util/formatUtil');
@@ -13,14 +14,9 @@ const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 const torrentListMethodCallConfig = methodCallUtil
   .getMethodCallConfigFromPropMap(torrentListPropMap);
 
-class TorrentService extends EventEmitter {
-  constructor(user, services, ...args) {
-    super(...args);
-
-    if (!user || !user._id) throw new Error(`Missing user ID in TorrentService`);
-
-    this.services = services;
-    this.user = user;
+class TorrentService extends BaseService {
+  constructor() {
+    super(...arguments);
 
     this.errorCount = 0;
     this.pollTimeout = null;
