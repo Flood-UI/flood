@@ -2,22 +2,26 @@ const EventEmitter = require('events');
 const path = require('path');
 const rimraf = require('rimraf');
 
+const BaseService = require('./BaseService');
+const ClientRequestManager = require('./clientRequestManager');
 const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
 const fileListPropMap = require('../constants/fileListPropMap');
 const methodCallUtil = require('../util/methodCallUtil');
+const scgiUtil = require('../util/scgiUtil');
 
 const fileListMethodCallConfig = methodCallUtil.getMethodCallConfigFromPropMap(
   fileListPropMap,
   ['pathComponents']
 );
 
-class ClientGatewayService extends EventEmitter {
-  constructor(user, services, ...args) {
-    super(...args);
-    this.services = services;
-    this.user = user;
+class ClientGatewayService extends BaseService {
+  constructor() {
+    super(...arguments);
 
+    this.hasError = null;
     this.torrentListReducers = [];
+    this.processClientRequestError = this.processClientRequestError.bind(this);
+    this.processClientRequestSuccess = this.processClientRequestSuccess.bind(this);
   }
 
   /**
@@ -144,8 +148,9 @@ class ClientGatewayService extends EventEmitter {
   fetchTorrentList(options) {
     return this.services.clientRequestManager
       .methodCall('d.multicall2', ['', 'main'].concat(options.methodCalls))
+      .then(this.processClientRequestSuccess)
       .then(torrents => this.processTorrentListResponse(torrents, options))
-      .catch(this.processClientError);
+      .catch(this.processClientRequestError);
   }
 
   fetchTransferSummary(options) {
@@ -155,13 +160,25 @@ class ClientGatewayService extends EventEmitter {
 
     return this.services.clientRequestManager
       .methodCall('system.multicall', [methodCalls])
-      .then(transferRate => {
-        return this.processTransferRateResponse(transferRate, options);
-      })
-      .catch(this.processClientError);
+      .then(this.processClientRequestSuccess)
+      .then(transferRate => this.processTransferRateResponse(transferRate, options))
+      .catch(this.processClientRequestError);
   }
 
-  processClientError(error) {
+  processClientRequestSuccess(response) {
+    if (this.hasError == null || this.hasError === true) {
+      this.hasError = false;
+      this.emit(clientGatewayServiceEvents.CLIENT_CONNECTION_STATE_CHANGE);
+    }
+
+    return response;
+  }
+
+  processClientRequestError(error) {
+    if (!this.hasError) {
+      this.hasError = true;
+      this.emit(clientGatewayServiceEvents.CLIENT_CONNECTION_STATE_CHANGE);
+    }
     throw error;
   }
 
@@ -248,6 +265,24 @@ class ClientGatewayService extends EventEmitter {
         return accumulator;
       },
       {}
+    );
+  }
+
+  testGateway(clientSettings) {
+    if (!clientSettings) {
+      return this.services.clientRequestManager.methodCall('system.methodExist', ['system.multicall'])
+        .then(this.processClientRequestSuccess)
+        .catch(this.processClientRequestError);
+    }
+    return scgiUtil.methodCall(
+      {
+        socket: clientSettings.socket,
+        socketPath: clientSettings.socketPath,
+        port: clientSettings.port,
+        host: clientSettings.host
+      },
+      'system.methodExist',
+      ['system.multicall']
     );
   }
 }

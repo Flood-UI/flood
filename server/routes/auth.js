@@ -46,7 +46,8 @@ router.use('/', (req, res, next) => {
     next();
   } else {
     res.status(422).json({
-      message: 'Validation error.'
+      message: 'Validation error.',
+      error: validation.error
     });
   }
 });
@@ -140,6 +141,17 @@ router.get('/users', (req, res, next) => {
 router.delete('/users/:username', (req, res, next) => {
   Users.removeUser(req.params.username, ajaxUtil.getResponseFn(res));
   services.destroyUserServices(req.user);
+});
+
+router.patch('/users/:username', (req, res, next) => {
+  const username = req.params.username;
+  Users.updateUser(username, req.body, (user) => {
+    Users.lookupUser({ username }, (err, user) => {
+      if (err) return req.status(500).json({ error: err });
+      services.updateUserServices(user);
+      res.send();
+    });
+  });
 });
 
 router.put('/users', (req, res, next) => {

@@ -2,16 +2,15 @@ const _ = require('lodash');
 const path = require('path');
 const Datastore = require('nedb');
 
+const BaseService = require('./BaseService');
 const client = require('../models/client');
 const config = require('../../config');
 const Feed = require('../models/Feed');
 
-class FeedService {
-  constructor(user, services) {
-    if (!user || !user._id) throw new Error(`Missing user ID in FeedService`);
+class FeedService extends BaseService {
+  constructor() {
+    super(...arguments);
 
-    this.services = services;
-    this.user = user;
     this.isDBReady = false;
     this.db = this.loadDatabase();
 

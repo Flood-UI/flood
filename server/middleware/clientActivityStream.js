@@ -1,3 +1,4 @@
+const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
 const historyServiceEvents = require('../constants/historyServiceEvents');
 const historySnapshotTypes = require('../../shared/constants/historySnapshotTypes');
 const notificationServiceEvents = require('../constants/notificationServiceEvents');
@@ -11,7 +12,6 @@ module.exports = (req, res) => {
   const {query: {historySnapshot = historySnapshotTypes.FIVE_MINUTE}, user} = req;
 
   const serviceInstances = services.getAllServices(user);
-
   const serverEvent = new ServerEvent(res);
   const taxonomy = serviceInstances.taxonomyService.getTaxonomy();
   const torrentList = serviceInstances.torrentService.getTorrentList();
@@ -23,7 +23,12 @@ module.exports = (req, res) => {
   serviceInstances.taxonomyService.removeAllListeners();
   serviceInstances.torrentService.removeAllListeners();
 
-  // Emit all existing data.
+  // Emit current state immediately on connection.
+  serverEvent.setID(Date.now());
+  serverEvent.setType(serverEventTypes.CLIENT_CONNECTIVITY_STATUS_CHANGE);
+  serverEvent.addData({isConnected: !serviceInstances.clientGatewayService.hasError});
+  serverEvent.emit();
+
   serverEvent.setID(torrentList.id);
   serverEvent.setType(serverEventTypes.TORRENT_LIST_FULL_UPDATE);
   serverEvent.addData(torrentList.torrents);
@@ -43,6 +48,16 @@ module.exports = (req, res) => {
   serverEvent.setType(serverEventTypes.NOTIFICATION_COUNT_CHANGE);
   serverEvent.addData(serviceInstances.notificationService.getNotificationCount());
   serverEvent.emit();
+
+  serviceInstances.clientGatewayService.on(
+    clientGatewayServiceEvents.CLIENT_CONNECTION_STATE_CHANGE,
+    () => {
+      serverEvent.setID(Date.now());
+      serverEvent.setType(serverEventTypes.CLIENT_CONNECTIVITY_STATUS_CHANGE);
+      serverEvent.addData({isConnected: !serviceInstances.clientGatewayService.hasError});
+      serverEvent.emit();
+    }
+  );
 
   // TODO: Handle empty or sub-optimal history states.
   // Get user's specified history snapshot current history.

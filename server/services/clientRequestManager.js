@@ -1,12 +1,10 @@
-const Deserializer = require('xmlrpc/lib/deserializer');
-const net = require('net');
-const Serializer = require('xmlrpc/lib/serializer');
+const BaseService = require('./BaseService');
+const scgiUtil = require('../util/scgiUtil');
 
-const nullChar = String.fromCharCode(0);
+class ClientRequestManager extends BaseService {
+  constructor() {
+    super(...arguments);
 
-class ClientRequestManager {
-  constructor(user) {
-    this.user = user;
     this.isRequestPending = false;
     this.lastResponseTimestamp = 0;
     this.pendingRequests = [];
@@ -29,52 +27,31 @@ class ClientRequestManager {
   }
 
   sendMethodCall(methodName, parameters) {
-    return new Promise((resolve, reject) => {
-      const connectMethod = this.user.socket
-        ? {path: this.user.socketPath}
-        : {port: this.user.port, host: this.user.host};
+    const connectionMethod = {
+      address: this.user.address,
+      port: this.user.port,
+      socket: this.user.socket,
+      socketPath: this.user.socketPath,
+    };
 
-      const deserializer = new Deserializer('utf8');
-      const stream = net.connect(connectMethod);
-      const xml = Serializer.serializeMethodCall(methodName, parameters);
-      const xmlLength = Buffer.byteLength(xml, 'utf8');
+    return scgiUtil.methodCall(connectionMethod, methodName, parameters).then(response => {
+      this.isRequestPending = false;
 
-      stream.setEncoding('UTF8');
+      // We avoid initiating any deffered requests until at least 250ms have
+      // since the previous response.
+      const currentTimestamp = Date.now();
+      const timeSinceLastResponse = currentTimestamp - this.lastResponseTimestamp;
 
-      const headerItems = [
-        `CONTENT_LENGTH${nullChar}${xmlLength}${nullChar}`,
-        `SCGI${nullChar}1${nullChar}`
-      ];
+      if (timeSinceLastResponse <= 250) {
+        const delay = 250 - timeSinceLastResponse;
+        setTimeout(this.sendDefferedMethodCall, delay);
+        this.lastResponseTimestamp = currentTimestamp + delay;
+      } else {
+        this.sendDefferedMethodCall();
+        this.lastResponseTimestamp = currentTimestamp;
+      }
 
-      const headerLength = headerItems.reduce((accumulator, headerItem) => {
-        return accumulator += headerItem.length;
-      }, 0);
-
-      stream.write(`${headerLength}:${headerItems.join('')},${xml}`);
-
-      deserializer.deserializeMethodResponse(stream, (error, response) => {
-        this.isRequestPending = false;
-
-        // We avoid initiating any deffered requests until at least 250ms have
-        // since the previous response.
-        const currentTimestamp = Date.now();
-        const timeSinceLastResponse = currentTimestamp - this.lastResponseTimestamp;
-
-        if (timeSinceLastResponse <= 250) {
-          const delay = 250 - timeSinceLastResponse;
-          setTimeout(this.sendDefferedMethodCall, delay);
-          this.lastResponseTimestamp = currentTimestamp + delay;
-        } else {
-          this.sendDefferedMethodCall();
-          this.lastResponseTimestamp = currentTimestamp;
-        }
-
-        if (error) {
-          reject(error);
-        }
-
-        resolve(response);
-      });
+      return response;
     });
   }
 
