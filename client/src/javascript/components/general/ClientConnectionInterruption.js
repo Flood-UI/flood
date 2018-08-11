@@ -9,6 +9,7 @@ import {
   PanelHeader,
   PanelFooter
 } from 'flood-ui-kit';
+import {FormattedMessage} from 'react-intl';
 import React from 'react';
 
 import AuthActions from '../../actions/AuthActions';
@@ -77,7 +78,9 @@ export default class ClientConnectionInterruption extends React.Component {
     return (
       <FormRowItem className="connection-status">
         <Checkmark className="connection-status__icon" />
-        <span className="connection-status__copy">Connection successful</span>
+        <span className="connection-status__copy">
+          <FormattedMessage id="connection-interruption.verification-success" defaultMessage="Connection successful" />
+        </span>
       </FormRowItem>
     );
   }
@@ -88,7 +91,7 @@ export default class ClientConnectionInterruption extends React.Component {
       return (
         <FormRow>
           <FormError isLoading={isTestingConnection}>
-            Connection could not be verified.
+            <FormattedMessage id="connection-interruption.verification-error" defaultMessage="Connection could not be verified." />
           </FormError>
         </FormRow>
       );
@@ -102,10 +105,15 @@ export default class ClientConnectionInterruption extends React.Component {
       <Panel spacing="large">
         <Form onChange={this.handleFormChange} onSubmit={this.handleFormSubmit} ref={(ref) => this.formRef = ref}>
           <PanelHeader>
-            <h1>Cannot connect to rTorrent</h1>
+            <h1>
+              <FormattedMessage id="connection-interruption.heading"
+                defaultMessage="Cannot connect to rTorrent" />
+            </h1>
           </PanelHeader>
           <PanelContent>
-            <p className="copy--lead">Let's verify your connection settings.</p>
+            <p className="copy--lead">
+              <FormattedMessage id="connection-interruption.verify-settings-prompt" defaultMessage="Let's verify your connection settings." />
+            </p>
             {this.renderFormError()}
             <RtorrentConnectionTypeSelection isDisabled={isTestingConnection} />
           </PanelContent>
@@ -113,10 +121,10 @@ export default class ClientConnectionInterruption extends React.Component {
             <FormRow justify="end">
               {this.renderConnectionTestResult()}
               <Button isLoading={isTestingConnection} priority="tertiary" onClick={this.handleTestButtonClick}>
-                Test
+                <FormattedMessage id="button.test" defaultMessage="Test" />
               </Button>
               <Button type="submit" disabled={!isConnectionVerified}>
-                Save Settings
+                <FormattedMessage id="button.save" defaultMessage="Save Settings" />
               </Button>
             </FormRow>
           </PanelFooter>
