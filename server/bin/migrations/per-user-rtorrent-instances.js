@@ -12,12 +12,15 @@ const migrate = () => {
   log(chalk.green('Migrating data: moving rTorrent connection information to users database'));
 
   return new Promise((resolve, reject) => {
-    if (config.scgi == null) {
-      reject(new Error('No `scgi` key in config object.'));
-    }
-
     Users.listUsers((users, error) => {
       if (error) return reject(error);
+      const { scgi = {} } = config;
+      const existingConfig = {
+        host: scgi.host,
+        port: scgi.port,
+        socket: scgi.socket === true,
+      };
+
       resolve(
         Promise.all(
           users.map(user => new Promise(
@@ -25,13 +28,13 @@ const migrate = () => {
               if (user.socket == null) {
                 log(chalk.yellow(`Migrating user ${user.username}`));
                 const userPatch = {
-                  host: config.scgi.host,
-                  port: config.scgi.port,
-                  socket: config.scgi.socket === true,
+                  host: existingConfig.host,
+                  port: existingConfig.port,
+                  socket: existingConfig.socket,
                 };
 
-                if (userPatch.socket && config.scgi.socketPath) {
-                  userPatch.socketPath = config.scgi.socketPath;
+                if (userPatch.socket && existingConfig.socketPath) {
+                  userPatch.socketPath = existingConfig.socketPath;
                 }
 
                 Users.updateUser(user.username, userPatch, (response, error) => {

@@ -28,7 +28,7 @@ const CONFIG = {
   floodServerPort: 3000,
   // Used for development. See the "Local Development" section of README.md
   // for detail.
-  floodServerProxy: 'http://127.0.0.1',
+  floodServerProxy: 'http://127.0.0.1:3000',
   // Flood keeps a history of torrent download and upload speeds.
   // This value dictates the number of individual records per period to keep.
   maxHistoryStates: 30,
