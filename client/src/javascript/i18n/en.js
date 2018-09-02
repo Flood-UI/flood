@@ -275,6 +275,7 @@ export default {
   'torrents.list.context.stop': 'Stop',
   'torrents.list.no.torrents': 'No torrents to display.',
   'torrents.list.drop': 'Drop files here to add them to rTorrent.',
+  'torrents.list.cannot.connect': 'Cannot connect to rTorrent.',
   'torrent.list.peers': '{connected} {of} {total}',
   'torrent.list.peers.of': 'of',
 

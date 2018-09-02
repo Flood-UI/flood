@@ -609,7 +609,10 @@ class TorrentListContainer extends React.Component {
       content = (
         <div className="torrents__alert__wrapper">
           <div className="torrents__alert">
-            Cannot connect to rTorrent.
+            <FormattedMessage
+              id="torrents.list.cannot.connect"
+              defaultMessage="Cannot connect to rTorrent."
+            />
           </div>
         </div>
       );
