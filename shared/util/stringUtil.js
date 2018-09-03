@@ -1,7 +1,5 @@
-'use strict';
-
 module.exports = {
-  capitalize: (string) => {
+  capitalize: string => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   },
 
@@ -15,5 +13,5 @@ module.exports = {
     }
 
     return string;
-  }
+  },
 };

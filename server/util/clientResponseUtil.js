@@ -1,7 +1,4 @@
-'use strict';
 const geoip = require('geoip-country-only');
-const util = require('util');
-
 const torrentFilePropsMap = require('../../shared/constants/torrentFilePropsMap');
 const torrentPeerPropsMap = require('../../shared/constants/torrentPeerPropsMap');
 const torrentTrackerPropsMap = require('../../shared/constants/torrentTrackerPropsMap');
@@ -21,7 +18,11 @@ const getFileTreeFromPathsArr = (tree, directory, file, depth) => {
     }
 
     tree.directories[directory] = getFileTreeFromPathsArr(
-      tree.directories[directory], file.pathComponents[depth], file, depth);
+      tree.directories[directory],
+      file.pathComponents[depth],
+      file,
+      depth
+    );
   } else {
     if (!tree.files) {
       tree.files = [];
@@ -57,18 +58,21 @@ let clientResponseUtil = {
       // object contains all of the requested keys and its value. We add an index
       // for each item, a requirement for file lists.
       return clientResponse.map((listItem, index) => {
-        return listItem.reduce((nestedMemo, value, nestedIndex) => {
-          nestedMemo[requestedKeys[nestedIndex]] = value;
+        return listItem.reduce(
+          (nestedMemo, value, nestedIndex) => {
+            nestedMemo[requestedKeys[nestedIndex]] = value;
 
-          return nestedMemo;
-        }, {index});
+            return nestedMemo;
+          },
+          {index}
+        );
       }, []);
     }
   },
 
   processFile(file) {
     file.filename = file.pathComponents[file.pathComponents.length - 1];
-    file.percentComplete = (file.completedChunks / file.sizeChunks * 100).toFixed(0);
+    file.percentComplete = ((file.completedChunks / file.sizeChunks) * 100).toFixed(0);
 
     delete file.completedChunks;
     delete file.pathComponents;
@@ -88,10 +92,7 @@ let clientResponseUtil = {
     let fileTree = {};
 
     if (peersData && peersData.length) {
-      peers = clientResponseUtil.mapPropsToResponse(
-        torrentPeerPropsMap.props,
-        peersData
-      ).map((peer) => {
+      peers = clientResponseUtil.mapPropsToResponse(torrentPeerPropsMap.props, peersData).map(peer => {
         let geoData = geoip.lookup(peer.address) || {};
         peer.country = geoData.country;
 
@@ -104,10 +105,7 @@ let clientResponseUtil = {
     }
 
     if (filesData && filesData.length) {
-      files = clientResponseUtil.mapPropsToResponse(
-        torrentFilePropsMap.props,
-        filesData
-      );
+      files = clientResponseUtil.mapPropsToResponse(torrentFilePropsMap.props, filesData);
 
       fileTree = files.reduce((memo, file) => {
         return getFileTreeFromPathsArr(memo, file.pathComponents[0], file);
@@ -115,14 +113,11 @@ let clientResponseUtil = {
     }
 
     if (trackerData && trackerData.length) {
-      trackers = clientResponseUtil.mapPropsToResponse(
-        torrentTrackerPropsMap.props,
-        trackerData
-      );
+      trackers = clientResponseUtil.mapPropsToResponse(torrentTrackerPropsMap.props, trackerData);
     }
 
     return {peers, trackers, fileTree};
-  }
+  },
 };
 
 module.exports = clientResponseUtil;

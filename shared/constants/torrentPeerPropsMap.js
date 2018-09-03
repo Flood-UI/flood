@@ -1,5 +1,3 @@
-'use strict';
-
 const torrentPeerPropsMap = {
   props: [
     'address',
@@ -13,7 +11,7 @@ const torrentPeerPropsMap = {
     'peerRate',
     'peerTotal',
     'isEncrypted',
-    'isIncoming'
+    'isIncoming',
   ],
   methods: [
     'p.address=',
@@ -27,8 +25,8 @@ const torrentPeerPropsMap = {
     'p.peer_rate=',
     'p.peer_total=',
     'p.is_encrypted=',
-    'p.is_incoming='
-  ]
+    'p.is_incoming=',
+  ],
 };
 
 module.exports = torrentPeerPropsMap;

@@ -1,34 +1,32 @@
-'use strict';
 const _ = require('lodash');
+const path = require('path');
 const Datastore = require('nedb');
 
+const BaseService = require('./BaseService');
 const client = require('../models/client');
 const config = require('../../config');
 const Feed = require('../models/Feed');
-const notificationService = require('./notificationService');
 const regEx = require('../../shared/util/regEx');
 
-class FeedService {
+class FeedService extends BaseService {
   constructor() {
-    this.feeds = [];
+    super(...arguments);
+
     this.isDBReady = false;
-    this.rules = {};
     this.db = this.loadDatabase();
 
     this.init();
   }
 
   addFeed(feed, callback) {
-    this.addItem('feed', feed, (newFeed) => {
+    this.addItem('feed', feed, newFeed => {
       this.startNewFeed(newFeed);
       callback(newFeed);
     });
   }
 
   addItem(type, item, callback) {
-    if (!this.isDBReady) {
-      return;
-    }
+    if (!this.isDBReady) return;
 
     this.db.insert(Object.assign(item, {type}), (err, newDoc) => {
       if (err) {
@@ -55,14 +53,14 @@ class FeedService {
 
       this.rules[newRule.feedID].push(newRule);
 
-      const associatedFeed = this.feeds.find((feed) => {
+      const associatedFeed = this.feeds.find(feed => {
         return feed.options._id === newRule.feedID;
       });
 
       if (associatedFeed) {
         this.handleNewItems({
           feed: associatedFeed.options,
-          items: associatedFeed.getItems()
+          items: associatedFeed.getItems(),
         });
       }
     });
@@ -77,17 +75,19 @@ class FeedService {
         return;
       }
 
-      callback(docs.reduce((memo, item) => {
-        let type = `${item.type}s`;
+      callback(
+        docs.reduce((memo, item) => {
+          let type = `${item.type}s`;
 
-        if (memo[type] == null) {
-          memo[type] = [];
-        }
+          if (memo[type] == null) {
+            memo[type] = [];
+          }
 
-        memo[type].push(item);
+          memo[type].push(item);
 
-        return memo;
-      }, {}));
+          return memo;
+        }, {})
+      );
     });
   }
 
@@ -96,38 +96,35 @@ class FeedService {
   }
 
   getItemsMatchingRules(feedItems, rules, feed) {
-    return feedItems.reduce(
-      (matchedItems, feedItem) => {
-        rules.forEach(rule => {
-          const isMatched = (new RegExp(rule.match, 'gi')).test(feedItem[rule.field]);
-          const isExcluded = rule.exclude !== '' && (new RegExp(rule.exclude, 'gi')).test(feedItem[rule.field]);
+    return feedItems.reduce((matchedItems, feedItem) => {
+      rules.forEach(rule => {
+        const isMatched = new RegExp(rule.match, 'gi').test(feedItem[rule.field]);
+        const isExcluded = rule.exclude !== '' && new RegExp(rule.exclude, 'gi').test(feedItem[rule.field]);
 
-          if (isMatched && !isExcluded) {
-            const torrentUrls = this.getTorrentUrlsFromItem(feedItem);
-            const isAlreadyDownloaded = matchedItems.some(matchedItem => {
-              return torrentUrls.every(url => matchedItem.urls.includes(url));
+        if (isMatched && !isExcluded) {
+          const torrentUrls = this.getTorrentUrlsFromItem(feedItem);
+          const isAlreadyDownloaded = matchedItems.some(matchedItem => {
+            return torrentUrls.every(url => matchedItem.urls.includes(url));
+          });
+
+          if (!isAlreadyDownloaded) {
+            matchedItems.push({
+              urls: torrentUrls,
+              tags: rule.tags,
+              feedID: rule.feedID,
+              feedLabel: feed.label,
+              matchTitle: feedItem.title,
+              ruleID: rule._id,
+              ruleLabel: rule.label,
+              destination: rule.destination,
+              startOnLoad: rule.startOnLoad,
             });
-
-            if (!isAlreadyDownloaded) {
-              matchedItems.push({
-                urls: torrentUrls,
-                tags: rule.tags,
-                feedID: rule.feedID,
-                feedLabel: feed.label,
-                matchTitle: feedItem.title,
-                ruleID: rule._id,
-                ruleLabel: rule.label,
-                destination: rule.destination,
-                startOnLoad: rule.startOnLoad
-              });
-            }
           }
-        });
+        }
+      });
 
-        return matchedItems;
-      },
-      []
-    );
+      return matchedItems;
+    }, []);
   }
 
   getPreviouslyMatchedUrls() {
@@ -151,16 +148,13 @@ class FeedService {
     // If we've got an Array of enclosures, we'll iterate over the values and
     // look for the url key.
     if (feedItem.enclosures && Array.isArray(feedItem.enclosures)) {
-      return feedItem.enclosures.reduce(
-        (urls, enclosure) => {
-          if (enclosure.url) {
-            urls.push(enclosure.url);
-          }
+      return feedItem.enclosures.reduce((urls, enclosure) => {
+        if (enclosure.url) {
+          urls.push(enclosure.url);
+        }
 
-          return urls;
-        },
-        []
-      );
+        return urls;
+      }, []);
     }
 
     // If we've got a Object of enclosures, use url key
@@ -201,48 +195,41 @@ class FeedService {
         const lastAddUrlCallback = () => {
           const urlsToAdd = this.getUrlsFromItems(itemsToDownload);
 
-          this.db.update(
-            {type: 'matchedTorrents'},
-            {$push: {urls: {$each: urlsToAdd}}},
-            {upsert: true}
-          );
+          this.db.update({type: 'matchedTorrents'}, {$push: {urls: {$each: urlsToAdd}}}, {upsert: true});
 
-          notificationService.addNotification(itemsToDownload.map(item => {
-            return {
-              id: 'notification.feed.downloaded.torrent',
-              data: {
-                feedLabel: item.feedLabel,
-                ruleLabel: item.ruleLabel,
-                title: item.matchTitle
-              }
-            };
-          }));
+          this.services.notificationService.addNotification(
+            itemsToDownload.map(item => {
+              return {
+                id: 'notification.feed.downloaded.torrent',
+                data: {
+                  feedLabel: item.feedLabel,
+                  ruleLabel: item.ruleLabel,
+                  title: item.matchTitle,
+                },
+              };
+            })
+          );
+          this.services.torrentService.fetchTorrentList();
         };
 
         itemsToDownload.forEach((item, index) => {
           client.addUrls(
+            this.user,
+            this.services,
             {
               urls: item.urls,
               destination: item.destination,
               start: item.startOnLoad,
-              tags: item.tags
+              tags: item.tags,
             },
             () => {
               if (index === itemsToDownload.length - 1) {
                 lastAddUrlCallback();
               }
 
-              this.db.update(
-                {_id: item.ruleID},
-                {$inc: {count: 1}},
-                {upsert: true}
-              );
+              this.db.update({_id: item.ruleID}, {$inc: {count: 1}}, {upsert: true});
 
-              this.db.update(
-                {_id: item.feedID},
-                {$inc: {count: 1}},
-                {upsert: true}
-              );
+              this.db.update({_id: item.feedID}, {$inc: {count: 1}}, {upsert: true});
             }
           );
         });
@@ -251,22 +238,27 @@ class FeedService {
   }
 
   init() {
+    this.feeds = [];
+    this.rules = {};
     this.db.find({}, (err, docs) => {
       if (err) {
         return;
       }
 
       // Create two arrays, one for feeds and one for rules.
-      const feedsSummary = docs.reduce((accumulator, doc) => {
-        if (doc.type === 'feed' || doc.type === 'rule') {
-          accumulator[`${doc.type}s`].push(doc);
-        }
+      const feedsSummary = docs.reduce(
+        (accumulator, doc) => {
+          if (doc.type === 'feed' || doc.type === 'rule') {
+            accumulator[`${doc.type}s`].push(doc);
+          }
 
-        return accumulator;
-      }, {feeds: [], rules: []});
+          return accumulator;
+        },
+        {feeds: [], rules: []}
+      );
 
       // Add all download rules to the local state.
-      feedsSummary.rules.forEach((rule) => {
+      feedsSummary.rules.forEach(rule => {
         if (this.rules[rule.feedID] == null) {
           this.rules[rule.feedID] = [];
         }
@@ -275,7 +267,7 @@ class FeedService {
       });
 
       // Initiate all feeds.
-      feedsSummary.feeds.forEach((feed) => {
+      feedsSummary.feeds.forEach(feed => {
         this.startNewFeed(feed);
       });
     });
@@ -284,17 +276,22 @@ class FeedService {
   isAlreadyDownloaded(torrentURLs, downloadedTorrents) {
     torrentURLs = _.castArray(torrentURLs);
 
-    return downloadedTorrents.urls && downloadedTorrents.urls.some(url => {
-      return torrentURLs.includes(url);
-    });
+    return (
+      downloadedTorrents.urls &&
+      downloadedTorrents.urls.some(url => {
+        return torrentURLs.includes(url);
+      })
+    );
   }
 
   loadDatabase() {
-    let db = new Datastore({
-      autoload: true,
-      filename: `${config.dbPath}settings/feeds.db`
-    });
+    if (this.isDBReady) return;
+    const {_id: userId} = this.user;
 
+    const db = new Datastore({
+      autoload: true,
+      filename: path.join(config.dbPath, userId, 'settings', 'feeds.db'),
+    });
     this.isDBReady = true;
     return db;
   }
@@ -315,8 +312,12 @@ class FeedService {
   removeItem(id, callback) {
     let indexToRemove = -1;
     let itemToRemove = this.feeds.find((feed, index) => {
-      indexToRemove = index;
-      return feed.options._id === id;
+      if (feed.options._id === id) {
+        indexToRemove = index;
+        return true;
+      }
+
+      return false;
     });
 
     if (itemToRemove != null) {
@@ -340,4 +341,4 @@ class FeedService {
   }
 }
 
-module.exports = new FeedService();
+module.exports = FeedService;
