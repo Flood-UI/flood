@@ -1,12 +1,11 @@
-'use strict';
-
 let child_process = require('child_process');
 
-const torrentService = require('../services/torrentService');
+const services = require('../services');
 
 module.exports = {
-  getMediainfo(options, callback) {
-    let hash = options.hash;
+  getMediainfo(user, options, callback) {
+    const torrentService = services.getTorrentService(user);
+    const {hash} = options;
 
     if (hash == null) {
       callback(null, {error: 'Hash must be defined'});
@@ -14,23 +13,25 @@ module.exports = {
     }
     const selectedTorrent = torrentService.getTorrent(hash);
     try {
-      child_process.execFile(
-        'mediainfo', [selectedTorrent.basePath], {maxBuffer: 1024 * 2000}, function(error, stdout, stderr) {
-          if (error) {
-            callback(null, {error});
-            return;
-          }
-
-          if (stderr) {
-            callback(null, {error: stderr});
-            return;
-          }
-
-          callback({output: stdout});
+      child_process.execFile('mediainfo', [selectedTorrent.basePath], {maxBuffer: 1024 * 2000}, function(
+        error,
+        stdout,
+        stderr
+      ) {
+        if (error) {
+          callback(null, {error});
+          return;
         }
-      );
+
+        if (stderr) {
+          callback(null, {error: stderr});
+          return;
+        }
+
+        callback({output: stdout});
+      });
     } catch (childProcessError) {
       callback(null, {error: childProcessError});
     }
-  }
+  },
 };

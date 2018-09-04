@@ -1,21 +1,17 @@
 const deepEqual = require('deep-equal');
-const EventEmitter = require('events');
-
-const clientRequestService = require('./clientRequestService.js');
-const clientRequestServiceEvents = require('../constants/clientRequestServiceEvents');
-const config = require('../../config.js');
+const BaseService = require('./BaseService');
+const clientGatewayServiceEvents = require('../constants/clientGatewayServiceEvents');
+const config = require('../../config');
 const formatUtil = require('../../shared/util/formatUtil');
 const methodCallUtil = require('../util/methodCallUtil');
-const notificationService = require('./notificationService.js');
 const serverEventTypes = require('../../shared/constants/serverEventTypes');
 const torrentListPropMap = require('../constants/torrentListPropMap');
-const torrentServiceEvents = require('../constants/torrentServiceEvents.js');
+const torrentServiceEvents = require('../constants/torrentServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
-const torrentListMethodCallConfig = methodCallUtil
-  .getMethodCallConfigFromPropMap(torrentListPropMap);
+const torrentListMethodCallConfig = methodCallUtil.getMethodCallConfigFromPropMap(torrentListPropMap);
 
-class TorrentService extends EventEmitter {
+class TorrentService extends BaseService {
   constructor() {
     super(...arguments);
 
@@ -26,31 +22,29 @@ class TorrentService extends EventEmitter {
     this.fetchTorrentList = this.fetchTorrentList.bind(this);
     this.handleTorrentProcessed = this.handleTorrentProcessed.bind(this);
     this.handleTorrentsRemoved = this.handleTorrentsRemoved.bind(this);
+    this.handleFetchTorrentListSuccess = this.handleFetchTorrentListSuccess.bind(this);
+    this.handleFetchTorrentListError = this.handleFetchTorrentListError.bind(this);
 
-    clientRequestService.addTorrentListReducer({
+    const clientGatewayService = this.services.clientGatewayService;
+
+    clientGatewayService.addTorrentListReducer({
       key: 'status',
-      reduce: this.getTorrentStatusFromDetails
+      reduce: this.getTorrentStatusFromDetails,
     });
 
-    clientRequestService.addTorrentListReducer({
+    clientGatewayService.addTorrentListReducer({
       key: 'percentComplete',
-      reduce: this.getTorrentPercentCompleteFromDetails
+      reduce: this.getTorrentPercentCompleteFromDetails,
     });
 
-    clientRequestService.addTorrentListReducer({
+    clientGatewayService.addTorrentListReducer({
       key: 'eta',
-      reduce: this.getTorrentETAFromDetails
+      reduce: this.getTorrentETAFromDetails,
     });
 
-    clientRequestService.on(
-      clientRequestServiceEvents.PROCESS_TORRENT,
-      this.handleTorrentProcessed
-    );
+    clientGatewayService.on(clientGatewayServiceEvents.PROCESS_TORRENT, this.handleTorrentProcessed);
 
-    clientRequestService.on(
-      clientRequestServiceEvents.TORRENTS_REMOVED,
-      this.handleTorrentsRemoved
-    );
+    clientGatewayService.on(clientGatewayServiceEvents.TORRENTS_REMOVED, this.handleTorrentsRemoved);
 
     this.fetchTorrentList();
   }
@@ -66,40 +60,35 @@ class TorrentService extends EventEmitter {
     // We definitely don't need to look for deleted torrents if the number
     // of new torrents is equal to the difference between next torrent list
     // length and previous torrent list length.
-    let shouldLookForDeletedTorrents = nextTorrentListSummary.length <
-      this.torrentListSummary.length;
+    let shouldLookForDeletedTorrents = nextTorrentListSummary.length < this.torrentListSummary.length;
 
     if (newTorrentCount > 0) {
       if (nextTorrentListSummary.length >= this.torrentListSummary.length) {
         shouldLookForDeletedTorrents = true;
       }
 
-      if (
-        newTorrentCount === nextTorrentListSummary.length -
-          this.torrentListSummary.length
-      ) {
+      if (newTorrentCount === nextTorrentListSummary.length - this.torrentListSummary.length) {
         shouldLookForDeletedTorrents = false;
       }
     }
 
     if (shouldLookForDeletedTorrents) {
-       Object.keys(this.torrentListSummary.torrents).forEach(
-        (hash) => {
-          if (nextTorrentListSummary.torrents[hash] == null) {
-            diff[hash] = {
-              action: serverEventTypes.TORRENT_LIST_ACTION_TORRENT_DELETED
-            };
-          }
-        },
-        {}
-      );
+      Object.keys(this.torrentListSummary.torrents).forEach(hash => {
+        if (nextTorrentListSummary.torrents[hash] == null) {
+          diff[hash] = {
+            action: serverEventTypes.TORRENT_LIST_ACTION_TORRENT_DELETED,
+          };
+        }
+      }, {});
     }
   }
 
-  deferFetchTorrentList(
-    interval = (config.torrentClientPollInterval || 2000)
-  ) {
+  deferFetchTorrentList(interval = config.torrentClientPollInterval || 2000) {
     this.pollTimeout = setTimeout(this.fetchTorrentList, interval);
+  }
+
+  destroy() {
+    clearTimeout(this.pollTimeout);
   }
 
   fetchTorrentList() {
@@ -107,10 +96,10 @@ class TorrentService extends EventEmitter {
       clearTimeout(this.pollTimeout);
     }
 
-    clientRequestService
+    return this.services.clientGatewayService
       .fetchTorrentList(torrentListMethodCallConfig)
-      .then(this.handleFetchTorrentListSuccess.bind(this))
-      .catch(this.handleFetchTorrentListError.bind(this));
+      .then(this.handleFetchTorrentListSuccess)
+      .catch(this.handleFetchTorrentListError);
   }
 
   getTorrentETAFromDetails(torrentDetails) {
@@ -124,9 +113,7 @@ class TorrentService extends EventEmitter {
   }
 
   getTorrentPercentCompleteFromDetails(torrentDetails) {
-    const percentComplete = (
-      torrentDetails.bytesDone / torrentDetails.sizeBytes * 100
-    );
+    const percentComplete = (torrentDetails.bytesDone / torrentDetails.sizeBytes) * 100;
 
     if (percentComplete > 0 && percentComplete < 10) {
       return Number(percentComplete.toFixed(2));
@@ -138,15 +125,7 @@ class TorrentService extends EventEmitter {
   }
 
   getTorrentStatusFromDetails(torrentDetails) {
-    const {
-      isHashChecking,
-      isComplete,
-      isOpen,
-      upRate,
-      downRate,
-      state,
-      message
-    } = torrentDetails;
+    const {isHashChecking, isComplete, isOpen, upRate, downRate, state, message} = torrentDetails;
 
     const torrentStatus = [];
 
@@ -201,56 +180,44 @@ class TorrentService extends EventEmitter {
     let newTorrentCount = 0;
 
     // Get the diff...
-    const diff = Object.keys(nextTorrentListSummary.torrents).reduce(
-      (accumulator, hash) => {
-        const currentTorrentDetails = this.torrentListSummary.torrents[hash];
-        const nextTorrentDetails = nextTorrentListSummary.torrents[hash];
+    const diff = Object.keys(nextTorrentListSummary.torrents).reduce((accumulator, hash) => {
+      const currentTorrentDetails = this.torrentListSummary.torrents[hash];
+      const nextTorrentDetails = nextTorrentListSummary.torrents[hash];
 
-        // If the current torrent list doesn't contain any details for this
-        // hash, then it's a brand new torrent, so every detail is part of the
-        // diff.
-        if (currentTorrentDetails == null) {
-          accumulator[hash] = {
-            action: serverEventTypes.TORRENT_LIST_ACTION_TORRENT_ADDED,
-            data: nextTorrentDetails
-          };
+      // If the current torrent list doesn't contain any details for this
+      // hash, then it's a brand new torrent, so every detail is part of the
+      // diff.
+      if (currentTorrentDetails == null) {
+        accumulator[hash] = {
+          action: serverEventTypes.TORRENT_LIST_ACTION_TORRENT_ADDED,
+          data: nextTorrentDetails,
+        };
 
-          // Track the number of new torrents added.
-          newTorrentCount++;
-        } else {
-          Object.keys(nextTorrentDetails).forEach((propKey) => {
-            // If one of the details is inequal, we need to add it to the diff.
-            if (!deepEqual(
-                currentTorrentDetails[propKey],
-                nextTorrentDetails[propKey]
-              )) {
-              // Initialize with an empty object when this is the first known
-              // inequal property.
-              if (accumulator[hash] == null) {
-                accumulator[hash] = {
-                  action: (
-                    serverEventTypes.TORRENT_LIST_ACTION_TORRENT_DETAIL_UPDATED
-                  ),
-                  data: {}
-                };
-              }
-
-              // Add the diff details.
-              accumulator[hash].data[propKey] = nextTorrentDetails[propKey];
+        // Track the number of new torrents added.
+        newTorrentCount++;
+      } else {
+        Object.keys(nextTorrentDetails).forEach(propKey => {
+          // If one of the details is inequal, we need to add it to the diff.
+          if (!deepEqual(currentTorrentDetails[propKey], nextTorrentDetails[propKey])) {
+            // Initialize with an empty object when this is the first known
+            // inequal property.
+            if (accumulator[hash] == null) {
+              accumulator[hash] = {
+                action: serverEventTypes.TORRENT_LIST_ACTION_TORRENT_DETAIL_UPDATED,
+                data: {},
+              };
             }
-          });
-        }
 
-        return accumulator;
-      },
-      {}
-    );
+            // Add the diff details.
+            accumulator[hash].data[propKey] = nextTorrentDetails[propKey];
+          }
+        });
+      }
 
-    this.assignDeletedTorrentsToDiff(
-      diff,
-      nextTorrentListSummary,
-      {newTorrentCount}
-    );
+      return accumulator;
+    }, {});
+
+    this.assignDeletedTorrentsToDiff(diff, nextTorrentListSummary, {newTorrentCount});
 
     return diff;
   }
@@ -261,10 +228,7 @@ class TorrentService extends EventEmitter {
     // If more than consecutive errors have occurred, then we delay the next
     // request.
     if (++this.errorCount >= 3) {
-      nextInterval = Math.max(
-        nextInterval + this.errorCount * nextInterval / 4,
-        1000 * 60
-      );
+      nextInterval = Math.max(nextInterval + (this.errorCount * nextInterval) / 4, 1000 * 60);
     }
 
     this.deferFetchTorrentList(nextInterval);
@@ -278,12 +242,8 @@ class TorrentService extends EventEmitter {
 
   handleFetchTorrentListSuccess(nextTorrentListSummary) {
     const diff = this.getTorrentListDiff(nextTorrentListSummary);
-
     if (Object.keys(diff).length > 0) {
-      this.emit(
-        torrentServiceEvents.TORRENT_LIST_DIFF_CHANGE,
-        {diff, id: nextTorrentListSummary.id}
-      );
+      this.emit(torrentServiceEvents.TORRENT_LIST_DIFF_CHANGE, {diff, id: nextTorrentListSummary.id});
     }
 
     this.torrentListSummary = nextTorrentListSummary;
@@ -295,14 +255,12 @@ class TorrentService extends EventEmitter {
   }
 
   handleTorrentProcessed(nextTorrentDetails) {
-    const prevTorrentDetails = (
-      this.torrentListSummary.torrents[nextTorrentDetails.hash]
-    );
+    const prevTorrentDetails = this.torrentListSummary.torrents[nextTorrentDetails.hash];
 
     if (this.hasTorrentFinished(prevTorrentDetails, nextTorrentDetails)) {
-      notificationService.addNotification({
+      this.services.notificationService.addNotification({
         id: 'notification.torrent.finished',
-        data: {name: nextTorrentDetails.name}
+        data: {name: nextTorrentDetails.name},
       });
     }
   }
@@ -311,9 +269,7 @@ class TorrentService extends EventEmitter {
     const {status = []} = prevData;
 
     return (
-      !(status.includes(torrentStatusMap.checking))
-      && prevData.percentComplete < 100
-      && nextData.percentComplete === 100
+      !status.includes(torrentStatusMap.checking) && prevData.percentComplete < 100 && nextData.percentComplete === 100
     );
   }
 
@@ -322,4 +278,4 @@ class TorrentService extends EventEmitter {
   }
 }
 
-module.exports = new TorrentService();
+module.exports = TorrentService;
