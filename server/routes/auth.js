@@ -1,4 +1,3 @@
-'use strict';
 const ajaxUtil = require('../util/ajaxUtil');
 const express = require('express');
 const joi = require('joi');
@@ -7,6 +6,7 @@ const passport = require('passport');
 
 const config = require('../../config');
 const router = express.Router();
+const services = require('../services');
 const Users = require('../models/Users');
 
 const failedLoginResponse = 'Failed login.';
@@ -16,34 +16,32 @@ const setAuthToken = (res, username) => {
   let cookieExpiration = Date.now() + expirationSeconds * 1000;
 
   // Create token if the password matched and no error was thrown.
-  let token = jwt.sign(
-    {username},
-    config.secret, {
-    expiresIn: expirationSeconds
+  let token = jwt.sign({username}, config.secret, {
+    expiresIn: expirationSeconds,
   });
 
-  res.cookie(
-    'jwt',
-    token,
-    {expires: new Date(cookieExpiration), httpOnly: true}
-  );
+  res.cookie('jwt', token, {expires: new Date(cookieExpiration), httpOnly: true});
 
   return res.json({success: true, token: `JWT ${token}`, username});
 };
 
-const schema = joi.object().keys({
+const authValidation = joi.object().keys({
   username: joi.string(),
-  password: joi.string()
+  password: joi.string(),
+  host: joi.string(),
+  port: joi.string(),
+  socketPath: joi.string(),
 });
 
 router.use('/', (req, res, next) => {
-  const validation = joi.validate(req.body, schema);
+  const validation = joi.validate(req.body, authValidation);
 
   if (!validation.error) {
     next();
   } else {
     res.status(422).json({
-      message: 'Validation error.'
+      message: 'Validation error.',
+      error: validation.error,
     });
   }
 });
@@ -51,7 +49,7 @@ router.use('/', (req, res, next) => {
 router.post('/authenticate', (req, res) => {
   const credentials = {
     password: req.body.password,
-    username: req.body.username
+    username: req.body.username,
   };
 
   Users.comparePassword(credentials, (isMatch, err) => {
@@ -69,10 +67,6 @@ router.post('/authenticate', (req, res) => {
   });
 });
 
-router.get('/logout', (req, res) => {
-  res.clearCookie('jwt').send();
-});
-
 // Allow unauthenticated registration if no users are currently registered.
 router.use('/register', (req, res, next) => {
   Users.initialUserGate({
@@ -80,20 +74,24 @@ router.use('/register', (req, res, next) => {
       next();
     },
     handleSubsequentUser: () => {
-      // This works:
-      // passport.authenticate('jwt', {session: false})(req, res, next);
-
       passport.authenticate('jwt', {session: false}, (req, res, next) => {
         res.json({username: req.username});
       });
-    }
+    },
   });
 });
 
 router.post('/register', (req, res) => {
   // Attempt to save the user
   Users.createUser(
-    {username: req.body.username, password: req.body.password},
+    {
+      username: req.body.username,
+      password: req.body.password,
+      host: req.body.host,
+      port: req.body.port,
+      socketPath: req.body.socketPath,
+      isAdmin: true,
+    },
     (createUserResponse, createUserError) => {
       if (createUserError) {
         ajaxUtil.getResponseFn(res)(createUserResponse, createUserError);
@@ -115,7 +113,7 @@ router.use('/verify', (req, res, next) => {
     handleSubsequentUser: () => {
       req.initialUser = false;
       passport.authenticate('jwt', {session: false})(req, res, next);
-    }
+    },
   });
 });
 
@@ -126,19 +124,42 @@ router.get('/verify', (req, res, next) => {
 // All subsequent routes are protected.
 router.use('/', passport.authenticate('jwt', {session: false}));
 
+router.get('/logout', (req, res) => {
+  res.clearCookie('jwt').send();
+});
+
 router.get('/users', (req, res, next) => {
   Users.listUsers(ajaxUtil.getResponseFn(res));
 });
 
 router.delete('/users/:username', (req, res, next) => {
   Users.removeUser(req.params.username, ajaxUtil.getResponseFn(res));
+  services.destroyUserServices(req.user);
+});
+
+router.patch('/users/:username', (req, res, next) => {
+  const username = req.params.username;
+  Users.updateUser(username, req.body, user => {
+    Users.lookupUser({username}, (err, user) => {
+      if (err) return req.status(500).json({error: err});
+      services.updateUserServices(user);
+      res.send();
+    });
+  });
 });
 
 router.put('/users', (req, res, next) => {
-  Users.createUser({
-    username: req.body.username,
-    password: req.body.password
-  }, ajaxUtil.getResponseFn(res));
+  Users.createUser(
+    {
+      username: req.body.username,
+      password: req.body.password,
+      host: req.body.host,
+      port: req.body.port,
+      socketPath: req.body.socketPath,
+      isAdmin: false,
+    },
+    ajaxUtil.getResponseFn(res)
+  );
 });
 
 module.exports = router;
