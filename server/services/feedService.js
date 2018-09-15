@@ -63,21 +63,6 @@ class FeedService extends BaseService {
     });
   }
 
-  modifyItem(id, newItem, callback) {
-    if (!this.isDBReady) {
-      return;
-    }
-
-    this.db.update({_id: id}, {$set: newItem}, {}, (err) => {
-      if (err) {
-        callback(null, err);
-        return;
-      }
-
-      callback(null);
-    });
-  }
-
   addRule(rule, callback) {
     this.addItem('rule', rule, (newRule, error) => {
       if (error) {
@@ -342,11 +327,10 @@ class FeedService extends BaseService {
 
   loadDatabase() {
     if (this.isDBReady) return;
-    const {_id: userId} = this.user;
 
     const db = new Datastore({
       autoload: true,
-      filename: path.join(config.dbPath, userId, 'settings', 'feeds.db'),
+      filename: path.join(config.dbPath, this.user._id, 'settings', 'feeds.db'),
     });
     this.isDBReady = true;
     return db;
