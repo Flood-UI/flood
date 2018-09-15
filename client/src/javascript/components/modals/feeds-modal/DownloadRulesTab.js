@@ -14,6 +14,8 @@ import {
 import {defineMessages, FormattedMessage, injectIntl} from 'react-intl';
 import React from 'react';
 
+import ArrowIcon from '../../icons/ArrowIcon';
+import Add from '../../icons/Add';
 import Close from '../../icons/Close';
 import EventTypes from '../../../constants/EventTypes';
 import FeedMonitorStore from '../../../stores/FeedMonitorStore';
@@ -157,6 +159,32 @@ class DownloadRulesTab extends React.Component {
     }
   }
 
+  checkMatch(match, exclude, check){
+    let checkMatchTextbox;
+    for (let i = 0; i < this.formRef.formRef.length; i++) {
+      let element = this.formRef.formRef[i];
+      if (element.name === 'check'){
+        checkMatchTextbox = element;
+      }
+    };
+
+    if (!Validator.isNotEmpty(match) || 
+      !Validator.isRegExValid(match) || 
+      !Validator.isRegExValid(exclude)){
+      checkMatchTextbox.style = {};
+      return;
+    }
+
+    const isMatched = (new RegExp(match, 'gi')).test(check);
+    const isExcluded = exclude !== '' && (new RegExp(exclude, 'gi')).test(check);
+    
+    if(isMatched && !isExcluded){
+      checkMatchTextbox.style.background = '#39ce83';
+    } else {
+      checkMatchTextbox.style.background = '#e95779';
+    }
+  }
+
   getAmendedFormData() {
     const formData = this.formRef.getFormData();
     delete formData.check;
@@ -197,18 +225,8 @@ class DownloadRulesTab extends React.Component {
   }
 
   getModifyRuleForm(rule) {
-  getRuleFields() {
-    const errors = Object.keys(this.state.errors).map((errorID, index) => {
-      return (
-        <FormRow key={index}>
-          <FormError>{this.state.errors[errorID]}</FormError>
-        </FormRow>
-      );
-    });
-
     return (
       <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={rule._id}>
-        {errors}
         <FormRowGroup>
           <FormRow>
             <Textbox

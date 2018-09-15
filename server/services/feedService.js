@@ -63,6 +63,21 @@ class FeedService extends BaseService {
     });
   }
 
+  modifyItem(id, newItem, callback) {
+    if (!this.isDBReady) {
+      return;
+    }
+
+    this.db.update({_id: id}, {$set: newItem}, {}, (err) => {
+      if (err) {
+        callback(null, err);
+        return;
+      }
+
+      callback(null);
+    });
+  }
+
   addRule(rule, callback) {
     this.addItem('rule', rule, (newRule, error) => {
       if (error) {

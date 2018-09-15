@@ -42,12 +42,20 @@ router.put('/feed-monitor/feeds/:id', (req, res, next) => {
   feedService.modifyFeed(req.params.id, req.body, ajaxUtil.getResponseFn(res));
 });
 
+router.put('/feed-monitor/feeds/:id', (req, res, next) => {
+  feedService.modifyFeed(req.params.id, req.body, ajaxUtil.getResponseFn(res));
+});
+
 router.get('/feed-monitor/rules', (req, res, next) => {
   req.services.feedService.getRules(req.body.query, ajaxUtil.getResponseFn(res));
 });
 
 router.put('/feed-monitor/rules', (req, res, next) => {
   req.services.feedService.addRule(req.body, ajaxUtil.getResponseFn(res));
+});
+
+router.get('/feed-monitor/items', (req, res, next) => {
+  feedService.getItems(req.query, ajaxUtil.getResponseFn(res));
 });
 
 router.get('/feed-monitor/items', (req, res, next) => {
