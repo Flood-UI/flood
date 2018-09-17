@@ -1,5 +1,3 @@
-'use strict';
-
 const path = require('path');
 const fs = require('fs');
 const userConfig = require('../../config');
@@ -29,5 +27,5 @@ module.exports = {
   clientSrc: resolveApp('client/src'),
   testsSetup: resolveApp('tests/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
-  servedPath: ensureSlash(userConfig.baseURI || '/', true)
+  servedPath: ensureSlash(userConfig.baseURI || '/', true),
 };

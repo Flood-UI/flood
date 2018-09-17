@@ -1,15 +1,10 @@
-'use strict';
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
 class TemporaryStorage {
   constructor() {
-    this.tempPath = path.join(
-      path.dirname(require.main.filename),
-      '..',
-      'temp'
-    );
+    this.tempPath = path.join(path.dirname(require.main.filename), '..', 'temp');
 
     mkdirp(this.tempPath);
   }

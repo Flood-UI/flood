@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 
@@ -46,7 +44,7 @@ function getClientEnvironment() {
       {
         NODE_ENV: environment,
         BASE_URI: environment !== 'development' ? paths.servedPath : '',
-        POLL_INTERVAL: userConfig.torrentClientPollInterval
+        POLL_INTERVAL: userConfig.torrentClientPollInterval,
       }
     );
   // Stringify all values so we can feed into Webpack DefinePlugin
@@ -57,7 +55,7 @@ function getClientEnvironment() {
     }, {}),
   };
 
-  return { raw, stringified };
+  return {raw, stringified};
 }
 
 module.exports = getClientEnvironment;
