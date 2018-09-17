@@ -58,20 +58,21 @@ const MESSAGES = defineMessages({
   },
   check: {
     id: 'feeds.check',
-    defaultMessage: 'Check matching'
-  }
+    defaultMessage: 'Check matching',
+  },
 });
 
 const defaultRule = {
-  _id: 'new',
   label: '',
   feedID: '',
   match: '',
   exclude: '',
   tags: [],
   destination: '',
-  startOnLoad: false
+  startOnLoad: false,
 };
+
+const possibleMatchClasses = ['check-match-success', 'check-match-failed'];
 
 class DownloadRulesTab extends React.Component {
   formRef;
@@ -111,9 +112,6 @@ class DownloadRulesTab extends React.Component {
     feeds: FeedMonitorStore.getFeeds(),
     rules: FeedMonitorStore.getRules(),
     currentlyEditingRule: 'none',
-    checkMatchStyle: {
-      backgroundColor: '#e95779'
-    }
   };
 
   componentDidMount() {
@@ -133,55 +131,30 @@ class DownloadRulesTab extends React.Component {
     }
   }, 150);
 
-  checkMatch(match, exclude, check){
+  checkMatch(match, exclude, check) {
     let checkMatchTextbox;
     for (let i = 0; i < this.formRef.formRef.length; i++) {
       let element = this.formRef.formRef[i];
-      if (element.name === 'check'){
+      if (element.name === 'check') {
         checkMatchTextbox = element;
       }
-    };
+    }
 
-    if (!Validator.isNotEmpty(match) ||
-      !Validator.isRegExValid(match) ||
-      !Validator.isRegExValid(exclude)){
-      checkMatchTextbox.style = {};
+    possibleMatchClasses.forEach(className => {
+      checkMatchTextbox.classList.remove(className);
+    });
+
+    if (!Validator.isNotEmpty(match) || !Validator.isRegExValid(match) || !Validator.isRegExValid(exclude)) {
       return;
     }
 
-    const isMatched = (new RegExp(match, 'gi')).test(check);
-    const isExcluded = exclude !== '' && (new RegExp(exclude, 'gi')).test(check);
+    const isMatched = new RegExp(match, 'gi').test(check);
+    const isExcluded = exclude !== '' && new RegExp(exclude, 'gi').test(check);
 
-    if(isMatched && !isExcluded){
-      checkMatchTextbox.style.background = '#39ce83';
+    if (isMatched && !isExcluded) {
+      checkMatchTextbox.classList.add('check-match-success');
     } else {
-      checkMatchTextbox.style.background = '#e95779';
-    }
-  }
-
-  checkMatch(match, exclude, check){
-    let checkMatchTextbox;
-    for (let i = 0; i < this.formRef.formRef.length; i++) {
-      let element = this.formRef.formRef[i];
-      if (element.name === 'check'){
-        checkMatchTextbox = element;
-      }
-    };
-
-    if (!Validator.isNotEmpty(match) || 
-      !Validator.isRegExValid(match) || 
-      !Validator.isRegExValid(exclude)){
-      checkMatchTextbox.style = {};
-      return;
-    }
-
-    const isMatched = (new RegExp(match, 'gi')).test(check);
-    const isExcluded = exclude !== '' && (new RegExp(exclude, 'gi')).test(check);
-    
-    if(isMatched && !isExcluded){
-      checkMatchTextbox.style.background = '#39ce83';
-    } else {
-      checkMatchTextbox.style.background = '#e95779';
+      checkMatchTextbox.classList.add('check-match-failed');
     }
   }
 
@@ -233,7 +206,7 @@ class DownloadRulesTab extends React.Component {
               id="label"
               label={this.props.intl.formatMessage({
                 id: 'feeds.label',
-                defaultMessage: 'Label'
+                defaultMessage: 'Label',
               })}
               defaultValue={rule.label}
             />
@@ -242,10 +215,9 @@ class DownloadRulesTab extends React.Component {
               id="feedID"
               label={this.props.intl.formatMessage({
                 id: 'feeds.applicable.feed',
-                defaultMessage: 'Applicable Feed'
+                defaultMessage: 'Applicable Feed',
               })}
-              defaultID={rule.feedID}
-            >
+              defaultID={rule.feedID}>
               {this.getAvailableFeedsOptions()}
             </Select>
           </FormRow>
@@ -254,7 +226,7 @@ class DownloadRulesTab extends React.Component {
               id="match"
               label={this.props.intl.formatMessage({
                 id: 'feeds.match.pattern',
-                defaultMessage: 'Match Pattern'
+                defaultMessage: 'Match Pattern',
               })}
               placeholder={this.props.intl.formatMessage(MESSAGES.regEx)}
               defaultValue={rule.match}
@@ -263,7 +235,7 @@ class DownloadRulesTab extends React.Component {
               id="exclude"
               label={this.props.intl.formatMessage({
                 id: 'feeds.exclude.pattern',
-                defaultMessage: 'Exclude Pattern'
+                defaultMessage: 'Exclude Pattern',
               })}
               placeholder={this.props.intl.formatMessage(MESSAGES.regEx)}
               defaultValue={rule.exclude}
@@ -273,7 +245,7 @@ class DownloadRulesTab extends React.Component {
               id="check"
               label={this.props.intl.formatMessage({
                 id: 'feeds.test.match',
-                defaultMessage: 'Check matching.'
+                defaultMessage: 'Check Matching.',
               })}
               placeholder={this.props.intl.formatMessage(MESSAGES.check)}
             />
@@ -283,7 +255,7 @@ class DownloadRulesTab extends React.Component {
               id="destination"
               label={this.props.intl.formatMessage({
                 id: 'feeds.torrent.destination',
-                defaultMessage: 'Torrent Destination'
+                defaultMessage: 'Torrent Destination',
               })}
               suggested={rule.destination}
             />
@@ -291,7 +263,7 @@ class DownloadRulesTab extends React.Component {
               id="tags"
               label={this.props.intl.formatMessage({
                 id: 'feeds.apply.tags',
-                defaultMessage: 'Apply Tags'
+                defaultMessage: 'Apply Tags',
               })}
               placeholder={this.props.intl.formatMessage(MESSAGES.tags)}
               defaultValue={rule.tags.join(', ')}
@@ -300,22 +272,13 @@ class DownloadRulesTab extends React.Component {
           <FormRow>
             <FormRowItem width="auto" />
             <Checkbox id="startOnLoad" checked={rule.startOnLoad} matchTextboxHeight>
-              <FormattedMessage
-                id="feeds.start.on.load"
-                defaultMessage="Start on load"
-              />
+              <FormattedMessage id="feeds.start.on.load" defaultMessage="Start on load" />
             </Checkbox>
             <Button onClick={() => this.setState({currentlyEditingRule: 'none'})}>
-              <FormattedMessage
-                id="button.cancel"
-                defaultMessage="Cancel"
-              />
+              <FormattedMessage id="button.cancel" defaultMessage="Cancel" />
             </Button>
             <Button type="submit">
-              <FormattedMessage
-                id="button.save.feed"
-                defaultMessage="Save"
-              />
+              <FormattedMessage id="button.save.feed" defaultMessage="Save" />
             </Button>
           </FormRow>
         </FormRowGroup>
@@ -327,36 +290,33 @@ class DownloadRulesTab extends React.Component {
     return this.getModifyRuleForm(defaultRule);
   }
 
-  getRulesListItem(rule){
+  getRulesListItem(rule) {
     const matchedCount = rule.count || 0;
     let excludeNode = null;
     let tags = null;
 
     if (rule.exclude) {
       excludeNode = (
-        <li className="interactive-list__detail-list__item
+        <li
+          className="interactive-list__detail-list__item
           interactive-list__detail interactive-list__detail--tertiary">
-          <FormattedMessage
-            id="feeds.exclude"
-            defaultMessage="Exclude"
-          /> {rule.exclude}
+          <FormattedMessage id="feeds.exclude" defaultMessage="Exclude" /> {rule.exclude}
         </li>
       );
     }
 
     if (rule.tags && rule.tags.length > 0) {
       const tagNodes = rule.tags.map((tag, index) => {
-        return <span className="tag" key={index}>{tag}</span>;
+        return (
+          <span className="tag" key={index}>
+            {tag}
+          </span>
+        );
       });
 
       tags = (
-        <li
-          className="interactive-list__detail-list__item interactive-list__detail interactive-list__detail--tertiary"
-        >
-          <FormattedMessage
-            id="feeds.tags"
-            defaultMessage="Tags"
-          /> {tagNodes}
+        <li className="interactive-list__detail-list__item interactive-list__detail interactive-list__detail--tertiary">
+          <FormattedMessage id="feeds.tags" defaultMessage="Tags" /> {tagNodes}
         </li>
       );
     }
@@ -365,25 +325,28 @@ class DownloadRulesTab extends React.Component {
       <li className="interactive-list__item interactive-list__item--stacked-content" key={rule._id}>
         <div className="interactive-list__label">
           <ul className="interactive-list__detail-list">
-            <li className="interactive-list__detail-list__item
+            <li
+              className="interactive-list__detail-list__item
               interactive-list__detail--primary">
               {rule.label}
             </li>
-            <li className="interactive-list__detail-list__item
+            <li
+              className="interactive-list__detail-list__item
               interactive-list__detail-list__item--overflow
               interactive-list__detail interactive-list__detail--secondary">
-              <FormattedMessage id="feeds.match.count"
+              <FormattedMessage
+                id="feeds.match.count"
                 defaultMessage="{count, plural, =1 {# match} other
-                  {# matches}}" values={{count: matchedCount}} />
+                  {# matches}}"
+                values={{count: matchedCount}}
+              />
             </li>
           </ul>
           <ul className="interactive-list__detail-list">
-            <li className="interactive-list__detail-list__item
+            <li
+              className="interactive-list__detail-list__item
               interactive-list__detail interactive-list__detail--tertiary">
-              <FormattedMessage
-                id="feeds.match"
-                defaultMessage="Match"
-              /> {rule.match}
+              <FormattedMessage id="feeds.match" defaultMessage="Match" /> {rule.match}
             </li>
             {excludeNode}
             {tags}
@@ -391,14 +354,12 @@ class DownloadRulesTab extends React.Component {
         </div>
         <span
           className="interactive-list__icon interactive-list__icon--action"
-          onClick={() => this.handleModifyRuleClick(rule)}
-        >
+          onClick={() => this.handleModifyRuleClick(rule)}>
           <ArrowIcon />
         </span>
         <span
           className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
-          onClick={() => this.handleRemoveRuleClick(rule)}
-        >
+          onClick={() => this.handleRemoveRuleClick(rule)}>
           <Close />
         </span>
       </li>
@@ -411,16 +372,12 @@ class DownloadRulesTab extends React.Component {
         <ul className="interactive-list">
           <li className="interactive-list__item">
             <div className="interactive-list__label">
-              <FormattedMessage
-                id="feeds.no.rules.defined"
-                defaultMessage="No rules defined."
-              />
+              <FormattedMessage id="feeds.no.rules.defined" defaultMessage="No rules defined." />
             </div>
             <span
-            className="interactive-list__icon interactive-list__icon--action"
-            onClick={() => this.handleAddRuleClick()}
-            >
-              <Add/>
+              className="interactive-list__icon interactive-list__icon--action"
+              onClick={() => this.handleAddRuleClick()}>
+              <Add />
             </span>
           </li>
         </ul>
@@ -428,7 +385,7 @@ class DownloadRulesTab extends React.Component {
     }
 
     const rulesList = this.state.rules.map((rule, index) => {
-      if (rule._id === this.state.currentlyEditingRule){
+      if (rule._id === this.state.currentlyEditingRule) {
         return this.getModifyRuleForm(rule);
       } else {
         return this.getRulesListItem(rule);
@@ -438,17 +395,18 @@ class DownloadRulesTab extends React.Component {
     return (
       <ul className="interactive-list">
         {rulesList}
-        {(this.state.currentlyEditingRule=== 'new') ? this.getAddRuleForm() :
+        {this.state.currentlyEditingRule === 'new' ? (
+          this.getAddRuleForm()
+        ) : (
           <li className="interactive-list__item">
-            <div className="interactive-list__label">
-            </div>
+            <div className="interactive-list__label" />
             <span
-            className="interactive-list__icon interactive-list__icon--action"
-            onClick={() => this.handleAddRuleClick()}
-            >
+              className="interactive-list__icon interactive-list__icon--action"
+              onClick={() => this.handleAddRuleClick()}>
               <Add />
             </span>
-          </li>}
+          </li>
+        )}
       </ul>
     );
   }
@@ -473,12 +431,12 @@ class DownloadRulesTab extends React.Component {
       this.setState({errors});
     } else {
       let currentRule = this.state.currentlyEditingRule;
-      if (currentRule !== 'none' && currentRule !== 'new'){
+      if (currentRule !== 'none' && currentRule !== 'new') {
         FeedMonitorStore.removeRule(currentRule);
       }
       FeedMonitorStore.addRule(formData);
       this.formRef.resetForm();
-      this.setState({currentlyEditingRule: 'none'})
+      this.setState({currentlyEditingRule: 'none'});
     }
   };
 
@@ -486,12 +444,12 @@ class DownloadRulesTab extends React.Component {
     FeedMonitorStore.removeRule(rule._id);
   }
 
-  handleAddRuleClick(){
-    this.setState({currentlyEditingRule: 'new'})
+  handleAddRuleClick() {
+    this.setState({currentlyEditingRule: 'new'});
   }
 
-  handleModifyRuleClick(rule){
-    this.setState({currentlyEditingRule: rule._id})
+  handleModifyRuleClick(rule) {
+    this.setState({currentlyEditingRule: rule._id});
   }
 
   validateForm() {
@@ -511,17 +469,13 @@ class DownloadRulesTab extends React.Component {
   }
 
   render() {
-    const errors = Object.keys(this.state.errors).map(
-      (errorID, index) => {
-        return (
-          <FormRow key={index}>
-            <FormError>
-              {this.state.errors[errorID]}
-            </FormError>
-          </FormRow>
-        );
-      }
-    );
+    const errors = Object.keys(this.state.errors).map((errorID, index) => {
+      return (
+        <FormRow key={index}>
+          <FormError>{this.state.errors[errorID]}</FormError>
+        </FormRow>
+      );
+    });
 
     return (
       <Form

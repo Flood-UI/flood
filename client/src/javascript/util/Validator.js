@@ -19,12 +19,11 @@ export default class Validator {
     return url != null && url !== '' && url.match(regEx.url) !== null;
   }
 
-  static isPositiveInteger(value){
-    if  (value === null || value === '')
-      return false;
+  static isPositiveInteger(value) {
+    if (value === null || value === '') return false;
 
     let number = parseInt(value, 10);
 
-    return (!isNaN(number) && number>0);
+    return !isNaN(number) && number > 0;
   }
 }
