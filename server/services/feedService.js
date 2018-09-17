@@ -165,7 +165,7 @@ class FeedService extends BaseService {
     // If there are no enclosures, then use the link tag instead
     if (feedItem.link) {
       // remove CDATA tags around links
-      let cdata = regEx.cdata.exec(feedItem.link);
+      const cdata = regEx.cdata.exec(feedItem.link);
 
       if (cdata && cdata[1]) {
         return [cdata[1]];
