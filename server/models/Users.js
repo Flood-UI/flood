@@ -1,13 +1,24 @@
-'use strict';
 const argon2 = require('argon2');
 const Datastore = require('nedb');
+const fs = require('fs-extra');
+const path = require('path');
 
 const config = require('../../config');
+const services = require('../services');
 
 class Users {
   constructor() {
     this.ready = false;
     this.db = this.loadDatabase();
+  }
+
+  bootstrapServicesForAllUsers() {
+    this.listUsers((users, err) => {
+      if (err) throw err;
+      if (users && users.length) {
+        users.forEach(services.bootstrapServicesForUser);
+      }
+    });
   }
 
   comparePassword(credentials, callback) {
@@ -35,7 +46,7 @@ class Users {
   }
 
   createUser(credentials, callback) {
-    const {password, username} = credentials;
+    const {password, username, host, port, socketPath, isAdmin} = credentials;
 
     if (!this.ready) {
       return callback(null, 'Users database is not ready.');
@@ -48,7 +59,7 @@ class Users {
     argon2
       .hash(password)
       .then(hash => {
-        this.db.insert({ username, password: hash }, (error, user) => {
+        this.db.insert({username, password: hash, host, port, socketPath, isAdmin}, (error, user) => {
           if (error) {
             if (error.errorType === 'uniqueViolated') {
               error = 'Username already exists.';
@@ -57,19 +68,48 @@ class Users {
             return callback(null, error);
           }
 
-          return callback({ username });
+          services.bootstrapServicesForUser(user);
+
+          return callback({username});
         });
       })
-      .catch(error => callback(null, error));
+      .catch(error => {
+        callback(null, error);
+      });
   }
 
   removeUser(username, callback) {
-    this.db.remove({username: username}, {}, (err, numRemoved) => {
+    this.db.findOne({username}).exec((err, user) => {
       if (err) {
         return callback(null, err);
       }
 
-      return callback({username: username});
+      // Username not found.
+      if (user == null) {
+        return callback(null, user);
+      }
+
+      this.db.remove({username}, {}, (err, numRemoved) => {
+        if (err) {
+          return callback(null, err);
+        }
+
+        fs.removeSync(path.join(config.dbPath, user._id));
+
+        return callback({username});
+      });
+    });
+  }
+
+  updateUser(username, userRecordPatch, callback) {
+    this.db.update({username}, {$set: userRecordPatch}, (err, numUsersUpdated, updatedUser) => {
+      if (err) return callback(null, err);
+      // Username not found.
+      if (numUsersUpdated === 0) {
+        return callback(null, err);
+      }
+
+      return callback(userRecordPatch);
     });
   }
 
@@ -86,7 +126,7 @@ class Users {
   loadDatabase() {
     let db = new Datastore({
       autoload: true,
-      filename: `${config.dbPath}users.db`
+      filename: path.join(config.dbPath, 'users.db'),
     });
 
     db.ensureIndex({fieldName: 'username', unique: true});
@@ -111,9 +151,7 @@ class Users {
         return callback(null, err);
       }
 
-      return callback(users.map((user) => {
-        return {username: user.username};
-      }));
+      return callback(users);
     });
   }
 }

@@ -42,8 +42,12 @@ export default {
   'button.no': 'No',
   'button.save': 'Save Settings',
   'button.save.feed': 'Save',
+  'button.test': 'Test',
   'button.state.adding': 'Adding...',
   'button.yes': 'Yes',
+
+  'connectivity.modal.title': 'Connectivity Issue',
+  'connectivity.modal.content': 'Cannot connect to rTorrent. Please update the information now.',
 
   'feeds.add.automatic.download.rule': 'Add Download Rule',
   'feeds.add.feed': 'Add Feed',
@@ -108,7 +112,8 @@ export default {
   'locale.language.fr': 'French',
   'locale.language.nl': 'Nederlands',
 
-  'mediainfo.execError': 'An error occurred while running mediainfo on the server. Check that mediainfo is installed and available in the PATH to Flood.',
+  'mediainfo.execError':
+    'An error occurred while running mediainfo on the server. Check that mediainfo is installed and available in the PATH to Flood.',
   'mediainfo.fetching': 'Fetching...',
   'mediainfo.heading': 'Mediainfo Output',
 
@@ -119,7 +124,7 @@ export default {
   'notification.clear.all': 'Clear All',
   'notification.showing': 'Showing',
 
-  'priority.dont.download': 'Don\'t Download',
+  'priority.dont.download': "Don't Download",
   'priority.high': 'High',
   'priority.low': 'Low',
   'priority.normal': 'Normal',
@@ -274,6 +279,7 @@ export default {
   'torrents.list.context.stop': 'Stop',
   'torrents.list.no.torrents': 'No torrents to display.',
   'torrents.list.drop': 'Drop files here to add them to rTorrent.',
+  'torrents.list.cannot.connect': 'Cannot connect to rTorrent.',
   'torrent.list.peers': '{connected} {of} {total}',
   'torrent.list.peers.of': 'of',
 
@@ -308,12 +314,17 @@ export default {
       other {# torrents}
     }?`,
   'torrents.remove.delete.data': 'Delete data',
-  'torrents.remove.error.no.torrents.selected': 'You haven\'t selected any torrents.',
+  'torrents.remove.error.no.torrents.selected': "You haven't selected any torrents.",
   'torrents.remove': 'Remove Torrents',
 
   'torrents.set.tags.button.set': 'Set Tags',
   'torrents.set.tags.heading': 'Set Tags',
   'torrents.set.tags.enter.tags': 'Enter tags',
 
-  'torrents.sort.title': 'Sort By'
+  'torrents.sort.title': 'Sort By',
+
+  'connection-interruption.heading': 'Cannot connect to rTorrent',
+  'connection-interruption.verify-settings-prompt': `Let's verify your connection settings.`,
+  'connection-interruption.verification-error': `Connection could not be verified.`,
+  'connection-interruption.verification-success': `Connection successful`,
 };

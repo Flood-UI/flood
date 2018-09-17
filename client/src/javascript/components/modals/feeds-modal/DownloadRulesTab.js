@@ -1,5 +1,16 @@
 import _ from 'lodash';
-import {Button, Checkbox, Form, FormError, FormRow, FormRowGroup, FormRowItem, Select, SelectItem, Textbox} from 'flood-ui-kit';
+import {
+  Button,
+  Checkbox,
+  Form,
+  FormError,
+  FormRow,
+  FormRowGroup,
+  FormRowItem,
+  Select,
+  SelectItem,
+  Textbox,
+} from 'flood-ui-kit';
 import {defineMessages, FormattedMessage, injectIntl} from 'react-intl';
 import React from 'react';
 
@@ -15,35 +26,35 @@ import Validator from '../../../util/Validator';
 const MESSAGES = defineMessages({
   mustSpecifyDestination: {
     id: 'feeds.validation.must.specify.destination',
-    defaultMessage: 'You must specify a destination.'
+    defaultMessage: 'You must specify a destination.',
   },
   mustSelectFeed: {
     id: 'feeds.validation.must.select.feed',
-    defaultMessage: 'You must select a feed.'
+    defaultMessage: 'You must select a feed.',
   },
   mustSpecifyLabel: {
     id: 'feeds.validation.must.specify.label',
-    defaultMessage: 'You must specify a label.'
+    defaultMessage: 'You must specify a label.',
   },
   invalidRegularExpression: {
     id: 'feeds.validation.invalid.regular.expression',
-    defaultMessage: 'Invalid regular expression.'
+    defaultMessage: 'Invalid regular expression.',
   },
   url: {
     id: 'feeds.url',
-    defaultMessage: 'URL'
+    defaultMessage: 'URL',
   },
   label: {
     id: 'feeds.label',
-    defaultMessage: 'Label'
+    defaultMessage: 'Label',
   },
   regEx: {
     id: 'feeds.regEx',
-    defaultMessage: 'RegEx'
+    defaultMessage: 'RegEx',
   },
   tags: {
     id: 'feeds.tags',
-    defaultMessage: 'Tags'
+    defaultMessage: 'Tags',
   },
   check: {
     id: 'feeds.check',
@@ -67,32 +78,32 @@ class DownloadRulesTab extends React.Component {
   validatedFields = {
     destination: {
       isValid: Validator.isNotEmpty,
-      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyDestination)
+      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyDestination),
     },
     feedID: {
       isValid: Validator.isNotEmpty,
-      error: this.props.intl.formatMessage(MESSAGES.mustSelectFeed)
+      error: this.props.intl.formatMessage(MESSAGES.mustSelectFeed),
     },
     label: {
       isValid: Validator.isNotEmpty,
-      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel)
+      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel),
     },
     match: {
-      isValid: (value) => {
+      isValid: value => {
         return Validator.isNotEmpty(value) && Validator.isRegExValid(value);
       },
-      error: this.props.intl.formatMessage(MESSAGES.invalidRegularExpression)
+      error: this.props.intl.formatMessage(MESSAGES.invalidRegularExpression),
     },
     exclude: {
-      isValid: (value) => {
+      isValid: value => {
         if (Validator.isNotEmpty(value)) {
           return Validator.isRegExValid(value);
         }
 
         return true;
       },
-      error: this.props.intl.formatMessage(MESSAGES.invalidRegularExpression)
-    }
+      error: this.props.intl.formatMessage(MESSAGES.invalidRegularExpression),
+    },
   };
 
   state = {
@@ -106,33 +117,47 @@ class DownloadRulesTab extends React.Component {
   };
 
   componentDidMount() {
-    FeedMonitorStore.listen(
-      EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS,
-      this.handleFeedMonitorsFetchSuccess
-    );
+    FeedMonitorStore.listen(EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS, this.handleFeedMonitorsFetchSuccess);
   }
 
   componentWillUnmount() {
-    FeedMonitorStore.unlisten(
-      EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS,
-      this.handleFeedMonitorsFetchSuccess
-    );
+    FeedMonitorStore.unlisten(EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS, this.handleFeedMonitorsFetchSuccess);
   }
 
-  checkFieldValidity = _.throttle(
-    (fieldName, fieldValue) => {
-      const {errors} = this.state;
+  checkFieldValidity = _.throttle((fieldName, fieldValue) => {
+    const {errors} = this.state;
 
-      if (
-        this.state.errors[fieldName]
-        && this.validatedFields[fieldName].isValid(fieldValue)
-      ) {
-        delete errors[fieldName];
-        this.setState({errors});
+    if (this.state.errors[fieldName] && this.validatedFields[fieldName].isValid(fieldValue)) {
+      delete errors[fieldName];
+      this.setState({errors});
+    }
+  }, 150);
+
+  checkMatch(match, exclude, check){
+    let checkMatchTextbox;
+    for (let i = 0; i < this.formRef.formRef.length; i++) {
+      let element = this.formRef.formRef[i];
+      if (element.name === 'check'){
+        checkMatchTextbox = element;
       }
-    },
-    150
-  );
+    };
+
+    if (!Validator.isNotEmpty(match) ||
+      !Validator.isRegExValid(match) ||
+      !Validator.isRegExValid(exclude)){
+      checkMatchTextbox.style = {};
+      return;
+    }
+
+    const isMatched = (new RegExp(match, 'gi')).test(check);
+    const isExcluded = exclude !== '' && (new RegExp(exclude, 'gi')).test(check);
+
+    if(isMatched && !isExcluded){
+      checkMatchTextbox.style.background = '#39ce83';
+    } else {
+      checkMatchTextbox.style.background = '#e95779';
+    }
+  }
 
   checkMatch(match, exclude, check){
     let checkMatchTextbox;
@@ -164,14 +189,10 @@ class DownloadRulesTab extends React.Component {
     const formData = this.formRef.getFormData();
     delete formData.check;
 
-    return Object.assign(
-      {},
-      formData,
-      {
-        field: 'title',
-        tags: formData.tags.split(','),
-      }
-    );
+    return Object.assign({}, formData, {
+      field: 'title',
+      tags: formData.tags.split(','),
+    });
   }
 
   getAvailableFeedsOptions() {
@@ -179,31 +200,28 @@ class DownloadRulesTab extends React.Component {
       return [
         <SelectItem key="empty" id="placeholder" placeholder>
           <em>
-            <FormattedMessage
-              id="feeds.no.feeds.available"
-              defaultMessage="No feeds available."
-            />
+            <FormattedMessage id="feeds.no.feeds.available" defaultMessage="No feeds available." />
           </em>
-        </SelectItem>
+        </SelectItem>,
       ];
     }
 
-    return this.state.feeds.reduce((feedOptions, feed) => {
-      return feedOptions.concat(
-        <SelectItem key={feed._id} id={feed._id}>
-          {feed.label}
-        </SelectItem>
-      );
-    }, [
-      <SelectItem key="select-feed" id="placeholder" placeholder>
-        <em>
-          <FormattedMessage
-            id="feeds.select.feed"
-            defaultMessage="Select feed"
-          />
-        </em>
-      </SelectItem>
-    ]);
+    return this.state.feeds.reduce(
+      (feedOptions, feed) => {
+        return feedOptions.concat(
+          <SelectItem key={feed._id} id={feed._id}>
+            {feed.label}
+          </SelectItem>
+        );
+      },
+      [
+        <SelectItem key="select-feed" id="placeholder" placeholder>
+          <em>
+            <FormattedMessage id="feeds.select.feed" defaultMessage="Select feed" />
+          </em>
+        </SelectItem>,
+      ]
+    );
   }
 
   getModifyRuleForm(rule) {
@@ -438,7 +456,7 @@ class DownloadRulesTab extends React.Component {
   handleFeedMonitorsFetchSuccess = () => {
     this.setState({
       feeds: FeedMonitorStore.getFeeds(),
-      rules: FeedMonitorStore.getRules()
+      rules: FeedMonitorStore.getRules(),
     });
   };
 
@@ -479,18 +497,15 @@ class DownloadRulesTab extends React.Component {
   validateForm() {
     const formData = this.getAmendedFormData();
 
-    const errors = Object.keys(this.validatedFields).reduce(
-      (accumulator, fieldName) => {
-        const fieldValue = formData[fieldName];
+    const errors = Object.keys(this.validatedFields).reduce((accumulator, fieldName) => {
+      const fieldValue = formData[fieldName];
 
-        if (!this.validatedFields[fieldName].isValid(fieldValue)) {
-          accumulator[fieldName] = this.validatedFields[fieldName].error;
-        }
+      if (!this.validatedFields[fieldName].isValid(fieldValue)) {
+        accumulator[fieldName] = this.validatedFields[fieldName].error;
+      }
 
-        return accumulator;
-      },
-      {}
-    );
+      return accumulator;
+    }, {});
 
     return {errors, isValid: !Object.keys(errors).length};
   }
@@ -513,19 +528,13 @@ class DownloadRulesTab extends React.Component {
         className="inverse"
         onChange={this.handleFormChange}
         onSubmit={this.handleFormSubmit}
-        ref={ref => this.formRef = ref}
-      >
+        ref={ref => (this.formRef = ref)}>
         <ModalFormSectionHeader>
-          <FormattedMessage
-            id="feeds.existing.rules"
-            defaultMessage="Existing Rules"
-          />
+          <FormattedMessage id="feeds.existing.rules" defaultMessage="Existing Rules" />
         </ModalFormSectionHeader>
         {errors}
         <FormRow>
-          <FormRowItem>
-            {this.getRulesList()}
-          </FormRowItem>
+          <FormRowItem>{this.getRulesList()}</FormRowItem>
         </FormRow>
         {/*<ModalFormSectionHeader>
           <FormattedMessage

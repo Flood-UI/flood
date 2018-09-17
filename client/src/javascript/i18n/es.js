@@ -104,7 +104,8 @@ export default {
   'locale.language.fr': 'Francés',
   'locale.language.nl': 'Holandés',
 
-  'mediainfo.execError': 'Se ha encontrado un error al correr Mediainfo. Confirme que Mediainfo este instalado y disponible a Flood en el PATH',
+  'mediainfo.execError':
+    'Se ha encontrado un error al correr Mediainfo. Confirme que Mediainfo este instalado y disponible a Flood en el PATH',
   'mediainfo.fetching': 'Fetching...',
   'mediainfo.heading': 'Mediainfo',
 
@@ -170,7 +171,8 @@ export default {
   'settings.ui.torrent.size': 'Tamaño de Torrent',
   'settings.ui.torrent.size.expanded': 'Modo Expandido',
   'settings.ui.torrent.size.condensed': 'Modo Condensado',
-  'settings.ui.torrent.details.tags.placement': 'En el modo expandido, las etiquetas se ven mejor al final de la lista.',
+  'settings.ui.torrent.details.tags.placement':
+    'En el modo expandido, las etiquetas se ven mejor al final de la lista.',
 
   'sidebar.button.feeds': 'Fuentes',
   'sidebar.button.notifications': 'Notificaciones',
@@ -308,5 +310,5 @@ export default {
   'torrents.set.tags.button.set': 'Configurar',
   'torrents.set.tags.heading': 'Configurar Etiquetas',
 
-  'torrents.sort.title': 'Ordenar Por'
+  'torrents.sort.title': 'Ordenar Por',
 };

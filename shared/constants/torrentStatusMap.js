@@ -1,5 +1,3 @@
-'use strict';
-
 const objectUtil = require('../util/objectUtil');
 
 const torrentStatusMap = objectUtil.reflect({
@@ -13,11 +11,9 @@ const torrentStatusMap = objectUtil.reflect({
   s: 'stopped',
   e: 'error',
   i: 'inactive',
-  a: 'active'
+  a: 'active',
 });
 
-torrentStatusMap.statusShorthand = [
-  'ch', 'sd', 'p', 'c', 'd', 'ad', 'au', 's', 'e', 'i', 'a'
-];
+torrentStatusMap.statusShorthand = ['ch', 'sd', 'p', 'c', 'd', 'ad', 'au', 's', 'e', 'i', 'a'];
 
 module.exports = torrentStatusMap;

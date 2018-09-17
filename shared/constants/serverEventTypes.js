@@ -1,7 +1,7 @@
-'use strict';
 const objectUtil = require('../util/objectUtil');
 
 const serverEventTypes = [
+  'CLIENT_CONNECTIVITY_STATUS_CHANGE',
   'NOTIFICATION_COUNT_CHANGE',
   'TAXONOMY_FULL_UPDATE',
   'TAXONOMY_DIFF_CHANGE',
@@ -12,7 +12,7 @@ const serverEventTypes = [
   'TORRENT_LIST_FULL_UPDATE',
   'TRANSFER_HISTORY_FULL_UPDATE',
   'TRANSFER_SUMMARY_DIFF_CHANGE',
-  'TRANSFER_SUMMARY_FULL_UPDATE'
+  'TRANSFER_SUMMARY_FULL_UPDATE',
 ];
 
 module.exports = objectUtil.createStringMapFromArray(serverEventTypes);

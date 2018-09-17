@@ -1,5 +1,3 @@
-'use strict';
-
 let FeedSub = require('feedsub');
 
 class Feed {
@@ -34,7 +32,8 @@ class Feed {
       emitOnStart: true,
       maxHistory: this.options.maxItemHistory,
       interval: options.interval ? Number(options.interval) : 15,
-      readEveryItem: true
+      forceInterval: true,
+      readEveryItem: true,
     });
 
     this.initReader();

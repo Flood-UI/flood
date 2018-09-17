@@ -1,23 +1,22 @@
-import {FormattedMessage, IntlProvider} from 'react-intl';
+import {IntlProvider} from 'react-intl';
 import {IndexRoute, Router, Route, browserHistory} from 'react-router';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import * as i18n from './i18n/languages';
-import AuthEnforcer from './components/auth/AuthEnforcer';
+import AppWrapper from './components/AppWrapper';
 import EventTypes from './constants/EventTypes';
 import FloodActions from './actions/FloodActions';
 import Login from './components/views/Login';
 import Register from './components/views/Register';
 import SettingsStore from './stores/SettingsStore';
 import TorrentClientOverview from './components/views/TorrentClientOverview';
-import UIStore from './stores/UIStore';
 
 import '../sass/style.scss';
 
 const appRoutes = (
   <Router history={browserHistory}>
-    <Route path="/" component={AuthEnforcer}>
+    <Route path="/" component={AppWrapper}>
       <IndexRoute component={Login} />
       <Route path="login" component={Login} />
       <Route path="register" component={Register} />
@@ -33,44 +32,32 @@ class FloodApp extends React.Component {
     super();
 
     this.state = {
-      locale: SettingsStore.getFloodSettings('language')
+      locale: SettingsStore.getFloodSettings('language'),
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
-    });
-
-    UIStore.registerDependency({
-      id: 'flood-settings',
-      message: (
-        <FormattedMessage id="dependency.loading.flood.settings"
-          defaultMessage="Flood Settings" />
-      )
     });
 
     FloodActions.startActivityStream();
   }
 
   componentDidMount() {
-    SettingsStore.listen(
-      EventTypes.SETTINGS_CHANGE,
-      this.handleSettingsChange
-    );
+    SettingsStore.listen(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
+
+    SettingsStore.fetchClientSettings();
+    SettingsStore.fetchFloodSettings();
   }
 
   componentWillUnmount() {
-    SettingsStore.unlisten(
-      EventTypes.SETTINGS_CHANGE,
-      this.handleSettingsChange
-    );
+    SettingsStore.unlisten(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
   }
 
   handleSettingsChange() {
-    if (SettingsStore.getFloodSettings('language') !== this.state.language) {
-      this.setState({locale: SettingsStore.getFloodSettings('language')});
+    const nextLocale = SettingsStore.getFloodSettings('language');
+    if (nextLocale !== this.state.language) {
+      this.setState({locale: nextLocale});
     }
-
-    UIStore.satisfyDependency('flood-settings');
   }
 
   render() {
