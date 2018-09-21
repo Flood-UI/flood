@@ -34,7 +34,7 @@ class SettingsModal extends React.Component {
       floodSettings: SettingsStore.getFloodSettings(),
     };
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -82,15 +82,13 @@ class SettingsModal extends React.Component {
   }
 
   handleSaveSettingsClick() {
-    let floodSettings = Object.keys(this.state.changedFloodSettings).map(settingsKey => {
-      return {
-        id: settingsKey,
-        data: this.state.changedFloodSettings[settingsKey],
-      };
-    });
+    const floodSettings = Object.keys(this.state.changedFloodSettings).map(settingsKey => ({
+      id: settingsKey,
+      data: this.state.changedFloodSettings[settingsKey],
+    }));
 
-    let clientSettings = Object.keys(this.state.changedClientSettings).map(settingsKey => {
-      let data = this.state.changedClientSettings[settingsKey];
+    const clientSettings = Object.keys(this.state.changedClientSettings).map((settingsKey) => {
+      const data = this.state.changedClientSettings[settingsKey];
 
       if (data.overrideLocalSetting) {
         return data;
@@ -128,15 +126,15 @@ class SettingsModal extends React.Component {
   }
 
   handleFloodSettingsChange(changedSettings) {
-    let floodSettings = this.mergeObjects(this.state.floodSettings, changedSettings);
-    let changedFloodSettings = this.mergeObjects(this.state.changedFloodSettings, changedSettings);
+    const floodSettings = this.mergeObjects(this.state.floodSettings, changedSettings);
+    const changedFloodSettings = this.mergeObjects(this.state.changedFloodSettings, changedSettings);
 
     this.setState({floodSettings, changedFloodSettings});
   }
 
   handleClientSettingsChange(changedSettings) {
-    let clientSettings = this.mergeObjects(this.state.clientSettings, changedSettings);
-    let changedClientSettings = this.mergeObjects(this.state.changedClientSettings, changedSettings);
+    const clientSettings = this.mergeObjects(this.state.clientSettings, changedSettings);
+    const changedClientSettings = this.mergeObjects(this.state.changedClientSettings, changedSettings);
 
     this.setState({clientSettings, changedClientSettings});
   }
@@ -148,17 +146,17 @@ class SettingsModal extends React.Component {
   }
 
   mergeObjects(objA, objB) {
-    Object.keys(objB).forEach(key => {
+    Object.keys(objB).forEach((key) => {
       if (!objB.hasOwnProperty(key) || objB[key] == null) {
         return;
       }
 
       // If it's an object, then recursive merge.
       if (
-        !Array.isArray(objB[key]) &&
-        !Array.isArray(objB[key]) &&
-        typeof objA[key] === 'object' &&
-        typeof objB[key] === 'object'
+        !Array.isArray(objB[key])
+        && !Array.isArray(objB[key])
+        && typeof objA[key] === 'object'
+        && typeof objB[key] === 'object'
       ) {
         objA[key] = this.mergeObjects(objA[key], objB[key]);
       } else {
@@ -170,7 +168,7 @@ class SettingsModal extends React.Component {
   }
 
   render() {
-    let tabs = {
+    const tabs = {
       bandwidth: {
         content: BandwidthTab,
         props: {

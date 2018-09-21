@@ -35,7 +35,13 @@ const client = {
       file.originalname = encodeURIComponent(file.originalname);
 
       const fileRequest = new ClientRequest(user, services);
-      fileRequest.addFiles({files: file, path, isBasePath, start, tags});
+      fileRequest.addFiles({
+        files: file,
+        path,
+        isBasePath,
+        start,
+        tags,
+      });
 
       // Set the callback for only the last request.
       if (index === files.length - 1) {
@@ -60,7 +66,13 @@ const client = {
     const request = new ClientRequest(user, services);
 
     request.createDirectory({path});
-    request.addURLs({urls, path, isBasePath, start, tags});
+    request.addURLs({
+      urls,
+      path,
+      isBasePath,
+      start,
+      tags,
+    });
     request.onComplete(callback);
     request.send();
 
@@ -93,9 +105,9 @@ const client = {
           files = fileString.split(',');
         }
 
-        const filePathsToDownload = this.findFilesByIndicies(files, torrentDetails.fileTree).map(file => {
-          return path.join(selectedTorrent.directory, file.path);
-        });
+        const filePathsToDownload = this.findFilesByIndicies(files, torrentDetails.fileTree).map(file =>
+          path.join(selectedTorrent.directory, file.path)
+        );
 
         if (filePathsToDownload.length === 1) {
           const file = filePathsToDownload[0];
@@ -144,15 +156,14 @@ const client = {
   findFilesByIndicies(indices, fileTree = {}) {
     const {directories, files = []} = fileTree;
 
-    let selectedFiles = files.filter(file => {
-      return indices.includes(`${file.index}`);
-    });
+    let selectedFiles = files.filter(file => indices.includes(`${file.index}`));
 
     if (directories != null) {
       selectedFiles = selectedFiles.concat(
-        Object.keys(directories).reduce((accumulator, directory) => {
-          return accumulator.concat(this.findFilesByIndicies(indices, directories[directory]));
-        }, [])
+        Object.keys(directories).reduce(
+          (accumulator, directory) => accumulator.concat(this.findFilesByIndicies(indices, directories[directory])),
+          []
+        )
       );
     }
 
@@ -164,16 +175,10 @@ const client = {
     const request = new ClientRequest(user, services);
     const response = {};
 
-    let outboundTransformation = {
-      throttleGlobalDownMax: apiResponse => {
-        return Number(apiResponse) / 1024;
-      },
-      throttleGlobalUpMax: apiResponse => {
-        return Number(apiResponse) / 1024;
-      },
-      piecesMemoryMax: apiResponse => {
-        return Number(apiResponse) / (1024 * 1024);
-      },
+    const outboundTransformation = {
+      throttleGlobalDownMax: apiResponse => Number(apiResponse) / 1024,
+      throttleGlobalUpMax: apiResponse => Number(apiResponse) / 1024,
+      piecesMemoryMax: apiResponse => Number(apiResponse) / (1024 * 1024),
     };
 
     request.fetchSettings({
@@ -190,7 +195,7 @@ const client = {
 
       data.forEach((datum, index) => {
         let value = datum[0];
-        let settingsKey = clientSettingsMap[requestedSettingsKeys[index]];
+        const settingsKey = clientSettingsMap[requestedSettingsKeys[index]];
 
         if (outboundTransformation[settingsKey]) {
           value = outboundTransformation[settingsKey](value);
@@ -236,9 +241,9 @@ const client = {
     const sourcePaths = data.sources;
     const mainRequest = new ClientRequest(user, services);
 
-    const hashesToRestart = hashes.filter(hash => {
-      return !services.torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped);
-    });
+    const hashesToRestart = hashes.filter(
+      hash => !services.torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped)
+    );
 
     let afterCheckHash;
 
@@ -284,7 +289,7 @@ const client = {
 
   setFilePriority(user, services, hashes, data, callback) {
     // TODO Add support for multiple hashes.
-    let fileIndices = data.fileIndices;
+    const fileIndices = data.fileIndices;
     const request = new ClientRequest(user, services);
 
     request.setFilePriority({hashes, fileIndices, priority: data.priority});
@@ -310,28 +315,22 @@ const client = {
     const request = new ClientRequest(user, services);
     if (payloads.length === 0) return callback({});
 
-    let inboundTransformation = {
-      throttleGlobalDownMax: userInput => {
-        return {
-          id: userInput.id,
-          data: Number(userInput.data) * 1024,
-        };
-      },
-      throttleGlobalUpMax: userInput => {
-        return {
-          id: userInput.id,
-          data: Number(userInput.data) * 1024,
-        };
-      },
-      piecesMemoryMax: userInput => {
-        return {
-          id: userInput.id,
-          data: (Number(userInput.data) * 1024 * 1024).toString(),
-        };
-      },
+    const inboundTransformation = {
+      throttleGlobalDownMax: userInput => ({
+        id: userInput.id,
+        data: Number(userInput.data) * 1024,
+      }),
+      throttleGlobalUpMax: userInput => ({
+        id: userInput.id,
+        data: Number(userInput.data) * 1024,
+      }),
+      piecesMemoryMax: userInput => ({
+        id: userInput.id,
+        data: (Number(userInput.data) * 1024 * 1024).toString(),
+      }),
     };
 
-    let transformedPayloads = payloads.map(payload => {
+    const transformedPayloads = payloads.map(payload => {
       if (inboundTransformation[payload.id]) {
         return inboundTransformation[payload.id](payload);
       }

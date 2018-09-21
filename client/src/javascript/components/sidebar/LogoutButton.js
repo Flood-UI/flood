@@ -27,7 +27,8 @@ class LogoutButton extends React.Component {
         position="bottom"
         wrapperClassName="sidebar__action sidebar__action--last
           sidebar__icon-button sidebar__icon-button--interactive
-          tooltip__wrapper">
+          tooltip__wrapper"
+      >
         <Logout />
       </Tooltip>
     );

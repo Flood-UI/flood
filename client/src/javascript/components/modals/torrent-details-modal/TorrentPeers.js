@@ -75,10 +75,10 @@ export default class TorrentPeers extends React.Component {
               {peer.address}
             </td>
             <td>
-              <Size value={peer.downloadRate} isSpeed={true} />
+              <Size value={peer.downloadRate} isSpeed />
             </td>
             <td>
-              <Size value={peer.uploadRate} isSpeed={true} />
+              <Size value={peer.uploadRate} isSpeed />
             </td>
             <td>{peer.completedPercent}%</td>
             <td>{peer.clientVersion}</td>
@@ -107,15 +107,14 @@ export default class TorrentPeers extends React.Component {
           </table>
         </div>
       );
-    } else {
-      return (
-        <span className="torrent-details__section__null-data">
-          <FormattedMessage
-            id="torrents.details.peers.no.data"
-            defaultMessage="There is no peer data for this torrent."
-          />
-        </span>
-      );
     }
+    return (
+      <span className="torrent-details__section__null-data">
+        <FormattedMessage
+          id="torrents.details.peers.no.data"
+          defaultMessage="There is no peer data for this torrent."
+        />
+      </span>
+    );
   }
 }

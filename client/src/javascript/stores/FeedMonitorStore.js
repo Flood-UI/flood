@@ -139,9 +139,7 @@ class FeedsStoreClass extends BaseStore {
       return;
     }
 
-    this[type] = items.sort((a, b) => {
-      return a.label.localeCompare(b.label);
-    });
+    this[type] = items.sort((a, b) => a.label.localeCompare(b.label));
   }
 
   setFeeds(feeds) {
@@ -153,9 +151,9 @@ class FeedsStoreClass extends BaseStore {
   }
 }
 
-let FeedsStore = new FeedsStoreClass();
+const FeedsStore = new FeedsStoreClass();
 
-FeedsStore.dispatcherID = AppDispatcher.register(payload => {
+FeedsStore.dispatcherID = AppDispatcher.register((payload) => {
   const {action} = payload;
 
   switch (action.type) {

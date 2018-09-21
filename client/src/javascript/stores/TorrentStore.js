@@ -46,10 +46,10 @@ class TorrentStoreClass extends BaseStore {
   }
 
   filterTorrents() {
-    let searchFilter = TorrentFilterStore.getSearchFilter();
-    let statusFilter = TorrentFilterStore.getStatusFilter();
-    let tagFilter = TorrentFilterStore.getTagFilter();
-    let trackerFilter = TorrentFilterStore.getTrackerFilter();
+    const searchFilter = TorrentFilterStore.getSearchFilter();
+    const statusFilter = TorrentFilterStore.getStatusFilter();
+    const tagFilter = TorrentFilterStore.getTagFilter();
+    const trackerFilter = TorrentFilterStore.getTrackerFilter();
 
     let filteredTorrents = Object.assign([], this.sortedTorrents);
 
@@ -90,21 +90,15 @@ class TorrentStoreClass extends BaseStore {
   }
 
   getSelectedTorrentsDownloadLocations() {
-    return this.selectedTorrents.map(hash => {
-      return this.torrents[hash].basePath;
-    });
+    return this.selectedTorrents.map(hash => this.torrents[hash].basePath);
   }
 
   getSelectedTorrentsFilename() {
-    return this.selectedTorrents.map(hash => {
-      return this.torrents[hash].baseFilename;
-    });
+    return this.selectedTorrents.map(hash => this.torrents[hash].baseFilename);
   }
 
   getSelectedTorrentsTags() {
-    return this.selectedTorrents.map(hash => {
-      return this.torrents[hash].tags;
-    });
+    return this.selectedTorrents.map(hash => this.torrents[hash].tags);
   }
 
   handleAddTorrentError() {
@@ -223,7 +217,7 @@ class TorrentStoreClass extends BaseStore {
   }
 
   handleTorrentListDiffChange(torrentListDiff) {
-    Object.keys(torrentListDiff).forEach(torrentHash => {
+    Object.keys(torrentListDiff).forEach((torrentHash) => {
       const {action, data} = torrentListDiff[torrentHash];
 
       switch (action) {
@@ -238,7 +232,7 @@ class TorrentStoreClass extends BaseStore {
           delete this.torrents[torrentHash];
           break;
         case serverEventTypes.TORRENT_LIST_ACTION_TORRENT_DETAIL_UPDATED:
-          Object.keys(data).forEach(detailKey => {
+          Object.keys(data).forEach((detailKey) => {
             this.torrents[torrentHash][detailKey] = data[detailKey];
           });
           break;
@@ -273,7 +267,7 @@ class TorrentStoreClass extends BaseStore {
   }
 
   sortTorrents() {
-    let sortBy = TorrentFilterStore.getTorrentsSort();
+    const sortBy = TorrentFilterStore.getTorrentsSort();
 
     // Convert torrents hash to array and sort it.
     this.sortedTorrents = sortTorrents(this.torrents, sortBy);
@@ -301,7 +295,7 @@ class TorrentStoreClass extends BaseStore {
 
 const TorrentStore = new TorrentStoreClass();
 
-TorrentStore.dispatcherID = AppDispatcher.register(payload => {
+TorrentStore.dispatcherID = AppDispatcher.register((payload) => {
   const {action} = payload;
 
   switch (action.type) {

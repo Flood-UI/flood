@@ -19,7 +19,7 @@ class SettingsButton extends React.Component {
 
     this.tooltipRef = null;
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -33,7 +33,7 @@ class SettingsButton extends React.Component {
   }
 
   render() {
-    let label = this.props.intl.formatMessage(MESSAGES.settings);
+    const label = this.props.intl.formatMessage(MESSAGES.settings);
 
     return (
       <Tooltip
@@ -42,7 +42,8 @@ class SettingsButton extends React.Component {
         ref={ref => (this.tooltipRef = ref)}
         position="bottom"
         wrapperClassName="sidebar__action sidebar__icon-button
-          sidebar__icon-button--interactive tooltip__wrapper">
+          sidebar__icon-button--interactive tooltip__wrapper"
+      >
         <SettingsIcon />
       </Tooltip>
     );

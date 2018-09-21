@@ -22,28 +22,24 @@ import Size from '../general/Size';
 import TrackerMessageIcon from '../icons/TrackerMessageIcon';
 import UploadThickIcon from '../icons/UploadThickIcon';
 
-const booleanRenderer = value => {
-  return value ? icons.checkmark : null;
-};
+const booleanRenderer = value => (value ? icons.checkmark : null);
 const dateRenderer = date => <FormattedDate value={date * 1000} />;
-const peersRenderer = (peersConnected, totalPeers) => {
-  return (
-    <FormattedMessage
-      id="torrent.list.peers"
-      defaultMessage="{connected} {of} {total}"
-      values={{
-        connected: <FormattedNumber value={peersConnected} />,
-        of: (
-          <em className="unit">
-            <FormattedMessage id="torrent.list.peers.of" defaultMessage="of" />
-          </em>
-        ),
-        total: <FormattedNumber value={totalPeers} />,
-      }}
-    />
-  );
-};
-const speedRenderer = value => <Size value={value} isSpeed={true} />;
+const peersRenderer = (peersConnected, totalPeers) => (
+  <FormattedMessage
+    id="torrent.list.peers"
+    defaultMessage="{connected} {of} {total}"
+    values={{
+      connected: <FormattedNumber value={peersConnected} />,
+      of: (
+        <em className="unit">
+          <FormattedMessage id="torrent.list.peers.of" defaultMessage="of" />
+        </em>
+      ),
+      total: <FormattedNumber value={totalPeers} />,
+    }}
+  />
+);
+const speedRenderer = value => <Size value={value} isSpeed />;
 const sizeRenderer = value => <Size value={value} />;
 
 const icons = {
@@ -74,37 +70,31 @@ const transformers = {
   downTotal: sizeRenderer,
   ignoreScheduler: booleanRenderer,
   isPrivate: booleanRenderer,
-  percentComplete: (percent, size) => {
-    return (
-      <span>
-        <FormattedNumber value={percent} />
-        <em className="unit">%</em>
+  percentComplete: (percent, size) => (
+    <span>
+      <FormattedNumber value={percent} />
+      <em className="unit">%</em>
         &nbsp;&mdash;&nbsp;
-        <Size value={size} />
-      </span>
-    );
-  },
+      <Size value={size} />
+    </span>
+  ),
   peers: peersRenderer,
   seeds: peersRenderer,
-  tags: tags => {
-    return (
-      <ul className="torrent__tags tag">
-        {tags.map((tag, index) => {
-          return (
-            <li className="torrent__tag" key={index}>
-              {tag}
-            </li>
-          );
-        })}
-      </ul>
-    );
-  },
+  tags: tags => (
+    <ul className="torrent__tags tag">
+      {tags.map((tag, index) => (
+        <li className="torrent__tag" key={index}>
+          {tag}
+        </li>
+      ))}
+    </ul>
+  ),
   ratio: ratio => <Ratio value={ratio} />,
   sizeBytes: sizeRenderer,
   trackerURIs: trackers => trackers.join(', '),
   upRate: speedRenderer,
   upTotal: sizeRenderer,
-  eta: eta => {
+  eta: (eta) => {
     if (!eta) {
       return null;
     }
@@ -115,7 +105,9 @@ const transformers = {
 
 class TorrentDetail extends React.PureComponent {
   render() {
-    let {className, icon, preventTransform, secondaryValue, slug, value, width} = this.props;
+    let {
+      className, icon, preventTransform, secondaryValue, slug, value, width,
+    } = this.props;
 
     if (!preventTransform && slug in transformers) {
       value = transformers[slug](value, secondaryValue);

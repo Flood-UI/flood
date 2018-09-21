@@ -29,20 +29,18 @@ class NotificationService extends BaseService {
     this.count.unread = this.count.unread + notifications.length;
 
     const timestamp = Date.now();
-    const notificationsToInsert = notifications.map(notification => {
-      return {
-        ts: timestamp,
-        data: notification.data,
-        id: notification.id,
-        read: false,
-      };
-    });
+    const notificationsToInsert = notifications.map(notification => ({
+      ts: timestamp,
+      data: notification.data,
+      id: notification.id,
+      read: false,
+    }));
 
     this.db.insert(notificationsToInsert, () => this.emitUpdate());
   }
 
   clearNotifications(options, callback) {
-    this.db.remove({}, {multi: true}, err => {
+    this.db.remove({}, {multi: true}, (err) => {
       if (err) {
         callback(null, err);
         return;
@@ -61,7 +59,7 @@ class NotificationService extends BaseService {
       if (err) {
         this.count = Object.assign({}, INITIAL_COUNT_VALUE);
       } else {
-        docs.forEach(notification => {
+        docs.forEach((notification) => {
           if (notification.read) {
             this.count.read++;
           } else {
@@ -88,8 +86,8 @@ class NotificationService extends BaseService {
   }
 
   getNotifications(query, callback) {
-    let sortedNotifications = this.db.find({}).sort({ts: -1});
-    let queryCallback = (err, docs) => {
+    const sortedNotifications = this.db.find({}).sort({ts: -1});
+    const queryCallback = (err, docs) => {
       if (err) {
         callback(null, err);
         return;

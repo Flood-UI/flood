@@ -4,6 +4,7 @@ const multer = require('multer');
 const ajaxUtil = require('../util/ajaxUtil');
 const booleanCoerce = require('../middleware/booleanCoerce');
 const client = require('../models/client');
+
 const router = express.Router();
 
 const upload = multer({
@@ -12,96 +13,96 @@ const upload = multer({
   storage: multer.memoryStorage(),
 });
 
-router.get('/connection-test', function(req, res, next) {
+router.get('/connection-test', (req, res, next) => {
   req.services.clientGatewayService
     .testGateway()
-    .then(response => {
+    .then((response) => {
       res.status(200).json({isConnected: true});
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({isConnected: false});
     });
 });
 
-router.post('/connection-test', function(req, res, next) {
+router.post('/connection-test', (req, res, next) => {
   req.services.clientGatewayService
     .testGateway(req.body)
-    .then(response => {
+    .then((response) => {
       res.status(200).json({isConnected: true});
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).json({isConnected: false});
     });
 });
 
-router.post('/add', function(req, res, next) {
+router.post('/add', (req, res, next) => {
   client.addUrls(req.user, req.services, req.body, ajaxUtil.getResponseFn(res));
 });
 
-router.post('/add-files', upload.array('torrents'), booleanCoerce('isBasePath'), function(req, res, next) {
+router.post('/add-files', upload.array('torrents'), booleanCoerce('isBasePath'), (req, res, next) => {
   client.addFiles(req.user, req.services, req, ajaxUtil.getResponseFn(res));
 });
 
-router.get('/settings', function(req, res, next) {
+router.get('/settings', (req, res, next) => {
   client.getSettings(req.user, req.services, req.query, ajaxUtil.getResponseFn(res));
 });
 
-router.patch('/settings', function(req, res, next) {
+router.patch('/settings', (req, res, next) => {
   client.setSettings(req.user, req.services, req.body, ajaxUtil.getResponseFn(res));
 });
 
-router.put('/settings/speed-limits', function(req, res, next) {
+router.put('/settings/speed-limits', (req, res, next) => {
   client.setSpeedLimits(req.user, req.services, req.body, ajaxUtil.getResponseFn(res));
 });
 
-router.post('/start', function(req, res, next) {
+router.post('/start', (req, res, next) => {
   client.startTorrent(req.user, req.services, req.body.hashes, ajaxUtil.getResponseFn(res));
 });
 
-router.post('/stop', function(req, res, next) {
+router.post('/stop', (req, res, next) => {
   client.stopTorrent(req.user, req.services, req.body.hashes, ajaxUtil.getResponseFn(res));
 });
 
-router.post('/torrent-details', function(req, res, next) {
+router.post('/torrent-details', (req, res, next) => {
   client.getTorrentDetails(req.user, req.services, req.body.hash, ajaxUtil.getResponseFn(res));
 });
 
-router.patch('/torrents/:hash/priority', function(req, res, next) {
+router.patch('/torrents/:hash/priority', (req, res, next) => {
   client.setPriority(req.user, req.services, req.params.hash, req.body, ajaxUtil.getResponseFn(res));
 });
 
-router.patch('/torrents/:hash/file-priority', function(req, res, next) {
+router.patch('/torrents/:hash/file-priority', (req, res, next) => {
   client.setFilePriority(req.user, req.services, req.params.hash, req.body, ajaxUtil.getResponseFn(res));
 });
 
-router.post('/torrents/check-hash', function(req, res, next) {
+router.post('/torrents/check-hash', (req, res, next) => {
   client.checkHash(req.user, req.services, req.body.hash, ajaxUtil.getResponseFn(res));
 });
 
-router.post('/torrents/move', function(req, res, next) {
+router.post('/torrents/move', (req, res, next) => {
   client.moveTorrents(req.user, req.services, req.body, ajaxUtil.getResponseFn(res));
 });
 
-router.post('/torrents/delete', function(req, res, next) {
+router.post('/torrents/delete', (req, res, next) => {
   const {deleteData, hash: hashes} = req.body;
   const callback = ajaxUtil.getResponseFn(res);
 
   req.services.clientGatewayService
     .removeTorrents({hashes, deleteData})
     .then(callback)
-    .catch(err => {
+    .catch((err) => {
       callback(null, err);
     });
 });
 
-router.patch('/torrents/taxonomy', function(req, res, next) {
+router.patch('/torrents/taxonomy', (req, res, next) => {
   client.setTaxonomy(req.user, req.services, req.body, ajaxUtil.getResponseFn(res));
 });
 
-router.get('/methods.json', function(req, res, next) {
-  var type = req.query.type;
-  var args = req.query.args;
-  var method = 'system.listMethods';
+router.get('/methods.json', (req, res, next) => {
+  const type = req.query.type;
+  const args = req.query.args;
+  let method = 'system.listMethods';
 
   if (type === 'help') {
     method = 'system.methodHelp';

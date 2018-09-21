@@ -15,7 +15,7 @@ class PriorityMeter extends React.Component {
       },
     };
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -89,9 +89,9 @@ class PriorityMeter extends React.Component {
       <div className="priority-meter__wrapper" onClick={this.handleClick}>
         <div
           className={
-            `priority-meter ` +
-            `priority-meter--max-${this.props.maxLevel} ` +
-            `priority-meter--level-${this.getPriorityLevel()}`
+            'priority-meter '
+            + `priority-meter--max-${this.props.maxLevel} `
+            + `priority-meter--level-${this.getPriorityLevel()}`
           }
         />
         {label}

@@ -127,8 +127,8 @@ class UIStoreClass extends BaseStore {
       dependencies = [dependencies];
     }
 
-    dependencies.forEach(dependency => {
-      let {id} = dependency;
+    dependencies.forEach((dependency) => {
+      const {id} = dependency;
 
       if (!this.dependencies[id]) {
         this.dependencies[id] = {...dependency, satisfied: false};
@@ -166,9 +166,7 @@ class UIStoreClass extends BaseStore {
   }
 
   verifyDependencies() {
-    let isDependencyLoading = Object.keys(this.dependencies).some(id => {
-      return this.dependencies[id].satisfied === false;
-    });
+    const isDependencyLoading = Object.keys(this.dependencies).some(id => this.dependencies[id].satisfied === false);
 
     if (!isDependencyLoading) {
       this.emit(EventTypes.UI_DEPENDENCIES_LOADED);
@@ -176,9 +174,9 @@ class UIStoreClass extends BaseStore {
   }
 }
 
-let UIStore = new UIStoreClass();
+const UIStore = new UIStoreClass();
 
-UIStore.dispatcherID = AppDispatcher.register(payload => {
+UIStore.dispatcherID = AppDispatcher.register((payload) => {
   const {action} = payload;
 
   switch (action.type) {

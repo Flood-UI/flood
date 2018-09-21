@@ -36,7 +36,7 @@ class SpeedLimitDropdown extends React.Component {
     };
     this.tooltip = null;
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -55,8 +55,8 @@ class SpeedLimitDropdown extends React.Component {
     const transferSummary = TransferDataStore.getTransferSummary();
 
     if (
-      this.state.currentThrottles.upload !== transferSummary.upThrottle ||
-      this.state.currentThrottles.download !== transferSummary.downThrottle
+      this.state.currentThrottles.upload !== transferSummary.upThrottle
+      || this.state.currentThrottles.download !== transferSummary.downThrottle
     ) {
       this.setState({
         currentThrottles: {
@@ -72,7 +72,8 @@ class SpeedLimitDropdown extends React.Component {
       <a
         className="sidebar__icon-button sidebar__icon-button--interactive
         sidebar__icon-button--limits"
-        title={this.props.intl.formatMessage(MESSAGES.speedLimits)}>
+        title={this.props.intl.formatMessage(MESSAGES.speedLimits)}
+      >
         <LimitsIcon />
         <FormattedMessage {...MESSAGES.speedLimits} />
       </a>
@@ -80,16 +81,17 @@ class SpeedLimitDropdown extends React.Component {
   }
 
   getDropdownTrigger() {
-    let label = this.props.intl.formatMessage(MESSAGES.speedLimits);
+    const label = this.props.intl.formatMessage(MESSAGES.speedLimits);
 
     return (
       <Tooltip
         content={label}
         position="bottom"
-        ref={node => {
+        ref={(node) => {
           this.tooltip = node;
         }}
-        wrapperClassName="sidebar__icon-button tooltip__wrapper">
+        wrapperClassName="sidebar__icon-button tooltip__wrapper"
+      >
         <LimitsIcon />
       </Tooltip>
     );
@@ -98,13 +100,12 @@ class SpeedLimitDropdown extends React.Component {
   getHumanReadableSpeed(bytes) {
     if (bytes === 0) {
       return this.props.intl.formatMessage(MESSAGES.unlimited);
-    } else {
-      return <Size value={bytes} isSpeed={true} precision={1} />;
     }
+    return <Size value={bytes} isSpeed precision={1} />;
   }
 
   getSpeedList(property) {
-    let heading = {
+    const heading = {
       className: `dropdown__label dropdown__label--${property}`,
       displayName: `${property.charAt(0).toUpperCase()}${property.slice(1)}`,
       selectable: false,
@@ -112,10 +113,10 @@ class SpeedLimitDropdown extends React.Component {
     };
 
     let insertCurrentThrottle = true;
-    let currentThrottle = this.state.currentThrottles;
-    let speeds = this.state.speedLimits[property];
+    const currentThrottle = this.state.currentThrottles;
+    const speeds = this.state.speedLimits[property];
 
-    let items = speeds.map(bytes => {
+    const items = speeds.map((bytes) => {
       let selected = false;
       bytes = Number(bytes);
 
@@ -140,11 +141,11 @@ class SpeedLimitDropdown extends React.Component {
     if (insertCurrentThrottle && currentThrottle) {
       // Find the position to insert the current throttle setting so that it
       // remains sorted from lowest to highest.
-      let insertionPoint = _.sortedIndex(speeds, currentThrottle[property]);
+      const insertionPoint = _.sortedIndex(speeds, currentThrottle[property]);
 
       items.splice(insertionPoint, 0, {
         displayName: this.getHumanReadableSpeed(currentThrottle[property]),
-        property: property,
+        property,
         selected: true,
         selectable: true,
         value: currentThrottle[property],
@@ -169,9 +170,9 @@ class SpeedLimitDropdown extends React.Component {
   }
 
   handleSettingsFetchRequestSuccess() {
-    let speedLimits = SettingsStore.getFloodSettings('speedLimits');
+    const speedLimits = SettingsStore.getFloodSettings('speedLimits');
 
-    if (!!speedLimits) {
+    if (speedLimits) {
       this.setState({speedLimits});
     }
   }

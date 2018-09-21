@@ -7,7 +7,8 @@ export default class LoadingIndicatorDots extends BaseIcon {
     return (
       <svg
         className={`icon icon--loading-indicator loading-indicator--dots ${this.props.className}`}
-        viewBox={this.getViewBox()}>
+        viewBox={this.getViewBox()}
+      >
         <path
           className="loading-indicator--dots__dot loading-indicator--dots__dot--right"
           d="M25,11.74h4.73a1.89,1.89,0,0,1,1.89,1.89v4.73a1.89,1.89,0,0,1-1.89,1.89H25a1.89,1.89,0,0,1-1.89-1.89V13.63A1.89,1.89,0,0,1,25,11.74Z"

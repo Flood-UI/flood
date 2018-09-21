@@ -59,7 +59,7 @@ class HistoryEra {
       return;
     }
 
-    let currentTime = Date.now();
+    const currentTime = Date.now();
 
     if (currentTime - this.lastUpdate >= this.opts.interval - CUMULATIVE_DATA_BUFFER_DIFF) {
       this.lastUpdate = currentTime;
@@ -72,13 +72,13 @@ class HistoryEra {
     } else {
       this.db.find({ts: this.lastUpdate}, (err, docs) => {
         if (docs.length !== 0) {
-          let doc = docs[0];
-          let numUpdates = Number(doc.num || 1);
-          let currentDownAvg = Number(doc.dn);
-          let currentUpAvg = Number(doc.up);
+          const doc = docs[0];
+          const numUpdates = Number(doc.num || 1);
+          const currentDownAvg = Number(doc.dn);
+          const currentUpAvg = Number(doc.up);
 
-          let downAvg = ((currentDownAvg * numUpdates + Number(data.download)) / (numUpdates + 1)).toFixed(1);
-          let upAvg = ((currentUpAvg * numUpdates + Number(data.upload)) / (numUpdates + 1)).toFixed(1);
+          const downAvg = ((currentDownAvg * numUpdates + Number(data.download)) / (numUpdates + 1)).toFixed(1);
+          const upAvg = ((currentUpAvg * numUpdates + Number(data.upload)) / (numUpdates + 1)).toFixed(1);
 
           // TODO: Remove this nonsense, I think this bug is resolved.
           if (downAvg == null || upAvg == null) {
@@ -86,7 +86,7 @@ class HistoryEra {
             console.error('Warning: null values set in database!');
             console.error(`DB: ${this.opts.name}`);
             console.error(
-              `numUpdates: ${numUpdates}\ncurrentDownAvg: ${currentDownAvg}\ncurrentUpAvg: ${currentUpAvg}\ndownAvg: ${downAvg}\nupAvg: ${upAvg}`
+              `numUpdates: ${numUpdates}\ncurrentDownAvg: ${currentDownAvg}\ncurrentUpAvg: ${currentUpAvg}\ndownAvg: ${downAvg}\nupAvg: ${upAvg}`,
             );
             console.error('\n\n');
           }
@@ -100,7 +100,7 @@ class HistoryEra {
               up: Number(upAvg),
               dn: Number(downAvg),
               num: numUpdates + 1,
-            }
+            },
           );
         }
       });
@@ -113,7 +113,7 @@ class HistoryEra {
   }
 
   getData(opts, callback) {
-    let minTimestamp = Date.now() - this.opts.maxTime;
+    const minTimestamp = Date.now() - this.opts.maxTime;
 
     this.db
       .find({ts: {$gte: minTimestamp}})
@@ -131,7 +131,7 @@ class HistoryEra {
   hasRequiredFields(opts) {
     let requirementsMet = true;
 
-    REQUIRED_FIELDS.forEach(field => {
+    REQUIRED_FIELDS.forEach((field) => {
       if (opts[field] == null) {
         console.error(`HistoryEra requires ${field}`);
         requirementsMet = false;
@@ -143,7 +143,7 @@ class HistoryEra {
 
   removeOutdatedData(db) {
     if (this.opts.maxTime > 0) {
-      let minTimestamp = Date.now() - this.opts.maxTime;
+      const minTimestamp = Date.now() - this.opts.maxTime;
       db.remove({ts: {$lt: minTimestamp}}, {multi: true});
     }
   }
@@ -152,7 +152,7 @@ class HistoryEra {
     let lastUpdate = 0;
 
     db.find({}, (err, docs) => {
-      docs.forEach(doc => {
+      docs.forEach((doc) => {
         if (doc.ts > lastUpdate) {
           lastUpdate = doc.ts;
         }
@@ -180,12 +180,12 @@ class HistoryEra {
   }
 
   updateNextEra(currentDB, nextDB) {
-    let minTimestamp = Date.now() - this.opts.nextEraUpdateInterval;
+    const minTimestamp = Date.now() - this.opts.nextEraUpdateInterval;
     currentDB.find({ts: {$gte: minTimestamp}}, (err, docs) => {
       let downTotal = 0;
       let upTotal = 0;
 
-      docs.forEach(doc => {
+      docs.forEach((doc) => {
         downTotal += Number(doc.dn);
         upTotal += Number(doc.up);
       });

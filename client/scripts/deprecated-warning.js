@@ -23,7 +23,7 @@ const getSpaces = numSpaces => Array(numSpaces).join(' ');
 
 console.log('\n');
 console.log(chalk.bgRed(getSpaces(verticalPadding)));
-messageDefs.forEach(messageDef => {
+messageDefs.forEach((messageDef) => {
   let leftPadding = paddingLength;
   let rightPadding = paddingLength;
   const lengthDiff = longestMessageLength - messageDef.message.length;
@@ -38,7 +38,7 @@ messageDefs.forEach(messageDef => {
 
   const formattedMessage = messageDef.chalkStyles.reduce(
     (accumulator, styleFn) => chalk[styleFn](accumulator),
-    messageDef.message
+    messageDef.message,
   );
 
   console.log(chalk.bgRed(`${getSpaces(leftPadding)}${formattedMessage}${getSpaces(rightPadding)}`));

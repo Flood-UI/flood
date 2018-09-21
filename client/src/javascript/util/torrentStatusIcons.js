@@ -15,17 +15,17 @@ const STATUS_ICON_MAP = {
 
 export function torrentStatusIcons(status) {
   let statusString;
-  let statusConditions = {
+  const statusConditions = {
     hashChecking: [status.includes(torrentStatusMap.checking)],
     error: [status.includes(torrentStatusMap.error)],
     stopped: [status.includes(torrentStatusMap.stopped)],
     running: [status.includes(torrentStatusMap.downloading), status.includes(torrentStatusMap.seeding)],
   };
 
-  Object.keys(statusConditions).some(status => {
-    let conditions = statusConditions[status];
+  Object.keys(statusConditions).some((status) => {
+    const conditions = statusConditions[status];
 
-    conditions.some(condition => {
+    conditions.some((condition) => {
       if (condition) {
         statusString = status;
       }

@@ -5,17 +5,15 @@ import Size from '../../general/Size';
 
 class TorrentGeneralInfo extends React.Component {
   getTags(tags) {
-    return tags.map((tag, index) => {
-      return (
-        <span className="tag" key={index}>
-          {tag}
-        </span>
-      );
-    });
+    return tags.map((tag, index) => (
+      <span className="tag" key={index}>
+        {tag}
+      </span>
+    ));
   }
 
   render() {
-    let torrent = this.props.torrent;
+    const torrent = this.props.torrent;
 
     let dateAdded = null;
     if (torrent.dateAdded) {
@@ -48,13 +46,13 @@ class TorrentGeneralInfo extends React.Component {
               </td>
               <td className="torrent-details__detail__value">
                 {dateAdded
-                  ? this.props.intl.formatDate(dateAdded, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: '2-digit',
-                    }) +
-                    ' ' +
-                    this.props.intl.formatTime(dateAdded)
+                  ? `${this.props.intl.formatDate(dateAdded, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: '2-digit',
+                  })
+                  } ${
+                    this.props.intl.formatTime(dateAdded)}`
                   : VALUE_NOT_AVAILABLE}
               </td>
             </tr>
@@ -71,13 +69,13 @@ class TorrentGeneralInfo extends React.Component {
               <td className="torrent-details__detail__value">
                 {torrent.ignoreScheduler === '1'
                   ? this.props.intl.formatMessage({
-                      id: 'torrents.details.general.scheduler.ignored',
-                      defaultMessage: 'Ignored',
-                    })
+                    id: 'torrents.details.general.scheduler.ignored',
+                    defaultMessage: 'Ignored',
+                  })
                   : this.props.intl.formatMessage({
-                      id: 'torrents.details.general.scheduler.obeyed',
-                      defaultMessage: 'Obeyed',
-                    })}
+                    id: 'torrents.details.general.scheduler.obeyed',
+                    defaultMessage: 'Obeyed',
+                  })}
               </td>
             </tr>
             <tr className="torrent-details__detail torrent-details__detail--tags">
@@ -151,13 +149,13 @@ class TorrentGeneralInfo extends React.Component {
               </td>
               <td className="torrent-details__detail__value">
                 {creation
-                  ? this.props.intl.formatDate(creation, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: '2-digit',
-                    }) +
-                    ' ' +
-                    this.props.intl.formatTime(creation)
+                  ? `${this.props.intl.formatDate(creation, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: '2-digit',
+                  })
+                  } ${
+                    this.props.intl.formatTime(creation)}`
                   : VALUE_NOT_AVAILABLE}
               </td>
             </tr>
@@ -182,13 +180,13 @@ class TorrentGeneralInfo extends React.Component {
               <td className="torrent-details__detail__value">
                 {torrent.isPrivate === '0'
                   ? this.props.intl.formatMessage({
-                      id: 'torrents.details.general.type.public',
-                      defaultMessage: 'Public',
-                    })
+                    id: 'torrents.details.general.type.public',
+                    defaultMessage: 'Public',
+                  })
                   : this.props.intl.formatMessage({
-                      id: 'torrents.details.general.type.private',
-                      defaultMessage: 'Private',
-                    })}
+                    id: 'torrents.details.general.type.private',
+                    defaultMessage: 'Private',
+                  })}
               </td>
             </tr>
             <tr className="torrent-details__table__heading">

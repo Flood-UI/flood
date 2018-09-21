@@ -1,14 +1,14 @@
-let fs = require('fs');
-let ospath = require('ospath');
-let path = require('path');
+const fs = require('fs');
+const ospath = require('ospath');
+const path = require('path');
 
 class Filesystem {
   getDirectoryList(options, callback) {
-    let sourcePath = (options.path || '/').replace(/^~/, ospath.home());
+    const sourcePath = (options.path || '/').replace(/^~/, ospath.home());
 
     try {
-      let directories = [];
-      let files = [];
+      const directories = [];
+      const files = [];
 
       fs.readdirSync(sourcePath).forEach(item => {
         const joinedPath = path.join(sourcePath, item);
@@ -21,7 +21,7 @@ class Filesystem {
         }
       });
 
-      let hasParent = /^.{0,}:?(\/|\\){1,1}\S{1,}/.test(sourcePath);
+      const hasParent = /^.{0,}:?(\/|\\){1,1}\S{1,}/.test(sourcePath);
 
       callback({
         directories,

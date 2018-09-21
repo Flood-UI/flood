@@ -6,9 +6,9 @@ import ConfigStore from '../stores/ConfigStore';
 
 const baseURI = ConfigStore.getBaseURI();
 
-let SettingsActions = {
-  addFeed: feed => {
-    return axios
+const SettingsActions = {
+  addFeed: feed =>
+    axios
       .put(`${baseURI}api/feed-monitor/feeds`, feed)
       .then((json = {}) => json.data)
       .then(
@@ -24,8 +24,7 @@ let SettingsActions = {
             error,
           });
         }
-      );
-  },
+      ),
 
   modifyFeed: (id, feed) => {
     return axios
@@ -67,8 +66,8 @@ let SettingsActions = {
       );
   },
 
-  fetchFeedMonitors: query => {
-    return axios
+  fetchFeedMonitors: query =>
+    axios
       .get(`${baseURI}api/feed-monitor`, query)
       .then((json = {}) => json.data)
       .then(
@@ -84,11 +83,10 @@ let SettingsActions = {
             error,
           });
         }
-      );
-  },
+      ),
 
-  fetchFeeds: query => {
-    return axios
+  fetchFeeds: query =>
+    axios
       .get(`${baseURI}api/feed-monitor/feeds`, query)
       .then((json = {}) => json.data)
       .then(
@@ -104,8 +102,7 @@ let SettingsActions = {
             error,
           });
         }
-      );
-  },
+      ),
 
   fetchItems: query => {
     return axios
@@ -147,8 +144,8 @@ let SettingsActions = {
       );
   },
 
-  fetchSettings: property => {
-    return axios
+  fetchSettings: property =>
+    axios
       .get(`${baseURI}api/settings`, {params: {property}})
       .then((json = {}) => json.data)
       .then(
@@ -164,11 +161,10 @@ let SettingsActions = {
             error,
           });
         }
-      );
-  },
+      ),
 
-  removeFeedMonitor: id => {
-    return axios
+  removeFeedMonitor: id =>
+    axios
       .delete(`${baseURI}api/feed-monitor/${id}`)
       .then((json = {}) => json.data)
       .then(
@@ -190,11 +186,10 @@ let SettingsActions = {
             },
           });
         }
-      );
-  },
+      ),
 
-  saveSettings: (settings, options = {}) => {
-    return axios
+  saveSettings: (settings, options = {}) =>
+    axios
       .patch(`${baseURI}api/settings`, settings)
       .then((json = {}) => json.data)
       .then(
@@ -211,8 +206,7 @@ let SettingsActions = {
             error,
           });
         }
-      );
-  },
+      ),
 };
 
 export default SettingsActions;

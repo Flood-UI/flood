@@ -29,7 +29,7 @@ export default class TorrentHeading extends React.Component {
       optimisticData: {currentStatus: null},
     };
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -43,19 +43,18 @@ export default class TorrentHeading extends React.Component {
   getCurrentStatus(torrentStatus) {
     if (torrentStatus.includes(torrentStatusMap.stopped)) {
       return 'stop';
-    } else {
-      return 'start';
     }
+    return 'start';
   }
 
   getTorrentActions(torrent) {
-    let currentStatus = this.state.optimisticData.currentStatus || this.getCurrentStatus(torrent.status);
-    let statusIcons = {
+    const currentStatus = this.state.optimisticData.currentStatus || this.getCurrentStatus(torrent.status);
+    const statusIcons = {
       start: <StartIcon />,
       stop: <StopIcon />,
     };
-    let torrentActions = ['start', 'stop'];
-    let torrentActionElements = [
+    const torrentActions = ['start', 'stop'];
+    const torrentActionElements = [
       <li className="torrent-details__sub-heading__tertiary" key={torrentActions.length + 1}>
         <PriorityMeter
           id={torrent.hash}
@@ -63,14 +62,14 @@ export default class TorrentHeading extends React.Component {
           maxLevel={3}
           priorityType="torrent"
           onChange={this.handlePriorityChange}
-          showLabel={true}
+          showLabel
         />
       </li>,
     ];
 
     torrentActions.forEach((torrentAction, index) => {
-      let capitalizedAction = stringUtil.capitalize(torrentAction);
-      let classes = classnames('torrent-details__sub-heading__tertiary', 'torrent-details__action', {
+      const capitalizedAction = stringUtil.capitalize(torrentAction);
+      const classes = classnames('torrent-details__sub-heading__tertiary', 'torrent-details__action', {
         'is-active': torrentAction === currentStatus,
       });
 
@@ -78,7 +77,7 @@ export default class TorrentHeading extends React.Component {
         <li className={classes} key={index} onClick={this[`handle${capitalizedAction}`]}>
           {statusIcons[torrentAction]}
           <FormattedMessage id={`torrents.details.actions.${torrentAction}`} defaultMessage={capitalizedAction} />
-        </li>
+        </li>,
       );
     });
 
@@ -100,10 +99,10 @@ export default class TorrentHeading extends React.Component {
   }
 
   render() {
-    let torrent = this.props.torrent;
+    const torrent = this.props.torrent;
 
-    let torrentClasses = torrentStatusClasses(torrent, 'torrent-details__header');
-    let torrentStatusIcon = torrentStatusIcons(torrent.status);
+    const torrentClasses = torrentStatusClasses(torrent, 'torrent-details__header');
+    const torrentStatusIcon = torrentStatusIcons(torrent.status);
 
     return (
       <div className={torrentClasses}>
@@ -112,13 +111,13 @@ export default class TorrentHeading extends React.Component {
           <ul className="torrent-details__sub-heading__secondary">
             <li className="torrent-details__sub-heading__tertiary torrent-details__sub-heading__tertiary--download">
               <DownloadThickIcon />
-              <Size value={torrent.downRate} isSpeed={true} />
+              <Size value={torrent.downRate} isSpeed />
               &nbsp;&mdash;&nbsp;
               <Size value={torrent.bytesDone} />
             </li>
             <li className="torrent-details__sub-heading__tertiary torrent-details__sub-heading__tertiary--upload">
               <UploadThickIcon />
-              <Size value={torrent.upRate} isSpeed={true} />
+              <Size value={torrent.upRate} isSpeed />
               &nbsp;&mdash;&nbsp;
               <Size value={torrent.upTotal} />
             </li>

@@ -9,12 +9,12 @@ export default class ModalTabs extends React.Component {
   }
 
   render() {
-    let tabs = Object.keys(this.props.tabs).map((tabId, index) => {
-      let currentTab = this.props.tabs[tabId];
+    const tabs = Object.keys(this.props.tabs).map((tabId, index) => {
+      const currentTab = this.props.tabs[tabId];
 
       currentTab.id = tabId;
 
-      let classes = classnames('modal__tab', {
+      const classes = classnames('modal__tab', {
         'is-active': tabId === this.props.activeTabId,
       });
 

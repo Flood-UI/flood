@@ -1,22 +1,23 @@
-const ajaxUtil = require('../util/ajaxUtil');
 const express = require('express');
 const joi = require('joi');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const ajaxUtil = require('../util/ajaxUtil');
 
 const requireAdmin = require('../middleware/requireAdmin');
 const config = require('../../config');
+
 const router = express.Router();
 const services = require('../services');
 const Users = require('../models/Users');
 const failedLoginResponse = 'Failed login.';
 
 const setAuthToken = (res, username, isAdmin) => {
-  let expirationSeconds = 60 * 60 * 24 * 7; // one week
-  let cookieExpiration = Date.now() + expirationSeconds * 1000;
+  const expirationSeconds = 60 * 60 * 24 * 7; // one week
+  const cookieExpiration = Date.now() + expirationSeconds * 1000;
 
   // Create token if the password matched and no error was thrown.
-  let token = jwt.sign({username}, config.secret, {
+  const token = jwt.sign({username}, config.secret, {
     expiresIn: expirationSeconds,
   });
 
@@ -56,17 +57,14 @@ router.post('/authenticate', (req, res) => {
   };
 
   Users.comparePassword(credentials, (isMatch, isAdmin, err) => {
-    if (isMatch == null) {
-      // Incorrect username.
-      return res.status(401).json({message: failedLoginResponse});
+    if (isMatch != null && !err) {
+      return setAuthToken(res, credentials.username, isAdmin);
     }
 
-    if (isMatch && !err) {
-      return setAuthToken(res, credentials.username, isAdmin);
-    } else {
-      // Incorrect password.
-      return res.status(401).json({message: failedLoginResponse});
-    }
+    // Incorrect username or password.
+    return res.status(401).json({
+      message: failedLoginResponse,
+    });
   });
 });
 

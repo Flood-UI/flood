@@ -15,7 +15,7 @@ export default class Alerts extends React.Component {
       alerts: [],
     };
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -29,9 +29,7 @@ export default class Alerts extends React.Component {
   }
 
   getAlerts() {
-    return this.state.alerts.map((alert, index) => {
-      return <Alert {...alert} key={index} />;
-    });
+    return this.state.alerts.map((alert, index) => <Alert {...alert} key={index} />);
   }
 
   handleAlertChange() {
@@ -54,7 +52,8 @@ export default class Alerts extends React.Component {
         transitionName="alerts__list"
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}
-        className="alerts">
+        className="alerts"
+      >
         {alerts}
       </CSSTransitionGroup>
     );

@@ -32,7 +32,7 @@ class ActionBar extends React.Component {
       torrentListViewSize: SettingsStore.getFloodSettings('torrentListViewSize'),
     };
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }

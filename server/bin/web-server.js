@@ -27,7 +27,7 @@ const startWebServer = () => {
         key: fs.readFileSync(config.sslKey),
         cert: fs.readFileSync(config.sslCert),
       },
-      app
+      app,
     );
   } else {
     server = require('http').createServer(app);
@@ -40,7 +40,7 @@ const startWebServer = () => {
 
   // Normalize a port into a number, string, or false.
   function normalizePort(val) {
-    let port = parseInt(val, 10);
+    const port = parseInt(val, 10);
 
     // Named pipe.
     if (isNaN(port)) {
@@ -60,16 +60,16 @@ const startWebServer = () => {
       throw error;
     }
 
-    let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+    const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
     // Handle specific listen errors with friendly messages.
     switch (error.code) {
       case 'EACCES':
-        console.error(bind + ' requires elevated privileges');
+        console.error(`${bind} requires elevated privileges`);
         process.exit(1);
         break;
       case 'EADDRINUSE':
-        console.error(bind + ' is already in use');
+        console.error(`${bind} is already in use`);
         process.exit(1);
         break;
       default:
@@ -79,9 +79,9 @@ const startWebServer = () => {
 
   // Event listener for HTTP server "listening" event.
   function onListening() {
-    let addr = server.address();
-    let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-    debug('Listening on ' + bind);
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+    debug(`Listening on ${bind}`);
   }
 
   const address = chalk.underline(`${useSSL ? 'https' : 'http'}://${host}:${port}`);

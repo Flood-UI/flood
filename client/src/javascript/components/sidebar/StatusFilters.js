@@ -25,7 +25,7 @@ class StatusFilters extends React.Component {
       trackerFilter: TorrentFilterStore.getTrackerFilter(),
     };
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -45,7 +45,7 @@ class StatusFilters extends React.Component {
   }
 
   getFilters() {
-    let filters = [
+    const filters = [
       {
         label: this.props.intl.formatMessage({
           id: 'filter.all',
@@ -104,19 +104,17 @@ class StatusFilters extends React.Component {
       },
     ];
 
-    let filterElements = filters.map(filter => {
-      return (
-        <SidebarFilter
-          handleClick={this.handleClick}
-          count={this.state.statusCount[filter.slug] || 0}
-          key={filter.slug}
-          icon={filter.icon}
-          isActive={filter.slug === this.state.statusFilter}
-          name={filter.label}
-          slug={filter.slug}
-        />
-      );
-    });
+    const filterElements = filters.map(filter => (
+      <SidebarFilter
+        handleClick={this.handleClick}
+        count={this.state.statusCount[filter.slug] || 0}
+        key={filter.slug}
+        icon={filter.icon}
+        isActive={filter.slug === this.state.statusFilter}
+        name={filter.label}
+        slug={filter.slug}
+      />
+    ));
 
     return filterElements;
   }
@@ -128,12 +126,12 @@ class StatusFilters extends React.Component {
   }
 
   onTorrentTaxonomyChange() {
-    let statusCount = TorrentFilterStore.getTorrentStatusCount();
+    const statusCount = TorrentFilterStore.getTorrentStatusCount();
     this.setState({statusCount});
   }
 
   render() {
-    let filters = this.getFilters();
+    const filters = this.getFilters();
 
     return (
       <ul className="sidebar-filter sidebar__item">

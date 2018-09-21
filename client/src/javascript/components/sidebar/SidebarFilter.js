@@ -10,7 +10,7 @@ class SidebarFilter extends React.Component {
   constructor() {
     super();
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -20,7 +20,7 @@ class SidebarFilter extends React.Component {
   }
 
   render() {
-    let classNames = classnames('sidebar-filter__item', {
+    const classNames = classnames('sidebar-filter__item', {
       'is-active': this.props.isActive,
     });
     let name = this.props.name;

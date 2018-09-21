@@ -74,8 +74,8 @@ class ClientRequest {
   handleError(error) {
     if (error.code === 'ECONNREFUSED') {
       console.error(
-        `Connection refused at ${error.address}${error.port ? `:${error.port}` : ''}. ` +
-          `Check these values in config.js and ensure that rTorrent is running.`
+        `Connection refused at ${error.address}${error.port ? `:${error.port}` : ''}. `
+          + 'Check these values in config.js and ensure that rTorrent is running.',
       );
     }
 
@@ -109,8 +109,8 @@ class ClientRequest {
   }
 
   send() {
-    let handleSuccess = this.handleSuccess.bind(this);
-    let handleError = this.handleError.bind(this);
+    const handleSuccess = this.handleSuccess.bind(this);
+    const handleError = this.handleError.bind(this);
 
     this.clientRequestManager
       .methodCall('system.multicall', [this.requests])
@@ -121,16 +121,16 @@ class ClientRequest {
   // TODO: Separate these and add support for additional clients.
   // rTorrent method calls.
   addFiles(options) {
-    let files = this.getEnsuredArray(options.files);
-    let path = options.path;
-    let isBasePath = options.isBasePath;
-    let start = options.start;
-    let tagsArr = options.tags;
+    const files = this.getEnsuredArray(options.files);
+    const path = options.path;
+    const isBasePath = options.isBasePath;
+    const start = options.start;
+    const tagsArr = options.tags;
 
-    files.forEach(file => {
+    files.forEach((file) => {
       let methodCall = 'load.raw_start';
       let parameters = ['', file.buffer];
-      let timeAdded = Math.floor(Date.now() / 1000);
+      const timeAdded = Math.floor(Date.now() / 1000);
 
       if (path) {
         if (isBasePath) {
@@ -156,16 +156,16 @@ class ClientRequest {
   }
 
   addURLs(options) {
-    let path = options.path;
-    let isBasePath = options.isBasePath;
-    let start = options.start;
-    let tagsArr = options.tags;
-    let urls = this.getEnsuredArray(options.urls);
+    const path = options.path;
+    const isBasePath = options.isBasePath;
+    const start = options.start;
+    const tagsArr = options.tags;
+    const urls = this.getEnsuredArray(options.urls);
 
-    urls.forEach(url => {
+    urls.forEach((url) => {
       let methodCall = 'load.start';
       let parameters = ['', url];
-      let timeAdded = Math.floor(Date.now() / 1000);
+      const timeAdded = Math.floor(Date.now() / 1000);
 
       if (path) {
         if (isBasePath) {
@@ -190,15 +190,13 @@ class ClientRequest {
   checkHash(options) {
     const torrentService = this.services.torrentService;
     const hashes = this.getEnsuredArray(options.hashes);
-    const stoppedHashes = hashes.filter(hash => {
-      return torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped);
-    });
+    const stoppedHashes = hashes.filter(hash => torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped));
 
     const hashesToStart = [];
 
     this.stopTorrents({hashes});
 
-    hashes.forEach(hash => {
+    hashes.forEach((hash) => {
       this.requests.push(this.getMethodCall('d.check_hash', [hash]));
 
       if (!stoppedHashes.includes(hash)) {
@@ -213,7 +211,7 @@ class ClientRequest {
 
   createDirectory(options) {
     if (options.path) {
-      mkdirp(options.path, error => {
+      mkdirp(options.path, (error) => {
         if (error) {
           console.trace('Error creating directory.', error);
         }
@@ -227,9 +225,7 @@ class ClientRequest {
     if (options.requestedSettings) {
       requestedSettings = options.requestedSettings;
     } else {
-      requestedSettings = clientSettingsMap.defaults.map(settingsKey => {
-        return clientSettingsMap[settingsKey];
-      });
+      requestedSettings = clientSettingsMap.defaults.map(settingsKey => clientSettingsMap[settingsKey]);
     }
 
     // Ensure client's response gets mapped to the correct requested keys.
@@ -237,15 +233,15 @@ class ClientRequest {
       options.setRequestedKeysArr(requestedSettings);
     }
 
-    requestedSettings.forEach(settingsKey => {
+    requestedSettings.forEach((settingsKey) => {
       this.requests.push(this.getMethodCall(settingsKey));
     });
   }
 
   getTorrentDetails(options) {
-    var peerParams = [options.hash, ''].concat(options.peerProps);
-    var fileParams = [options.hash, ''].concat(options.fileProps);
-    var trackerParams = [options.hash, ''].concat(options.trackerProps);
+    const peerParams = [options.hash, ''].concat(options.peerProps);
+    const fileParams = [options.hash, ''].concat(options.fileProps);
+    const trackerParams = [options.hash, ''].concat(options.trackerProps);
 
     this.requests.push(this.getMethodCall('p.multicall', peerParams));
     this.requests.push(this.getMethodCall('f.multicall', fileParams));
@@ -257,13 +253,13 @@ class ClientRequest {
   }
 
   getTransferData(options) {
-    Object.keys(rTorrentPropMap.transferData).forEach(key => {
+    Object.keys(rTorrentPropMap.transferData).forEach((key) => {
       this.requests.push(this.getMethodCall(rTorrentPropMap.transferData[key]));
     });
   }
 
   listMethods(options) {
-    let args = this.getEnsuredArray(options.args);
+    const args = this.getEnsuredArray(options.args);
     this.requests.push(this.getMethodCall(options.method, [args]));
   }
 
@@ -290,7 +286,7 @@ class ClientRequest {
   }
 
   setDownloadPath(options) {
-    let hashes = this.getEnsuredArray(options.hashes);
+    const hashes = this.getEnsuredArray(options.hashes);
 
     let pathMethod;
     if (options.isBasePath) {
@@ -299,7 +295,7 @@ class ClientRequest {
       pathMethod = 'd.directory.set';
     }
 
-    hashes.forEach(hash => {
+    hashes.forEach((hash) => {
       this.requests.push(this.getMethodCall(pathMethod, [hash, options.path]));
       this.requests.push(this.getMethodCall('d.open', [hash]));
       this.requests.push(this.getMethodCall('d.close', [hash]));
@@ -307,11 +303,11 @@ class ClientRequest {
   }
 
   setFilePriority(options) {
-    let fileIndices = this.getEnsuredArray(options.fileIndices);
-    let hashes = this.getEnsuredArray(options.hashes);
+    const fileIndices = this.getEnsuredArray(options.fileIndices);
+    const hashes = this.getEnsuredArray(options.hashes);
 
-    hashes.forEach(hash => {
-      fileIndices.forEach(fileIndex => {
+    hashes.forEach((hash) => {
+      fileIndices.forEach((fileIndex) => {
         this.requests.push(this.getMethodCall('f.priority.set', [`${hash}:f${fileIndex}`, options.priority]));
       });
       this.requests.push(this.getMethodCall('d.update_priorities', [hash]));
@@ -319,18 +315,18 @@ class ClientRequest {
   }
 
   setPriority(options) {
-    let hashes = this.getEnsuredArray(options.hashes);
+    const hashes = this.getEnsuredArray(options.hashes);
 
-    hashes.forEach(hash => {
+    hashes.forEach((hash) => {
       this.requests.push(this.getMethodCall('d.priority.set', [hash, options.priority]));
       this.requests.push(this.getMethodCall('d.update_priorities', [hash]));
     });
   }
 
   setSettings(options) {
-    let settings = this.getEnsuredArray(options.settings);
+    const settings = this.getEnsuredArray(options.settings);
 
-    settings.forEach(setting => {
+    settings.forEach((setting) => {
       if (setting.overrideLocalSetting) {
         this.requests.push(this.getMethodCall(setting.id, setting.data));
       } else {
@@ -340,11 +336,11 @@ class ClientRequest {
   }
 
   setTaxonomy(options) {
-    let methodName = 'd.custom1.set';
+    const methodName = 'd.custom1.set';
 
-    let tags = options.tags
+    const tags = options.tags
       .reduce((memo, currentTag) => {
-        let tag = encodeURIComponent(currentTag.trim());
+        const tag = encodeURIComponent(currentTag.trim());
 
         if (tag !== '' && memo.indexOf(tag) === -1) {
           memo.push(tag);
@@ -354,7 +350,7 @@ class ClientRequest {
       }, [])
       .join(',');
 
-    this.getEnsuredArray(options.hashes).forEach(hash => {
+    this.getEnsuredArray(options.hashes).forEach((hash) => {
       this.requests.push(this.getMethodCall(methodName, [hash, tags]));
     });
   }
@@ -373,7 +369,7 @@ class ClientRequest {
       return;
     }
 
-    this.getEnsuredArray(options.hashes).forEach(hash => {
+    this.getEnsuredArray(options.hashes).forEach((hash) => {
       this.requests.push(this.getMethodCall('d.open', [hash]));
       this.requests.push(this.getMethodCall('d.start', [hash]));
     });
@@ -385,7 +381,7 @@ class ClientRequest {
       return;
     }
 
-    this.getEnsuredArray(options.hashes).forEach(hash => {
+    this.getEnsuredArray(options.hashes).forEach((hash) => {
       this.requests.push(this.getMethodCall('d.stop', [hash]));
       this.requests.push(this.getMethodCall('d.close', [hash]));
     });

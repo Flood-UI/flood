@@ -22,7 +22,7 @@ const getFileTreeFromPathsArr = (tree, directory, file, depth) => {
       tree.directories[directory],
       file.pathComponents[depth],
       file,
-      depth
+      depth,
     );
   } else {
     if (!tree.files) {
@@ -52,23 +52,20 @@ let clientResponseUtil = {
 
         return memo;
       }, {});
-    } else {
-      // When the length of the nested arrays is more than 1, the nested arrays
-      // represent one of many items of the same type (e.g. a list of torrents,
-      // peers, files, etc). Therefore we construct an array of objects, where each
-      // object contains all of the requested keys and its value. We add an index
-      // for each item, a requirement for file lists.
-      return clientResponse.map((listItem, index) => {
-        return listItem.reduce(
-          (nestedMemo, value, nestedIndex) => {
-            nestedMemo[requestedKeys[nestedIndex]] = value;
-
-            return nestedMemo;
-          },
-          {index}
-        );
-      }, []);
     }
+    // When the length of the nested arrays is more than 1, the nested arrays
+    // represent one of many items of the same type (e.g. a list of torrents,
+    // peers, files, etc). Therefore we construct an array of objects, where each
+    // object contains all of the requested keys and its value. We add an index
+    // for each item, a requirement for file lists.
+    return clientResponse.map((listItem, index) => listItem.reduce(
+      (nestedMemo, value, nestedIndex) => {
+        nestedMemo[requestedKeys[nestedIndex]] = value;
+
+        return nestedMemo;
+      },
+      {index},
+    ), []);
   },
 
   processFile(file) {
@@ -84,17 +81,17 @@ let clientResponseUtil = {
 
   processTorrentDetails(data) {
     // TODO: This is ugly.
-    let peersData = data[0][0] || null;
-    let filesData = data[1][0] || null;
-    let trackerData = data[2][0] || null;
+    const peersData = data[0][0] || null;
+    const filesData = data[1][0] || null;
+    const trackerData = data[2][0] || null;
     let peers = null;
     let files = null;
     let trackers = null;
     let fileTree = {};
 
     if (peersData && peersData.length) {
-      peers = clientResponseUtil.mapPropsToResponse(torrentPeerPropsMap.props, peersData).map(peer => {
-        let geoData = geoip.lookup(peer.address) || {};
+      peers = clientResponseUtil.mapPropsToResponse(torrentPeerPropsMap.props, peersData).map((peer) => {
+        const geoData = geoip.lookup(peer.address) || {};
         peer.country = geoData.country;
 
         // Strings to boolean
@@ -108,9 +105,7 @@ let clientResponseUtil = {
     if (filesData && filesData.length) {
       files = clientResponseUtil.mapPropsToResponse(torrentFilePropsMap.props, filesData);
 
-      fileTree = files.reduce((memo, file) => {
-        return getFileTreeFromPathsArr(memo, file.pathComponents[0], file);
-      }, {});
+      fileTree = files.reduce((memo, file) => getFileTreeFromPathsArr(memo, file.pathComponents[0], file), {});
     }
 
     if (trackerData && trackerData.length) {

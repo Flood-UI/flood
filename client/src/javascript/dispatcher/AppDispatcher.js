@@ -16,6 +16,6 @@ class FloodDispatcher extends Dispatcher {
   }
 }
 
-let AppDispatcher = new FloodDispatcher();
+const AppDispatcher = new FloodDispatcher();
 
 export default AppDispatcher;

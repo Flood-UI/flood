@@ -13,7 +13,7 @@ class AlertStoreClass extends BaseStore {
   }
 
   accumulate(alert) {
-    let {id, value} = alert.accumulation;
+    const {id, value} = alert.accumulation;
 
     if (this.accumulation[id] == null) {
       this.accumulation[id] = value;
@@ -26,7 +26,7 @@ class AlertStoreClass extends BaseStore {
     alert.duration = this.getDuration(alert);
     alert.id = this.getID(alert);
 
-    if (!!alert.accumulation) {
+    if (alert.accumulation) {
       this.accumulate(alert);
     }
 
@@ -42,12 +42,12 @@ class AlertStoreClass extends BaseStore {
   }
 
   getAlerts() {
-    let alertIDs = Object.keys(this.alerts).sort();
+    const alertIDs = Object.keys(this.alerts).sort();
 
-    return alertIDs.map(id => {
-      let alert = this.alerts[id];
+    return alertIDs.map((id) => {
+      const alert = this.alerts[id];
 
-      if (!!alert.accumulation) {
+      if (alert.accumulation) {
         alert.count = this.accumulation[alert.accumulation.id];
       }
 
@@ -60,9 +60,9 @@ class AlertStoreClass extends BaseStore {
   }
 
   removeExpired(alert) {
-    let {accumulation} = alert;
+    const {accumulation} = alert;
 
-    if (!!accumulation) {
+    if (accumulation) {
       this.removeAccumulation(alert);
 
       if (this.accumulation[accumulation.id] === 0) {
@@ -77,7 +77,7 @@ class AlertStoreClass extends BaseStore {
   }
 
   removeAccumulation(alert) {
-    let {id, value} = alert.accumulation;
+    const {id, value} = alert.accumulation;
 
     if (this.accumulation[id] == null) {
       return;
@@ -91,9 +91,9 @@ class AlertStoreClass extends BaseStore {
   }
 }
 
-let AlertStore = new AlertStoreClass();
+const AlertStore = new AlertStoreClass();
 
-AlertStore.dispatcherID = AppDispatcher.register(payload => {
+AlertStore.dispatcherID = AppDispatcher.register((payload) => {
   // const {action, source} = payload;
   // switch (action.type) {
   // }

@@ -1,11 +1,13 @@
 import {injectIntl} from 'react-intl';
 import React from 'react';
 
+import {
+  Button, Form, FormError, FormRow, Panel, PanelContent, PanelHeader, PanelFooter, Textbox,
+} from 'flood-ui-kit';
 import AuthStore from '../../stores/AuthStore';
 import EventTypes from '../../constants/EventTypes';
 import RtorrentConnectionTypeSelection from '../general/RtorrentConnectionTypeSelection';
 
-import {Button, Form, FormError, FormRow, Panel, PanelContent, PanelHeader, PanelFooter, Textbox} from 'flood-ui-kit';
 
 const METHODS_TO_BIND = ['handleAuthError', 'handleFormSubmit'];
 
@@ -18,7 +20,7 @@ class AuthForm extends React.Component {
       isAuthStatusLoading: false,
     };
 
-    METHODS_TO_BIND.forEach(method => {
+    METHODS_TO_BIND.forEach((method) => {
       this[method] = this[method].bind(this);
     });
   }
@@ -107,7 +109,7 @@ class AuthForm extends React.Component {
       });
 
       registerFields = (
-        <PanelContent hasBorder={true}>
+        <PanelContent hasBorder>
           <RtorrentConnectionTypeSelection />
         </PanelContent>
       );

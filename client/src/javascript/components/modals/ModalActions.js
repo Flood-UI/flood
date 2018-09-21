@@ -6,8 +6,8 @@ import UIActions from '../../actions/UIActions';
 
 export default class ModalActions extends React.Component {
   getModalButtons(actions) {
-    let buttons = actions.map((action, index) => {
-      let classes = classnames('button', {
+    const buttons = actions.map((action, index) => {
+      const classes = classnames('button', {
         [action.supplementalClassName]: action.supplementalClassName,
       });
 
@@ -26,7 +26,8 @@ export default class ModalActions extends React.Component {
           onClick={this.getClickHandler(action)}
           priority={action.type}
           key={index}
-          type={action.submit ? 'submit' : 'button'}>
+          type={action.submit ? 'submit' : 'button'}
+        >
           {action.content}
         </Button>
       );
@@ -36,7 +37,7 @@ export default class ModalActions extends React.Component {
   }
 
   getClickHandler(action) {
-    return event => {
+    return (event) => {
       if (action.clickHandler) {
         action.clickHandler(event);
       }

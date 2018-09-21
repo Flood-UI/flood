@@ -51,7 +51,7 @@ class TransferDataStoreClass extends BaseStore {
   }
 
   handleTransferSummaryDiffChange(diff) {
-    diff.forEach(change => {
+    diff.forEach((change) => {
       if (change.action === diffActionTypes.ITEM_REMOVED) {
         delete this.transferSummary[change.data];
       } else {
@@ -74,9 +74,9 @@ class TransferDataStoreClass extends BaseStore {
   }
 }
 
-let TransferDataStore = new TransferDataStoreClass();
+const TransferDataStore = new TransferDataStoreClass();
 
-TransferDataStore.dispatcherID = AppDispatcher.register(payload => {
+TransferDataStore.dispatcherID = AppDispatcher.register((payload) => {
   const {action} = payload;
 
   switch (action.type) {

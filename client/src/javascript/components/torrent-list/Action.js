@@ -5,7 +5,9 @@ import Tooltip from '../general/Tooltip';
 
 export default class Action extends React.Component {
   render() {
-    const {clickHandler, icon, label, slug} = this.props;
+    const {
+      clickHandler, icon, label, slug,
+    } = this.props;
     const classes = classnames('action tooltip__wrapper', {
       [`action--${slug}`]: slug != null,
     });
