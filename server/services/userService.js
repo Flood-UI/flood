@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const BaseService = require('./BaseService');
 
 class UserService extends BaseService {

@@ -102,16 +102,13 @@ class Users {
   }
 
   updateUser(username, userRecordPatch, callback) {
-    console.log("1")
     this.db.update({username}, {$set: userRecordPatch}, (err, numUsersUpdated, updatedUser) => {
       if (err) return callback(null, err);
       // Username not found.
       if (numUsersUpdated === 0) {
-        console.log("0")
         return callback(null, err);
       }
 
-      console.log("userRecordPatch")
       return callback(userRecordPatch);
     });
   }

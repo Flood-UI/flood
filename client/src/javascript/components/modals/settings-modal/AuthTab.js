@@ -113,7 +113,7 @@ class AuthTab extends SettingsTab {
       });
     } else {
       this.setState({isAddingUser: true});
-      console.log(this.formData.isAdmin);
+
       AuthStore.createUser({
         username: this.formData.username,
         password: this.formData.password,
