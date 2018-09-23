@@ -77,8 +77,6 @@ class AuthTab extends SettingsTab {
             <FormattedMessage id="auth.current.user" defaultMessage="Current User" />
           </span>
         );
-
-        this.setState({isAdmin: AuthStore.isAdmin()});
       }
 
       const classes = classnames('interactive-list__item', {
