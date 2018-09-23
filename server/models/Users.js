@@ -36,10 +36,10 @@ class Users {
         .verify(user.password, credentials.password)
         .then(argon2Match => {
           if (argon2Match) {
-            return callback(argon2Match);
+            return callback(argon2Match, user.isAdmin);
           }
 
-          callback(null, argon2Match);
+          callback(null, argon2Match, false);
         })
         .catch(error => callback(null, error));
     });
@@ -102,13 +102,16 @@ class Users {
   }
 
   updateUser(username, userRecordPatch, callback) {
+    console.log("1")
     this.db.update({username}, {$set: userRecordPatch}, (err, numUsersUpdated, updatedUser) => {
       if (err) return callback(null, err);
       // Username not found.
       if (numUsersUpdated === 0) {
+        console.log("0")
         return callback(null, err);
       }
 
+      console.log("userRecordPatch")
       return callback(userRecordPatch);
     });
   }

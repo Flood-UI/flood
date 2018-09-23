@@ -4,6 +4,7 @@ const joi = require('joi');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
+const appendUserServices = require('../middleware/appendUserServices');
 const config = require('../../config');
 const router = express.Router();
 const services = require('../services');
@@ -11,7 +12,7 @@ const Users = require('../models/Users');
 
 const failedLoginResponse = 'Failed login.';
 
-const setAuthToken = (res, username) => {
+const setAuthToken = (res, username, isAdmin) => {
   let expirationSeconds = 60 * 60 * 24 * 7; // one week
   let cookieExpiration = Date.now() + expirationSeconds * 1000;
 
@@ -22,7 +23,7 @@ const setAuthToken = (res, username) => {
 
   res.cookie('jwt', token, {expires: new Date(cookieExpiration), httpOnly: true});
 
-  return res.json({success: true, token: `JWT ${token}`, username});
+  return res.json({success: true, token: `JWT ${token}`, username, isAdmin});
 };
 
 const authValidation = joi.object().keys({
@@ -31,6 +32,7 @@ const authValidation = joi.object().keys({
   host: joi.string(),
   port: joi.string(),
   socketPath: joi.string(),
+  isAdmin: joi.bool(),
 });
 
 router.use('/', (req, res, next) => {
@@ -46,20 +48,22 @@ router.use('/', (req, res, next) => {
   }
 });
 
+router.use('/users', passport.authenticate('jwt', {session: false}), appendUserServices);
+
 router.post('/authenticate', (req, res) => {
   const credentials = {
     password: req.body.password,
     username: req.body.username,
   };
 
-  Users.comparePassword(credentials, (isMatch, err) => {
+  Users.comparePassword(credentials, (isMatch, isAdmin, err) => {
     if (isMatch == null) {
       // Incorrect username.
       return res.status(401).json({message: failedLoginResponse});
     }
 
     if (isMatch && !err) {
-      return setAuthToken(res, credentials.username);
+      return setAuthToken(res, credentials.username, isAdmin);
     } else {
       // Incorrect password.
       return res.status(401).json({message: failedLoginResponse});
@@ -98,7 +102,7 @@ router.post('/register', (req, res) => {
         return;
       }
 
-      setAuthToken(res, req.body.username);
+      setAuthToken(res, req.body.username, true);
     }
   );
 });
@@ -118,7 +122,7 @@ router.use('/verify', (req, res, next) => {
 });
 
 router.get('/verify', (req, res, next) => {
-  res.json({initialUser: req.initialUser, username: req.user && req.user.username});
+  res.json({initialUser: req.initialUser, username: req.user && req.user.username, isAdmin: req.user && req.user.isAdmin});
 });
 
 // All subsequent routes are protected.
@@ -129,11 +133,11 @@ router.get('/logout', (req, res) => {
 });
 
 router.get('/users', (req, res, next) => {
-  Users.listUsers(ajaxUtil.getResponseFn(res));
+  req.services.userService.listUsers(Users, ajaxUtil.getResponseFn(res));
 });
 
 router.delete('/users/:username', (req, res, next) => {
-  Users.removeUser(req.params.username, ajaxUtil.getResponseFn(res));
+  req.services.userService.removeUser(Users, req.params.username, ajaxUtil.getResponseFn(res));
   services.destroyUserServices(req.user);
 });
 
@@ -148,7 +152,7 @@ router.patch('/users/:username', (req, res, next) => {
     userPatch.port = null;
   }
 
-  Users.updateUser(username, userPatch, user => {
+  req.services.userService.patchUser(Users, username, userPatch, user => {
     Users.lookupUser({username}, (err, user) => {
       if (err) return req.status(500).json({error: err});
       services.updateUserServices(user);
@@ -158,14 +162,15 @@ router.patch('/users/:username', (req, res, next) => {
 });
 
 router.put('/users', (req, res, next) => {
-  Users.createUser(
+  req.services.userService.createUser(
+    Users,
     {
       username: req.body.username,
       password: req.body.password,
       host: req.body.host,
       port: req.body.port,
       socketPath: req.body.socketPath,
-      isAdmin: false,
+      isAdmin: req.body.isAdmin == '1',
     },
     ajaxUtil.getResponseFn(res)
   );
