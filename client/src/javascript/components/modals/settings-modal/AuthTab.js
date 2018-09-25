@@ -154,10 +154,7 @@ class AuthTab extends SettingsTab {
           </ModalFormSectionHeader>
           <FormRow>
             <FormError>
-              <FormattedMessage
-                id="auth.message.not.admin"
-                defaultMessage="User is not Admin"
-              />
+              <FormattedMessage id="auth.message.not.admin" defaultMessage="User is not Admin" />
             </FormError>
           </FormRow>
         </Form>
@@ -226,15 +223,8 @@ class AuthTab extends SettingsTab {
               defaultMessage: 'Password',
             })}
           />
-          <Checkbox
-            grow={false}
-            id="isAdmin"
-            labelOffset
-            matchTextboxHeight>
-            <FormattedMessage
-              id="auth.isAdmim"
-              defaultMessage="Admin"
-            />
+          <Checkbox grow={false} id="isAdmin" labelOffset matchTextboxHeight>
+            <FormattedMessage id="auth.isAdmim" defaultMessage="Admin" />
           </Checkbox>
         </FormRow>
         <RtorrentConnectionTypeSelection />

@@ -122,7 +122,11 @@ router.use('/verify', (req, res, next) => {
 });
 
 router.get('/verify', (req, res, next) => {
-  res.json({initialUser: req.initialUser, username: req.user && req.user.username, isAdmin: req.user && req.user.isAdmin});
+  res.json({
+    initialUser: req.initialUser,
+    username: req.user && req.user.username,
+    isAdmin: req.user && req.user.isAdmin,
+  });
 });
 
 // All subsequent routes are protected.

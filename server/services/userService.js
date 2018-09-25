@@ -1,8 +1,7 @@
 const BaseService = require('./BaseService');
 
 class UserService extends BaseService {
-  createUser(Users, credentials, callback)
-  {
+  createUser(Users, credentials, callback) {
     if (this.user.isAdmin) {
       return Users.createUser(credentials, callback);
     }
@@ -10,8 +9,7 @@ class UserService extends BaseService {
     return callback(null, 'User is not admin.');
   }
 
-  removeUser(Users, username, callback)
-  {
+  removeUser(Users, username, callback) {
     if (this.user.isAdmin) {
       return Users.removeUser(username, callback);
     }

@@ -68,7 +68,6 @@ const getUserService = user => {
   return getService({servicesMap: userServices, service: UserService, user});
 };
 
-
 const bootstrapServicesForUser = user => {
   getClientRequestManager(user);
   getClientGatewayService(user);
