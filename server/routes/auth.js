@@ -170,7 +170,7 @@ router.put('/users', (req, res, next) => {
       host: req.body.host,
       port: req.body.port,
       socketPath: req.body.socketPath,
-      isAdmin: req.body.isAdmin == '1',
+      isAdmin: req.body.isAdmin === '1',
     },
     ajaxUtil.getResponseFn(res)
   );
