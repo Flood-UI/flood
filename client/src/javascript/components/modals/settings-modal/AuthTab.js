@@ -120,7 +120,7 @@ class AuthTab extends SettingsTab {
         host: this.formData.rtorrentHost,
         port: this.formData.rtorrentPort,
         socketPath: this.formData.rtorrentSocketPath,
-        isAdmin: this.formData.isAdmin,
+        isAdmin: this.formData.isAdmin === '1',
       });
     }
   };
@@ -224,7 +224,7 @@ class AuthTab extends SettingsTab {
             })}
           />
           <Checkbox grow={false} id="isAdmin" labelOffset matchTextboxHeight>
-            <FormattedMessage id="auth.isAdmim" defaultMessage="Admin" />
+            <FormattedMessage id="auth.admin" defaultMessage="Admin" />
           </Checkbox>
         </FormRow>
         <RtorrentConnectionTypeSelection />
