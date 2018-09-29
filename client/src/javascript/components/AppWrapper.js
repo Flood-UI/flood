@@ -110,6 +110,8 @@ class AuthEnforcer extends React.Component {
   }
 
   handleLoginSuccess() {
+    SettingsStore.fetchClientSettings();
+    SettingsStore.fetchFloodSettings();
     FloodActions.restartActivityStream();
     this.setState({authStatusDetermined: true, isAuthenticated: true});
     browserHistory.replace('overview');
