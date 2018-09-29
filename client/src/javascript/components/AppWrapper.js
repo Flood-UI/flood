@@ -1,7 +1,6 @@
 import {browserHistory} from 'react-router';
 import classnames from 'classnames';
 import CSSTransitionGroup from 'react-addons-css-transition-group';
-import {FormattedMessage} from 'react-intl';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -40,14 +39,7 @@ class AuthEnforcer extends React.Component {
 
     this.state = {
       authStatusDetermined: false,
-      dependencies: {
-        authentication: {
-          message: (
-            <FormattedMessage id="dependency.loading.authentication.status" defaultMessage="Authentication Status" />
-          ),
-          satisfied: false,
-        },
-      },
+      dependencies: {},
       isAuthenticated: false,
       isClientConnected: false,
       dependenciesLoaded: false,
@@ -145,15 +137,7 @@ class AuthEnforcer extends React.Component {
 
   handleUIDependenciesChange() {
     this.setState({
-      dependencies: {
-        authentication: {
-          message: (
-            <FormattedMessage id="dependency.loading.authentication.status" defaultMessage="Authentication Status" />
-          ),
-          satisfied: this.state.authStatusDetermined,
-        },
-        ...UIStore.getDependencies(),
-      },
+      dependencies: UIStore.getDependencies(),
     });
   }
 
