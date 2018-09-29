@@ -4,12 +4,11 @@ const joi = require('joi');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
-const appendUserServices = require('../middleware/appendUserServices');
+const requireAdmin = require('../middleware/requireAdmin');
 const config = require('../../config');
 const router = express.Router();
 const services = require('../services');
 const Users = require('../models/Users');
-
 const failedLoginResponse = 'Failed login.';
 
 const setAuthToken = (res, username, isAdmin) => {
@@ -48,7 +47,7 @@ router.use('/', (req, res, next) => {
   }
 });
 
-router.use('/users', passport.authenticate('jwt', {session: false}), appendUserServices);
+router.use('/users', passport.authenticate('jwt', {session: false}), requireAdmin);
 
 router.post('/authenticate', (req, res) => {
   const credentials = {
@@ -137,11 +136,11 @@ router.get('/logout', (req, res) => {
 });
 
 router.get('/users', (req, res, next) => {
-  req.services.userService.listUsers(Users, ajaxUtil.getResponseFn(res));
+  Users.listUsers(ajaxUtil.getResponseFn(res));
 });
 
 router.delete('/users/:username', (req, res, next) => {
-  req.services.userService.removeUser(Users, req.params.username, ajaxUtil.getResponseFn(res));
+  Users.removeUser(req.params.username, ajaxUtil.getResponseFn(res));
   services.destroyUserServices(req.user);
 });
 
@@ -156,7 +155,7 @@ router.patch('/users/:username', (req, res, next) => {
     userPatch.port = null;
   }
 
-  req.services.userService.patchUser(Users, username, userPatch, user => {
+  Users.patchUser(username, userPatch, user => {
     Users.lookupUser({username}, (err, user) => {
       if (err) return req.status(500).json({error: err});
       services.updateUserServices(user);
@@ -166,8 +165,7 @@ router.patch('/users/:username', (req, res, next) => {
 });
 
 router.put('/users', (req, res, next) => {
-  req.services.userService.createUser(
-    Users,
+  Users.createUser(
     {
       username: req.body.username,
       password: req.body.password,
