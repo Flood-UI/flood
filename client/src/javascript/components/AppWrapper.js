@@ -12,6 +12,7 @@ import ClientConnectionInterruption from './general/ClientConnectionInterruption
 import EventTypes from '../constants/EventTypes';
 import FloodActions from '../actions/FloodActions';
 import LoadingIndicator from './general/LoadingIndicator';
+import SettingsStore from '../stores/SettingsStore';
 import UIStore from '../stores/UIStore';
 import WindowTitle from './general/WindowTitle';
 
@@ -92,6 +93,8 @@ class AuthEnforcer extends React.Component {
       browserHistory.replace('register');
     } else {
       this.setState({authStatusDetermined: true, isAuthenticated: true});
+      SettingsStore.fetchClientSettings();
+      SettingsStore.fetchFloodSettings();
       browserHistory.replace('overview');
     }
   }
