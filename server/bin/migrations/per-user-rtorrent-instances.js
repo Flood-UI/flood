@@ -34,14 +34,13 @@ const migrate = () => {
                 host: null,
                 port: null,
                 socketPath: null,
-                isAdmin: true,
               };
             }
 
             // If none of the xmlrpc fields are on the user object, try to infer this from the legacy
             // configuration file.
             if (user.host == null && user.port == null && user.socketPath == null) {
-              userPatch = {};
+              userPatch = {isAdmin: true};
 
               if (existingConfig.socketPath && existingConfig.socketPath.trim().length > 0) {
                 userPatch.socketPath = existingConfig.socketPath;
