@@ -66,6 +66,7 @@ I've been bad about cutting actual releases, so check this repo for recent commi
     * `npm run start:development:server` uses [nodemon](https://github.com/remy/nodemon) to watch for changes to the server-side JavaScript.
     * `npm run start:development:client` watches for changes in the client-side source.
 3. Access the UI in your browser. Defaults to `localhost:4200`.
+4. (Optional) Build the documentation `npm run build-docs`.
 
 ### Environment Variables
 
