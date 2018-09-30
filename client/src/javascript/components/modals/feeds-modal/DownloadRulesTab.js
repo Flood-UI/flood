@@ -111,7 +111,7 @@ class DownloadRulesTab extends React.Component {
     errors: {},
     feeds: FeedMonitorStore.getFeeds(),
     rules: FeedMonitorStore.getRules(),
-    currentlyEditingRule: 'none',
+    currentlyEditingRule: null,
   };
 
   componentDidMount() {
@@ -274,7 +274,7 @@ class DownloadRulesTab extends React.Component {
             <Checkbox id="startOnLoad" checked={rule.startOnLoad} matchTextboxHeight>
               <FormattedMessage id="feeds.start.on.load" defaultMessage="Start on load" />
             </Checkbox>
-            <Button onClick={() => this.setState({currentlyEditingRule: 'none'})}>
+            <Button onClick={() => this.setState({currentlyEditingRule: null})}>
               <FormattedMessage id="button.cancel" defaultMessage="Cancel" />
             </Button>
             <Button type="submit">
@@ -284,10 +284,6 @@ class DownloadRulesTab extends React.Component {
         </FormRowGroup>
       </li>
     );
-  }
-
-  getAddRuleForm() {
-    return this.getModifyRuleForm(defaultRule);
   }
 
   getRulesListItem(rule) {
@@ -341,6 +337,13 @@ class DownloadRulesTab extends React.Component {
                 values={{count: matchedCount}}
               />
             </li>
+            {rule === this.state.currentlyEditingRule && (
+              <li
+                className="interactive-list__detail-list__item
+              interactive-list__detail--primary">
+                Modifying
+              </li>
+            )}
           </ul>
           <ul className="interactive-list__detail-list">
             <li
@@ -367,48 +370,21 @@ class DownloadRulesTab extends React.Component {
   }
 
   getRulesList() {
-    if (this.state.rules.length === 0 && this.state.currentlyEditingRule === 'none') {
+    if (this.state.rules.length === 0) {
       return (
         <ul className="interactive-list">
           <li className="interactive-list__item">
-            <div className="interactive-list__label">
-              <FormattedMessage id="feeds.no.rules.defined" defaultMessage="No rules defined." />
-            </div>
-            <span
-              className="interactive-list__icon interactive-list__icon--action"
-              onClick={() => this.handleAddRuleClick()}>
-              <Add />
-            </span>
+            <FormattedMessage defaultMessage="No ruless defined." id="rules.no.rules.defined" />
           </li>
         </ul>
       );
     }
 
-    const rulesList = this.state.rules.map((rule, index) => {
-      if (rule._id === this.state.currentlyEditingRule) {
-        return this.getModifyRuleForm(rule);
-      } else {
-        return this.getRulesListItem(rule);
-      }
+    const rulesList = this.state.rules.map(rule => {
+      return this.getRulesListItem(rule);
     });
 
-    return (
-      <ul className="interactive-list">
-        {rulesList}
-        {this.state.currentlyEditingRule === 'new' ? (
-          this.getAddRuleForm()
-        ) : (
-          <li className="interactive-list__item">
-            <div className="interactive-list__label" />
-            <span
-              className="interactive-list__icon interactive-list__icon--action"
-              onClick={() => this.handleAddRuleClick()}>
-              <Add />
-            </span>
-          </li>
-        )}
-      </ul>
-    );
+    return <ul className="interactive-list">{rulesList}</ul>;
   }
 
   handleFeedMonitorsFetchSuccess = () => {
@@ -425,31 +401,36 @@ class DownloadRulesTab extends React.Component {
 
   handleFormSubmit = () => {
     const {errors, isValid} = this.validateForm();
-    const formData = this.getAmendedFormData();
 
     if (!isValid) {
       this.setState({errors});
     } else {
-      let currentRule = this.state.currentlyEditingRule;
-      if (currentRule !== 'none' && currentRule !== 'new') {
-        FeedMonitorStore.removeRule(currentRule);
+      const currentRule = this.state.currentlyEditingRule;
+      const formData = this.getAmendedFormData();
+
+      if (currentRule !== null && currentRule !== defaultRule) {
+        FeedMonitorStore.removeRule(currentRule._id);
       }
       FeedMonitorStore.addRule(formData);
       this.formRef.resetForm();
-      this.setState({currentlyEditingRule: 'none'});
+      this.setState({currentlyEditingRule: null});
     }
   };
 
   handleRemoveRuleClick(rule) {
     FeedMonitorStore.removeRule(rule._id);
+
+    if (rule === this.state.currentlyEditingRule) {
+      this.setState({currentlyEditingRule: null});
+    }
   }
 
   handleAddRuleClick() {
-    this.setState({currentlyEditingRule: 'new'});
+    this.setState({currentlyEditingRule: defaultRule});
   }
 
   handleModifyRuleClick(rule) {
-    this.setState({currentlyEditingRule: rule._id});
+    this.setState({currentlyEditingRule: rule});
   }
 
   validateForm() {
@@ -490,13 +471,16 @@ class DownloadRulesTab extends React.Component {
         <FormRow>
           <FormRowItem>{this.getRulesList()}</FormRowItem>
         </FormRow>
-        {/*<ModalFormSectionHeader>
-          <FormattedMessage
-            id="feeds.add.automatic.download.rule"
-            defaultMessage="Add Download Rule"
-          />
-        </ModalFormSectionHeader>
-        {this.getRuleFields()}*/}
+        {this.state.currentlyEditingRule ? (
+          this.getModifyRuleForm(this.state.currentlyEditingRule)
+        ) : (
+          <FormRow>
+            <FormRowItem width="auto" />
+            <Button onClick={() => this.handleAddRuleClick()}>
+              <FormattedMessage id="button.new" defaultMessage="New" />
+            </Button>
+          </FormRow>
+        )}
       </Form>
     );
   }
