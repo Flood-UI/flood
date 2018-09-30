@@ -14,7 +14,7 @@ import {
 import {defineMessages, FormattedMessage, injectIntl} from 'react-intl';
 import React from 'react';
 
-import ArrowIcon from '../../icons/ArrowIcon';
+import Edit from '../../icons/Edit';
 import Add from '../../icons/Add';
 import Close from '../../icons/Close';
 import EventTypes from '../../../constants/EventTypes';
@@ -353,10 +353,10 @@ class DownloadRulesTab extends React.Component {
           </ul>
         </div>
         <span
-          className="interactive-list__icon interactive-list__icon--action"
+          className="interactive-list__icon interactive-list__icon--action interactive-list__icon--padding"
           onClick={() => this.handleModifyRuleClick(rule)}>
-          <ArrowIcon />
-        </span>
+          <Edit />
+        </span>{' '}
         <span
           className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
           onClick={() => this.handleRemoveRuleClick(rule)}>

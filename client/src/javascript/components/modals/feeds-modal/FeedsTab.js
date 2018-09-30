@@ -15,7 +15,7 @@ import {
 import formatUtil from 'universally-shared-code/util/formatUtil';
 import React from 'react';
 
-import ArrowIcon from '../../icons/ArrowIcon';
+import Edit from '../../icons/Edit';
 import Add from '../../icons/Add';
 import Close from '../../icons/Close';
 import EventTypes from '../../../constants/EventTypes';
@@ -280,9 +280,9 @@ class FeedsTab extends React.Component {
           </ul>
         </div>
         <span
-          className="interactive-list__icon interactive-list__icon--action"
+          className="interactive-list__icon interactive-list__icon--action interactive-list__icon--padding"
           onClick={() => this.handleModifyFeedClick(feed)}>
-          <ArrowIcon />
+          <Edit />
         </span>
         <span
           className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
