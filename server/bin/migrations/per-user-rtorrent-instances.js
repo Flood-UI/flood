@@ -34,6 +34,7 @@ const migrate = () => {
                 host: null,
                 port: null,
                 socketPath: null,
+                isAdmin: true,
               };
             }
 
