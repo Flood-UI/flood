@@ -15,7 +15,6 @@ import {defineMessages, FormattedMessage, injectIntl} from 'react-intl';
 import React from 'react';
 
 import Edit from '../../icons/Edit';
-import Add from '../../icons/Add';
 import Close from '../../icons/Close';
 import EventTypes from '../../../constants/EventTypes';
 import FeedMonitorStore from '../../../stores/FeedMonitorStore';

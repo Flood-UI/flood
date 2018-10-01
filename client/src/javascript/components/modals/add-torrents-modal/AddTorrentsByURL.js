@@ -8,6 +8,7 @@ import SettingsStore from '../../../stores/SettingsStore';
 import TextboxRepeater from '../../general/form-elements/TextboxRepeater';
 import TorrentActions from '../../../actions/TorrentActions';
 import TorrentDestination from '../../general/filesystem/TorrentDestination';
+import UIStore from '../../../stores/UIStore';
 
 class AddTorrentsByURL extends React.Component {
   _formData = {};
@@ -17,14 +18,15 @@ class AddTorrentsByURL extends React.Component {
     errors: {},
     isAddingTorrents: false,
     tags: '',
-    urlTextboxes: [{value: ''}],
+    urlTextboxes: UIStore.getActiveModal().torrents || [{id: 0, value: ''}],
     startTorrents: SettingsStore.getFloodSettings('startTorrentsOnLoad'),
   };
 
   getURLsFromForm() {
-    return Object.keys(this._formData).reduce((accumulator, formItemKey) => {
+    const formData = this._formRef.getFormData();
+    return Object.keys(formData).reduce((accumulator, formItemKey) => {
       if (/^urls/.test(formItemKey)) {
-        accumulator.push(this._formData[formItemKey]);
+        accumulator.push(formData[formItemKey]);
       }
 
       return accumulator;
@@ -65,8 +67,9 @@ class AddTorrentsByURL extends React.Component {
           placeholder={this.props.intl.formatMessage({
             id: 'torrents.add.tab.url.input.placeholder',
             defaultMessage: 'Torrent URL or Magnet Link',
-          })}
-        />
+          })}>
+          {this.state.urlTextboxes}
+        </TextboxRepeater>
         <TorrentDestination
           id="destination"
           label={this.props.intl.formatMessage({

@@ -21,7 +21,7 @@ import EventTypes from '../../../constants/EventTypes';
 import FeedMonitorStore from '../../../stores/FeedMonitorStore';
 import ModalFormSectionHeader from '../ModalFormSectionHeader';
 import Validator from '../../../util/Validator';
-import TorrentActions from '../../../actions/TorrentActions';
+import UIActions from '../../../actions/UIActions';
 
 const MESSAGES = defineMessages({
   mustSpecifyURL: {
@@ -339,7 +339,11 @@ class FeedsTab extends React.Component {
 
   getFeedItemsForm() {
     return (
-      <Form className="inverse" onChange={this.handleBrowseFeedChange} ref={ref => (this.manualAddingFormRef = ref)}>
+      <Form
+        className="inverse"
+        onChange={this.handleBrowseFeedChange}
+        onSubmit={this.handleBrowseFeedSubmit}
+        ref={ref => (this.manualAddingFormRef = ref)}>
         <ModalFormSectionHeader>
           <FormattedMessage id="feeds.browse.feeds" defaultMessage="Browse feeds" />
         </ModalFormSectionHeader>
@@ -363,31 +367,12 @@ class FeedsTab extends React.Component {
               })}
               placeholder={this.props.intl.formatMessage(MESSAGES.search)}
             />,
-            <Textbox
-              id="tags"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.apply.tags',
-                defaultMessage: 'Apply Tags',
-              })}
-              placeholder={this.props.intl.formatMessage(MESSAGES.tags)}
-            />,
+            <Button type="submit" labelOffset>
+              <FormattedMessage id="button.download" defaultMessage="Download" />
+            </Button>,
           ]}
         </FormRow>
-        {this.state.selectedFeed && [
-          <FormRow>
-            <TorrentDestination
-              id="destination"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.torrent.destination',
-                defaultMessage: 'Torrent Destination',
-              })}
-            />
-            <Checkbox id="startOnLoad" matchTextboxHeight labelOffset>
-              <FormattedMessage id="feeds.start.on.load" defaultMessage="Start on load" />
-            </Checkbox>
-          </FormRow>,
-          <FormRow>{this.getFeedItemsList()}</FormRow>,
-        ]}
+        {this.state.selectedFeed && [<FormRow>{this.getFeedItemsList()}</FormRow>]}
       </Form>
     );
   }
@@ -409,7 +394,7 @@ class FeedsTab extends React.Component {
       return (
         <li
           className="interactive-list__item interactive-list__item--stacked-content feed-list__feed"
-          key={item.guid.text}>
+          key={'item' + index}>
           <div className="interactive-list__label">
             <ul className="interactive-list__detail-list">
               <li
@@ -419,7 +404,7 @@ class FeedsTab extends React.Component {
               </li>
             </ul>
           </div>
-          <Checkbox />
+          <Checkbox id={index} />
         </li>
       );
     });
@@ -485,18 +470,6 @@ class FeedsTab extends React.Component {
     this.setState({currentlyEditingFeed: feed});
   };
 
-  handleAddTorrentClick = item => {
-    const formData = this.manualAddingFormRef.getFormData();
-    console.log(formData);
-    TorrentActions.addTorrentsByUrls({
-      urls: [item.link],
-      destination: formData.destination,
-      isBasePath: formData.useBasePath,
-      start: formData.startOnLoad,
-      tags: formData.tags.split(','),
-    });
-  };
-
   handleBrowseFeedChange = input => {
     this.setState({
       selectedFeed: input.formData.feedID,
@@ -507,6 +480,16 @@ class FeedsTab extends React.Component {
         search: input.formData.search,
       },
     });
+  };
+
+  handleBrowseFeedSubmit = () => {
+    const formData = this.manualAddingFormRef.getFormData();
+
+    const downloadedTorrents = this.state.items
+      .filter((item, index) => formData[index])
+      .map((torrent, index) => ({id: index, value: torrent.link}));
+
+    UIActions.displayModal({id: 'add-torrents', torrents: downloadedTorrents});
   };
 
   validateForm() {
