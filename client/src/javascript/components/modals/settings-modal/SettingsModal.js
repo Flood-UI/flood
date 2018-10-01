@@ -225,11 +225,11 @@ class SettingsModal extends React.Component {
         },
       },
       about: {
-          content: AboutTab,
-          label: this.props.intl.formatMessage({
-              id: 'settings.tabs.about',
-              defaultMessage: 'About'
-          })
+        content: AboutTab,
+        label: this.props.intl.formatMessage({
+          id: 'settings.tabs.about',
+          defaultMessage: 'About',
+        }),
       },
     };
 
