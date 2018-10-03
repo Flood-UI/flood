@@ -1,16 +1,13 @@
-import {injectIntl} from 'react-intl';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import AboutMarkdownPath from '../../../../../../ABOUT.md';
 
 import SettingsTab from './SettingsTab';
 
-class AboutTab extends SettingsTab {
-  constructor(props) {
-    super(props);
-
-    this.state = {about: null};
-  }
+export default class AboutTab extends SettingsTab {
+  state = {
+    about: null,
+  };
 
   componentWillMount() {
     fetch(AboutMarkdownPath)
@@ -22,11 +19,7 @@ class AboutTab extends SettingsTab {
 
   render() {
     return (
-      <div className="content">
-        <ReactMarkdown source={this.state.about} />
-      </div>
+      <ReactMarkdown source={this.state.about} />
     );
   }
 }
-
-export default injectIntl(AboutTab);
