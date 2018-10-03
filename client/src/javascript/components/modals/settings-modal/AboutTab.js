@@ -7,15 +7,17 @@ import SettingsTab from './SettingsTab';
 
 class AboutTab extends SettingsTab {
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.state = { about: null }
+    this.state = {about: null};
   }
 
   componentWillMount() {
-    fetch(AboutMarkdownPath).then((response) => response.text()).then((text) => {
-      this.setState({ about: text })
-    })
+    fetch(AboutMarkdownPath)
+      .then(response => response.text())
+      .then(text => {
+        this.setState({about: text});
+      });
   }
 
   render() {

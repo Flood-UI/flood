@@ -221,7 +221,7 @@ class SettingsModal extends React.Component {
         }),
         props: {
           onSettingsChange: this.handleFloodSettingsChange,
-          scrollContainer: this.modalBodyRef
+          scrollContainer: this.modalBodyRef,
         },
       },
       about: {
