@@ -18,8 +18,6 @@ export default class AboutTab extends SettingsTab {
   }
 
   render() {
-    return (
-      <ReactMarkdown source={this.state.about} />
-    );
+    return <ReactMarkdown source={this.state.about} />;
   }
 }
