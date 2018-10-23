@@ -19,8 +19,6 @@ const migrate = () => {
           users.map(user => {
             let userPatch = null;
 
-            // If none of the xmlrpc fields are on the user object, try to infer this from the legacy
-            // configuration file.
             if (user.isAdmin == null) {
               userPatch = {isAdmin: true};
             }
