@@ -16,6 +16,12 @@ module.exports = (req, res) => {
 
   const serviceInstances = services.getAllServices(user);
   const serverEvent = new ServerEvent(res);
+  if (!serviceInstances.connectionManager.hasConnections()) {
+    serviceInstances.torrentService.fetchTorrentList();
+    serviceInstances.historyService.fetchCurrentTransferSummary();
+  }
+  serviceInstances.connectionManager.connect();
+
   const taxonomy = serviceInstances.taxonomyService.getTaxonomy();
   const torrentList = serviceInstances.torrentService.getTorrentList();
   const transferSummary = serviceInstances.historyService.getTransferSummary();
@@ -121,5 +127,13 @@ module.exports = (req, res) => {
     serverEvent.setType(serverEventTypes.TORRENT_LIST_DIFF_CHANGE);
     serverEvent.addData(diff);
     serverEvent.emit();
+  });
+
+  res.on('close', () => {
+    serviceInstances.connectionManager.disconnect();
+    if (!serviceInstances.connectionManager.hasConnections()) {
+      serviceInstances.torrentService.clearFetchPoll();
+      serviceInstances.historyService.clearFetchPoll();
+    }
   });
 };

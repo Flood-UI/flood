@@ -97,8 +97,6 @@ class HistoryService extends BaseService {
       nextEraUpdateInterval: 1000 * 20, // 20 seconds
       nextEra: this.thirtyMinSnapshot,
     });
-
-    this.fetchCurrentTransferSummary();
   }
 
   checkSnapshotDiffs() {
@@ -134,14 +132,18 @@ class HistoryService extends BaseService {
   }
 
   fetchCurrentTransferSummary() {
-    if (this.pollTimeout != null) {
-      clearTimeout(this.pollTimeout);
-    }
+    this.clearFetchPoll();
 
     this.services.clientGatewayService
       .fetchTransferSummary(transferSummaryMethodCallConfig)
       .then(this.handleFetchTransferSummarySuccess.bind(this))
       .catch(this.handleFetchTransferSummaryError.bind(this));
+  }
+
+  clearFetchPoll() {
+    if (this.pollTimeout != null) {
+      clearTimeout(this.pollTimeout);
+    }
   }
 
   getTransferSummary() {

@@ -5,6 +5,7 @@ const HistoryService = require('./historyService');
 const NotificationService = require('./notificationService');
 const TaxonomyService = require('./taxonomyService');
 const TorrentService = require('./torrentService');
+const ConnectionManager = require('./connectionManager');
 
 const clientRequestManagers = new Map();
 const clientGatewayServices = new Map();
@@ -13,6 +14,7 @@ const historyServices = new Map();
 const notificationServices = new Map();
 const taxonomyServices = new Map();
 const torrentServices = new Map();
+const connectionManagers = new Map();
 const allServiceMaps = [
   clientRequestManagers,
   clientGatewayServices,
@@ -21,6 +23,7 @@ const allServiceMaps = [
   notificationServices,
   taxonomyServices,
   torrentServices,
+  connectionManagers,
 ];
 
 const getService = ({servicesMap, service, user}) => {
@@ -61,6 +64,10 @@ const getTorrentService = user => {
   return getService({servicesMap: torrentServices, service: TorrentService, user});
 };
 
+const getConnectionManager = user => {
+  return getService({servicesMap: connectionManagers, service: ConnectionManager, user});
+};
+
 const bootstrapServicesForUser = user => {
   getClientRequestManager(user);
   getClientGatewayService(user);
@@ -69,6 +76,7 @@ const bootstrapServicesForUser = user => {
   getNotificationService(user);
   getTaxonomyService(user);
   getTorrentService(user);
+  getConnectionManager(user);
 };
 
 const destroyUserServices = user => {
@@ -110,6 +118,10 @@ const getAllServices = user => {
 
     get torrentService() {
       return getTorrentService(user);
+    },
+
+    get connectionManager() {
+      return getConnectionManager(user);
     },
   };
 };

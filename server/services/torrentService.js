@@ -45,8 +45,6 @@ class TorrentService extends BaseService {
     clientGatewayService.on(clientGatewayServiceEvents.PROCESS_TORRENT, this.handleTorrentProcessed);
 
     clientGatewayService.on(clientGatewayServiceEvents.TORRENTS_REMOVED, this.handleTorrentsRemoved);
-
-    this.fetchTorrentList();
   }
 
   assignDeletedTorrentsToDiff(diff, nextTorrentListSummary, options = {}) {
@@ -92,14 +90,18 @@ class TorrentService extends BaseService {
   }
 
   fetchTorrentList() {
-    if (this.pollTimeout != null) {
-      clearTimeout(this.pollTimeout);
-    }
+    this.clearFetchPoll();
 
     return this.services.clientGatewayService
       .fetchTorrentList(torrentListMethodCallConfig)
       .then(this.handleFetchTorrentListSuccess)
       .catch(this.handleFetchTorrentListError);
+  }
+
+  clearFetchPoll() {
+    if (this.pollTimeout != null) {
+      clearTimeout(this.pollTimeout);
+    }
   }
 
   getTorrentETAFromDetails(torrentDetails) {
