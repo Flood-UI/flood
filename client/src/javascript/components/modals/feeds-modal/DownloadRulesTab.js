@@ -131,6 +131,7 @@ class DownloadRulesTab extends React.Component {
   }, 150);
 
   checkMatch(match, exclude, check) {
+    console.log({match, exclude, check});
     let checkMatchTextbox;
     for (let i = 0; i < this.formRef.formRef.length; i++) {
       let element = this.formRef.formRef[i];
@@ -143,7 +144,7 @@ class DownloadRulesTab extends React.Component {
       checkMatchTextbox.classList.remove(className);
     });
 
-    if (!Validator.isNotEmpty(match) || !Validator.isRegExValid(match) || !Validator.isRegExValid(exclude)) {
+    if (!Validator.isNotEmpty(check) || !Validator.isRegExValid(match) || !Validator.isRegExValid(exclude)) {
       return;
     }
 
@@ -240,7 +241,6 @@ class DownloadRulesTab extends React.Component {
               defaultValue={rule.exclude}
             />
             <Textbox
-              style={{backgroundColor: '#222222'}}
               id="check"
               label={this.props.intl.formatMessage({
                 id: 'feeds.test.match',
@@ -358,7 +358,7 @@ class DownloadRulesTab extends React.Component {
           className="interactive-list__icon interactive-list__icon--action interactive-list__icon--padding"
           onClick={() => this.handleModifyRuleClick(rule)}>
           <Edit />
-        </span>{' '}
+        </span>
         <span
           className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
           onClick={() => this.handleRemoveRuleClick(rule)}>

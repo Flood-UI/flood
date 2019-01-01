@@ -14,13 +14,20 @@ class AddTorrentsByURL extends React.Component {
   _formData = {};
   _formRef = null;
 
-  state = {
-    errors: {},
-    isAddingTorrents: false,
-    tags: '',
-    urlTextboxes: UIStore.getActiveModal().torrents || [{id: 0, value: ''}],
-    startTorrents: SettingsStore.getFloodSettings('startTorrentsOnLoad'),
-  };
+  constructor() {
+    super();
+
+    const activeModal = UIStore.getActiveModal();
+    const initialUrls = activeModal ? activeModal.torrents : null;
+
+    this.state = {
+      errors: {},
+      isAddingTorrents: false,
+      tags: '',
+      urlTextboxes: initialUrls || [{id: 0, value: ''}],
+      startTorrents: SettingsStore.getFloodSettings('startTorrentsOnLoad'),
+    };
+  }
 
   getURLsFromForm() {
     const formData = this._formRef.getFormData();
