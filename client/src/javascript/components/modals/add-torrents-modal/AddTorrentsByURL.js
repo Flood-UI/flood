@@ -74,9 +74,9 @@ class AddTorrentsByURL extends React.Component {
           placeholder={this.props.intl.formatMessage({
             id: 'torrents.add.tab.url.input.placeholder',
             defaultMessage: 'Torrent URL or Magnet Link',
-          })}>
-          {this.state.urlTextboxes}
-        </TextboxRepeater>
+          })}
+          defaultValues={this.state.urlTextboxes}
+        />
         <TorrentDestination
           id="destination"
           label={this.props.intl.formatMessage({

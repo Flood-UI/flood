@@ -6,7 +6,7 @@ import RemoveMini from '../../icons/RemoveMini';
 
 export default class TextboxRepeater extends React.PureComponent {
   state = {
-    textboxes: this.props.children || [{id: 0, value: ''}],
+    textboxes: this.props.defaultValues || [{id: 0, value: ''}],
   };
 
   _idCounter = 0;
