@@ -71,8 +71,6 @@ const defaultRule = {
   startOnLoad: false,
 };
 
-const possibleMatchClasses = ['check-match-success', 'check-match-failed'];
-
 class DownloadRulesTab extends React.Component {
   formRef;
   validatedFields = {
@@ -111,6 +109,7 @@ class DownloadRulesTab extends React.Component {
     feeds: FeedMonitorStore.getFeeds(),
     rules: FeedMonitorStore.getRules(),
     currentlyEditingRule: null,
+    checkMatchClass: '',
   };
 
   componentDidMount() {
@@ -131,31 +130,19 @@ class DownloadRulesTab extends React.Component {
   }, 150);
 
   checkMatch(match, exclude, check) {
-    console.log({match, exclude, check});
-    let checkMatchTextbox;
-    for (let i = 0; i < this.formRef.formRef.length; i++) {
-      let element = this.formRef.formRef[i];
-      if (element.name === 'check') {
-        checkMatchTextbox = element;
+    let checkMatchClass = '';
+
+    if (Validator.isNotEmpty(check) && Validator.isRegExValid(match) && Validator.isRegExValid(exclude)) {
+      const isMatched = new RegExp(match, 'gi').test(check);
+      const isExcluded = exclude !== '' && new RegExp(exclude, 'gi').test(check);
+      if (isMatched && !isExcluded) {
+        checkMatchClass = 'check-match-success';
+      } else {
+        checkMatchClass = 'check-match-failed';
       }
     }
 
-    possibleMatchClasses.forEach(className => {
-      checkMatchTextbox.classList.remove(className);
-    });
-
-    if (!Validator.isNotEmpty(check) || !Validator.isRegExValid(match) || !Validator.isRegExValid(exclude)) {
-      return;
-    }
-
-    const isMatched = new RegExp(match, 'gi').test(check);
-    const isExcluded = exclude !== '' && new RegExp(exclude, 'gi').test(check);
-
-    if (isMatched && !isExcluded) {
-      checkMatchTextbox.classList.add('check-match-success');
-    } else {
-      checkMatchTextbox.classList.add('check-match-failed');
-    }
+    this.setState({checkMatchClass});
   }
 
   getAmendedFormData() {
@@ -198,6 +185,7 @@ class DownloadRulesTab extends React.Component {
   }
 
   getModifyRuleForm(rule) {
+    console.log(this.state.checkMatchClass);
     return (
       <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={rule._id}>
         <FormRowGroup>
@@ -240,14 +228,16 @@ class DownloadRulesTab extends React.Component {
               placeholder={this.props.intl.formatMessage(MESSAGES.regEx)}
               defaultValue={rule.exclude}
             />
-            <Textbox
-              id="check"
-              label={this.props.intl.formatMessage({
-                id: 'feeds.test.match',
-                defaultMessage: 'Check Matching.',
-              })}
-              placeholder={this.props.intl.formatMessage(MESSAGES.check)}
-            />
+            <div className={this.state.checkMatchClass}>
+              <Textbox
+                id="check"
+                label={this.props.intl.formatMessage({
+                  id: 'feeds.test.match',
+                  defaultMessage: 'Check Matching.',
+                })}
+                placeholder={this.props.intl.formatMessage(MESSAGES.check)}
+              />
+            </div>
           </FormRow>
           <FormRow>
             <TorrentDestination
