@@ -86,6 +86,10 @@ The docker container includes a volume at `/data`, which is where the database w
 
 Check out the [Wiki](https://github.com/jfurrow/flood/wiki/Docker) for more information.
 
+### Tutorials
+
++ [ArchLinux - Install rTorrent, Flood and SFTP](https://rawsec.ml/en/archlinux-install-rtorrent-flood-sftp/) A complete tutorial for installing Flood alongside rTorrent, a hardenned Nginx reverse proxy, an SFTP configuration, with all those features using service accounts for a greater global security.
+
 ## Acknowledgments
 
 Check out [`package.json`](./package.json)'s `dependency` property to see the projects that make this app possible. Flood's client-side build tooling is based on the wonderful [create-react-app](https://github.com/facebookincubator/create-react-app).
