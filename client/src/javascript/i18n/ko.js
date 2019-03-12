@@ -136,7 +136,7 @@ export default {
   'notification.clear.all': '모두 지우기',
   'notification.showing': '표시 중',
 
-  'priority.dont.download': "다운로드하지 않음",
+  'priority.dont.download': '다운로드하지 않음',
   'priority.high': '높음',
   'priority.low': '낮음',
   'priority.normal': '보통',
@@ -338,7 +338,7 @@ export default {
       other {#개 토렌트를}
     } 제거할까요?`,
   'torrents.remove.delete.data': '데이터 삭제',
-  'torrents.remove.error.no.torrents.selected': "토렌트를 선택하지 않았습니다.",
+  'torrents.remove.error.no.torrents.selected': '토렌트를 선택하지 않았습니다.',
   'torrents.remove': '토렌트 제거',
 
   'torrents.set.tags.button.set': '태그 지정',
