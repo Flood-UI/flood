@@ -1,3 +1,10 @@
+> :warning::warning::warning:
+>
+> Flood has no active developer right now! Before openning an issue rather considerate contributing because the issue won't be fixed or the new feature won't appear without active developers. All contributions are welcome. The project also seek for a makor refactoring, see [#712](https://github.com/jfurrow/flood/issues/712)
+>
+> :warning::warning::warning:
+
+
 # Flood
 
 ![Flood logo](flood.png)
