@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  extends: ['prettier', 'airbnb', 'plugin:import/errors', 'plugin:import/warnings'],
+  extends: ['airbnb', 'plugin:import/errors', 'plugin:import/warnings', 'prettier'],
   parser: 'babel-eslint',
   plugins: ['flowtype', 'import'],
   rules: {
