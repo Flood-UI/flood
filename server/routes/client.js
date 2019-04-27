@@ -16,10 +16,10 @@ const upload = multer({
 router.get('/connection-test', (req, res, next) => {
   req.services.clientGatewayService
     .testGateway()
-    .then((response) => {
+    .then(response => {
       res.status(200).json({isConnected: true});
     })
-    .catch((error) => {
+    .catch(error => {
       res.status(500).json({isConnected: false});
     });
 });
@@ -27,10 +27,10 @@ router.get('/connection-test', (req, res, next) => {
 router.post('/connection-test', (req, res, next) => {
   req.services.clientGatewayService
     .testGateway(req.body)
-    .then((response) => {
+    .then(response => {
       res.status(200).json({isConnected: true});
     })
-    .catch((error) => {
+    .catch(error => {
       res.status(500).json({isConnected: false});
     });
 });
@@ -90,7 +90,7 @@ router.post('/torrents/delete', (req, res, next) => {
   req.services.clientGatewayService
     .removeTorrents({hashes, deleteData})
     .then(callback)
-    .catch((err) => {
+    .catch(err => {
       callback(null, err);
     });
 });

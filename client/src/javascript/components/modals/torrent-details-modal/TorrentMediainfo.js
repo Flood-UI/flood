@@ -51,7 +51,7 @@ class TorrentMediainfo extends React.Component {
       fetchMediainfoError: null,
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -145,8 +145,7 @@ class TorrentMediainfo extends React.Component {
           <Tooltip
             content={tooltipText}
             onMouseLeave={this.handleCopyButtonMouseLeave}
-            wrapperClassName="tooltip__wrapper mediainfo__toolbar__item"
-          >
+            wrapperClassName="tooltip__wrapper mediainfo__toolbar__item">
             <Button priority="tertiary" buttonRef={ref => (this.copyButtonRef = ref)}>
               <ClipboardIcon />
             </Button>

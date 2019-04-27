@@ -74,7 +74,7 @@ const transformers = {
     <span>
       <FormattedNumber value={percent} />
       <em className="unit">%</em>
-        &nbsp;&mdash;&nbsp;
+      &nbsp;&mdash;&nbsp;
       <Size value={size} />
     </span>
   ),
@@ -94,7 +94,7 @@ const transformers = {
   trackerURIs: trackers => trackers.join(', '),
   upRate: speedRenderer,
   upTotal: sizeRenderer,
-  eta: (eta) => {
+  eta: eta => {
     if (!eta) {
       return null;
     }
@@ -105,9 +105,7 @@ const transformers = {
 
 class TorrentDetail extends React.PureComponent {
   render() {
-    let {
-      className, icon, preventTransform, secondaryValue, slug, value, width,
-    } = this.props;
+    let {className, icon, preventTransform, secondaryValue, slug, value, width} = this.props;
 
     if (!preventTransform && slug in transformers) {
       value = transformers[slug](value, secondaryValue);

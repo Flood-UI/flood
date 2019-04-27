@@ -36,7 +36,7 @@ class SpeedLimitDropdown extends React.Component {
     };
     this.tooltip = null;
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -55,8 +55,8 @@ class SpeedLimitDropdown extends React.Component {
     const transferSummary = TransferDataStore.getTransferSummary();
 
     if (
-      this.state.currentThrottles.upload !== transferSummary.upThrottle
-      || this.state.currentThrottles.download !== transferSummary.downThrottle
+      this.state.currentThrottles.upload !== transferSummary.upThrottle ||
+      this.state.currentThrottles.download !== transferSummary.downThrottle
     ) {
       this.setState({
         currentThrottles: {
@@ -72,8 +72,7 @@ class SpeedLimitDropdown extends React.Component {
       <a
         className="sidebar__icon-button sidebar__icon-button--interactive
         sidebar__icon-button--limits"
-        title={this.props.intl.formatMessage(MESSAGES.speedLimits)}
-      >
+        title={this.props.intl.formatMessage(MESSAGES.speedLimits)}>
         <LimitsIcon />
         <FormattedMessage {...MESSAGES.speedLimits} />
       </a>
@@ -87,11 +86,10 @@ class SpeedLimitDropdown extends React.Component {
       <Tooltip
         content={label}
         position="bottom"
-        ref={(node) => {
+        ref={node => {
           this.tooltip = node;
         }}
-        wrapperClassName="sidebar__icon-button tooltip__wrapper"
-      >
+        wrapperClassName="sidebar__icon-button tooltip__wrapper">
         <LimitsIcon />
       </Tooltip>
     );
@@ -116,7 +114,7 @@ class SpeedLimitDropdown extends React.Component {
     const currentThrottle = this.state.currentThrottles;
     const speeds = this.state.speedLimits[property];
 
-    const items = speeds.map((bytes) => {
+    const items = speeds.map(bytes => {
       let selected = false;
       bytes = Number(bytes);
 

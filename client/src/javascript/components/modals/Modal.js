@@ -15,7 +15,7 @@ export default class Modal extends React.Component {
       activeTabId: null,
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }

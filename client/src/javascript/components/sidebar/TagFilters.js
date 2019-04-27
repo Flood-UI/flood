@@ -17,7 +17,7 @@ export default class TagFilters extends React.Component {
       tagFilter: TorrentFilterStore.getTagFilter(),
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -36,7 +36,8 @@ export default class TagFilters extends React.Component {
     const filterItems = Object.keys(this.state.tagCount).sort((a, b) => {
       if (a === 'all' || a === 'untagged') {
         return -1;
-      } if (b === 'all' || b === 'untagged') {
+      }
+      if (b === 'all' || b === 'untagged') {
         return 1;
       }
 

@@ -71,8 +71,7 @@ export default class CustomScrollbar extends React.Component {
         renderThumbVertical={this.getVerticalThumb}
         onScroll={nativeScrollHandler}
         onScrollFrame={scrollHandler}
-        {...otherProps}
-      >
+        {...otherProps}>
         {children}
       </Scrollbars>
     );

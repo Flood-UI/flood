@@ -74,7 +74,7 @@ class TorrentService extends BaseService {
     }
 
     if (shouldLookForDeletedTorrents) {
-      Object.keys(this.torrentListSummary.torrents).forEach((hash) => {
+      Object.keys(this.torrentListSummary.torrents).forEach(hash => {
         if (nextTorrentListSummary.torrents[hash] == null) {
           diff[hash] = {
             action: serverEventTypes.TORRENT_LIST_ACTION_TORRENT_DELETED,
@@ -118,7 +118,8 @@ class TorrentService extends BaseService {
 
     if (percentComplete > 0 && percentComplete < 10) {
       return Number(truncateTo(percentComplete, 2));
-    } if (percentComplete > 10 && percentComplete < 100) {
+    }
+    if (percentComplete > 10 && percentComplete < 100) {
       return Number(truncateTo(percentComplete, 1));
     }
 
@@ -126,9 +127,7 @@ class TorrentService extends BaseService {
   }
 
   getTorrentStatusFromDetails(torrentDetails) {
-    const {
-      isHashChecking, isComplete, isOpen, upRate, downRate, state, message,
-    } = torrentDetails;
+    const {isHashChecking, isComplete, isOpen, upRate, downRate, state, message} = torrentDetails;
 
     const torrentStatus = [];
 
@@ -199,7 +198,7 @@ class TorrentService extends BaseService {
         // Track the number of new torrents added.
         newTorrentCount++;
       } else {
-        Object.keys(nextTorrentDetails).forEach((propKey) => {
+        Object.keys(nextTorrentDetails).forEach(propKey => {
           // If one of the details is inequal, we need to add it to the diff.
           if (!deepEqual(currentTorrentDetails[propKey], nextTorrentDetails[propKey])) {
             // Initialize with an empty object when this is the first known

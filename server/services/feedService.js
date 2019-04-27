@@ -19,7 +19,7 @@ class FeedService extends BaseService {
   }
 
   addFeed(feed, callback) {
-    this.addItem('feed', feed, (newFeed) => {
+    this.addItem('feed', feed, newFeed => {
       this.startNewFeed(newFeed);
       callback(newFeed);
     });
@@ -29,7 +29,7 @@ class FeedService extends BaseService {
     const modifiedFeed = this.feeds.find(feed => feed.options._id === id);
     modifiedFeed.stopReader();
     modifiedFeed.modify(feed);
-    this.modifyItem(id, feed, (err) => {
+    this.modifyItem(id, feed, err => {
       callback(err);
     });
   }
@@ -52,7 +52,7 @@ class FeedService extends BaseService {
       return;
     }
 
-    this.db.update({_id: id}, {$set: newItem}, {}, (err) => {
+    this.db.update({_id: id}, {$set: newItem}, {}, err => {
       if (err) {
         callback(null, err);
         return;
@@ -124,9 +124,7 @@ class FeedService extends BaseService {
       const items = feed.getItems();
 
       if (query.search) {
-        callback(
-          items.filter(item => item.title.toLowerCase().indexOf(query.search.toLowerCase()) !== -1),
-        );
+        callback(items.filter(item => item.title.toLowerCase().indexOf(query.search.toLowerCase()) !== -1));
       } else {
         callback(items);
       }
@@ -137,13 +135,15 @@ class FeedService extends BaseService {
 
   getItemsMatchingRules(feedItems, rules, feed) {
     return feedItems.reduce((matchedItems, feedItem) => {
-      rules.forEach((rule) => {
+      rules.forEach(rule => {
         const isMatched = new RegExp(rule.match, 'gi').test(feedItem[rule.field]);
         const isExcluded = rule.exclude !== '' && new RegExp(rule.exclude, 'gi').test(feedItem[rule.field]);
 
         if (isMatched && !isExcluded) {
           const torrentUrls = this.getTorrentUrlsFromItem(feedItem);
-          const isAlreadyDownloaded = matchedItems.some(matchedItem => torrentUrls.every(url => matchedItem.urls.includes(url)));
+          const isAlreadyDownloaded = matchedItems.some(matchedItem =>
+            torrentUrls.every(url => matchedItem.urls.includes(url)),
+          );
 
           if (!isAlreadyDownloaded) {
             matchedItems.push({
@@ -221,12 +221,14 @@ class FeedService extends BaseService {
 
   handleNewItems({items: feedItems, feed}) {
     this.getPreviouslyMatchedUrls()
-      .then((previouslyMatchedUrls) => {
+      .then(previouslyMatchedUrls => {
         const applicableRules = this.rules[feed._id];
         if (!applicableRules) return;
 
         const itemsMatchingRules = this.getItemsMatchingRules(feedItems, applicableRules, feed);
-        const itemsToDownload = itemsMatchingRules.filter(item => item.urls.some(url => !previouslyMatchedUrls.includes(url)));
+        const itemsToDownload = itemsMatchingRules.filter(item =>
+          item.urls.some(url => !previouslyMatchedUrls.includes(url)),
+        );
 
         const lastAddUrlCallback = () => {
           const urlsToAdd = this.getUrlsFromItems(itemsToDownload);
@@ -292,7 +294,7 @@ class FeedService extends BaseService {
       );
 
       // Add all download rules to the local state.
-      feedsSummary.rules.forEach((rule) => {
+      feedsSummary.rules.forEach(rule => {
         if (this.rules[rule.feedID] == null) {
           this.rules[rule.feedID] = [];
         }
@@ -301,7 +303,7 @@ class FeedService extends BaseService {
       });
 
       // Initiate all feeds.
-      feedsSummary.feeds.forEach((feed) => {
+      feedsSummary.feeds.forEach(feed => {
         this.startNewFeed(feed);
       });
     });
@@ -310,10 +312,7 @@ class FeedService extends BaseService {
   isAlreadyDownloaded(torrentURLs, downloadedTorrents) {
     torrentURLs = _.castArray(torrentURLs);
 
-    return (
-      downloadedTorrents.urls
-      && downloadedTorrents.urls.some(url => torrentURLs.includes(url))
-    );
+    return downloadedTorrents.urls && downloadedTorrents.urls.some(url => torrentURLs.includes(url));
   }
 
   loadDatabase() {

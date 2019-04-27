@@ -132,18 +132,20 @@ class TransferRateGraph extends React.Component {
       ])
       .range([height - margin.top, margin.bottom]);
 
-    const lineFunc = interpolation => d3.svg
-      .line()
-      .x((dataPoint, index) => this.xScale(index))
-      .y(dataPoint => this.yScale(dataPoint))
-      .interpolate(interpolation);
+    const lineFunc = interpolation =>
+      d3.svg
+        .line()
+        .x((dataPoint, index) => this.xScale(index))
+        .y(dataPoint => this.yScale(dataPoint))
+        .interpolate(interpolation);
 
-    const areaFunc = interpolation => d3.svg
-      .area()
-      .x((dataPoint, index) => this.xScale(index))
-      .y0(height)
-      .y1(dataPoint => this.yScale(dataPoint))
-      .interpolate(interpolation);
+    const areaFunc = interpolation =>
+      d3.svg
+        .area()
+        .x((dataPoint, index) => this.xScale(index))
+        .y0(height)
+        .y1(dataPoint => this.yScale(dataPoint))
+        .interpolate(interpolation);
 
     const interpolation = 'monotone';
     const downloadLinePath = lineFunc(interpolation)(historicalData.download);

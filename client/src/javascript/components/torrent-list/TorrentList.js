@@ -80,7 +80,7 @@ class TorrentListContainer extends React.Component {
       viewportHeight: 0,
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
 
@@ -330,7 +330,8 @@ class TorrentListContainer extends React.Component {
   handleFileDrop(files) {
     this.setState({isAddingTorrents: true});
 
-    const destination = SettingsStore.getFloodSettings('torrentDestination') || SettingsStore.getClientSettings('directoryDefault') || '';
+    const destination =
+      SettingsStore.getFloodSettings('torrentDestination') || SettingsStore.getClientSettings('directoryDefault') || '';
 
     const isBasePath = false;
 
@@ -338,7 +339,7 @@ class TorrentListContainer extends React.Component {
 
     const fileData = new FormData();
 
-    files.forEach((file) => {
+    files.forEach(file => {
       fileData.append('torrents', file);
     });
 
@@ -513,9 +514,7 @@ class TorrentListContainer extends React.Component {
 
   renderListItem(index) {
     const selectedTorrents = TorrentStore.getSelectedTorrents();
-    const {
-      displayedProperties, torrentListViewSize, torrentListColumnWidths, torrents,
-    } = this.state;
+    const {displayedProperties, torrentListViewSize, torrentListColumnWidths, torrents} = this.state;
     const torrent = torrents[index];
     const {hash} = torrent;
 
@@ -607,14 +606,12 @@ class TorrentListContainer extends React.Component {
         ref={ref => (this.listContainer = ref)}
         onDrop={this.handleFileDrop}
         disableClick
-        disablePreview
-      >
+        disablePreview>
         <CustomScrollbars
           className="torrent__list__scrollbars--horizontal"
           onScrollStop={this.handleHorizontalScrollStop}
           nativeScrollHandler={this.handleHorizontalScroll}
-          ref={ref => (this.horizontalScrollRef = ref)}
-        >
+          ref={ref => (this.horizontalScrollRef = ref)}>
           <div className="torrent__list__wrapper" style={listWrapperStyle}>
             <GlobalContextMenuMountPoint id="torrent-list-item" />
             {torrentListHeading}

@@ -95,9 +95,7 @@ class TableHeading extends React.Component {
   }
 
   getHeadingElements() {
-    const {
-      defaultWidth, defaultPropWidths, columns, propWidths, sortProp,
-    } = this.props;
+    const {defaultWidth, defaultPropWidths, columns, propWidths, sortProp} = this.props;
 
     return columns.reduce((accumulator, {id, visible}) => {
       if (!visible) {
@@ -111,7 +109,7 @@ class TableHeading extends React.Component {
         handle = (
           <span
             className="table__heading__handle"
-            onMouseDown={(event) => {
+            onMouseDown={event => {
               this.handleCellMouseDown(event, id, width);
             }}
           />
@@ -133,15 +131,13 @@ class TableHeading extends React.Component {
           className={classes}
           key={id}
           onClick={event => this.handleCellClick(id, event)}
-          style={{width: `${width}px`}}
-        >
+          style={{width: `${width}px`}}>
           <span
             className="table__heading__label"
             title={this.props.intl.formatMessage({
               id: TorrentProperties[id].id,
               defaultMessage: TorrentProperties[id].defaultMessage,
-            })}
-          >
+            })}>
             {label}
           </span>
           {handle}

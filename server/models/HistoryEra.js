@@ -131,7 +131,7 @@ class HistoryEra {
   hasRequiredFields(opts) {
     let requirementsMet = true;
 
-    REQUIRED_FIELDS.forEach((field) => {
+    REQUIRED_FIELDS.forEach(field => {
       if (opts[field] == null) {
         console.error(`HistoryEra requires ${field}`);
         requirementsMet = false;
@@ -152,7 +152,7 @@ class HistoryEra {
     let lastUpdate = 0;
 
     db.find({}, (err, docs) => {
-      docs.forEach((doc) => {
+      docs.forEach(doc => {
         if (doc.ts > lastUpdate) {
           lastUpdate = doc.ts;
         }
@@ -185,7 +185,7 @@ class HistoryEra {
       let downTotal = 0;
       let upTotal = 0;
 
-      docs.forEach((doc) => {
+      docs.forEach(doc => {
         downTotal += Number(doc.dn);
         upTotal += Number(doc.up);
       });

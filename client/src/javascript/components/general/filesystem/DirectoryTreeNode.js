@@ -51,8 +51,7 @@ class DirectoryTreeNode extends React.Component {
       <div className="file__checkbox directory-tree__checkbox">
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--checkbox"
-        >
+          directory-tree__checkbox__item--checkbox">
           <Checkbox
             checked={this.props.isSelected}
             id={this.props.id}
@@ -62,8 +61,7 @@ class DirectoryTreeNode extends React.Component {
         </div>
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--icon"
-        >
+          directory-tree__checkbox__item--icon">
           {icon}
         </div>
       </div>

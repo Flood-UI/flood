@@ -13,23 +13,24 @@ module.exports = {
     }
     const selectedTorrent = torrentService.getTorrent(hash);
     try {
-      child_process.execFile('mediainfo', [selectedTorrent.basePath], {maxBuffer: 1024 * 2000}, (
-        error,
-        stdout,
-        stderr,
-      ) => {
-        if (error) {
-          callback(null, {error});
-          return;
-        }
+      child_process.execFile(
+        'mediainfo',
+        [selectedTorrent.basePath],
+        {maxBuffer: 1024 * 2000},
+        (error, stdout, stderr) => {
+          if (error) {
+            callback(null, {error});
+            return;
+          }
 
-        if (stderr) {
-          callback(null, {error: stderr});
-          return;
-        }
+          if (stderr) {
+            callback(null, {error: stderr});
+            return;
+          }
 
-        callback({output: stdout});
-      });
+          callback({output: stdout});
+        },
+      );
     } catch (childProcessError) {
       callback(null, {error: childProcessError});
     }

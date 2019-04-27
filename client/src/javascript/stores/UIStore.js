@@ -127,7 +127,7 @@ class UIStoreClass extends BaseStore {
       dependencies = [dependencies];
     }
 
-    dependencies.forEach((dependency) => {
+    dependencies.forEach(dependency => {
       const {id} = dependency;
 
       if (!this.dependencies[id]) {
@@ -176,7 +176,7 @@ class UIStoreClass extends BaseStore {
 
 const UIStore = new UIStoreClass();
 
-UIStore.dispatcherID = AppDispatcher.register((payload) => {
+UIStore.dispatcherID = AppDispatcher.register(payload => {
   const {action} = payload;
 
   switch (action.type) {

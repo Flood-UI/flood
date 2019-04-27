@@ -93,8 +93,7 @@ class UITab extends SettingsTab {
           <Checkbox
             checked={visible}
             onChange={event => this.handleDetailCheckboxValueChange(id, event.target.checked)}
-            modifier="dark"
-          >
+            modifier="dark">
             <FormattedMessage id="settings.ui.torrent.details.enabled" defaultMessage="Enabled" />
           </Checkbox>
         </span>
@@ -102,9 +101,9 @@ class UITab extends SettingsTab {
     }
 
     if (
-      id === 'tags'
-      && this.state.torrentListViewSize === 'expanded'
-      && index < this.state.torrentDetails.length - 1
+      id === 'tags' &&
+      this.state.torrentListViewSize === 'expanded' &&
+      index < this.state.torrentDetails.length - 1
     ) {
       const tooltipContent = (
         <FormattedMessage
@@ -122,8 +121,7 @@ class UITab extends SettingsTab {
           scrollContainer={this.props.scrollContainer}
           width={200}
           wrapperClassName="sortable-list__content sortable-list__content--secondary tooltip__wrapper"
-          wrapText
-        >
+          wrapText>
           <ErrorIcon />
         </Tooltip>
       );
@@ -177,8 +175,7 @@ class UITab extends SettingsTab {
           <Select
             defaultID={this.state.selectedLanguage}
             id="language"
-            label={<FormattedMessage defaultMessage="Language" id="settings.ui.language" />}
-          >
+            label={<FormattedMessage defaultMessage="Language" id="settings.ui.language" />}>
             {this.getLanguageSelectOptions()}
           </Select>
         </FormRow>
@@ -190,16 +187,14 @@ class UITab extends SettingsTab {
             checked={this.state.torrentListViewSize === 'expanded'}
             groupID="ui-torrent-size"
             id="expanded"
-            width="auto"
-          >
+            width="auto">
             <FormattedMessage id="settings.ui.torrent.size.expanded" defaultMessage="Expanded View" />
           </Radio>
           <Radio
             checked={this.state.torrentListViewSize === 'condensed'}
             groupID="ui-torrent-size"
             id="condensed"
-            width="auto"
-          >
+            width="auto">
             <FormattedMessage id="settings.ui.torrent.size.condensed" defaultMessage="Condensed View" />
           </Radio>
         </FormRow>

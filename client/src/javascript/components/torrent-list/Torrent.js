@@ -17,7 +17,9 @@ import UploadThickIcon from '../icons/UploadThickIcon';
 const condensedValueTransformers = {
   downloadTotal: torrent => torrent.bytesDone,
   peers: torrent => torrent.peersConnected,
-  percentComplete: torrent => <ProgressBar percent={torrent.percentComplete} icon={torrentStatusIcons(torrent.status)} />,
+  percentComplete: torrent => (
+    <ProgressBar percent={torrent.percentComplete} icon={torrentStatusIcons(torrent.status)} />
+  ),
   seeds: torrent => torrent.seedsConnected,
 };
 
@@ -71,7 +73,7 @@ class Torrent extends React.Component {
       isSelected: props.selected,
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -84,9 +86,9 @@ class Torrent extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (
-      nextProps.selected !== this.props.selected
-      || nextState.isSelected !== this.state.isSelected
-      || nextProps.isCondensed !== this.props.isCondensed
+      nextProps.selected !== this.props.selected ||
+      nextState.isSelected !== this.state.isSelected ||
+      nextProps.isCondensed !== this.props.isCondensed
     ) {
       return true;
     }
@@ -94,13 +96,12 @@ class Torrent extends React.Component {
     const nextTorrent = nextProps.torrent;
     const {torrent} = this.props;
 
-    let shouldUpdate = TORRENT_ARRAYS_TO_OBSERVE.some((key) => {
+    let shouldUpdate = TORRENT_ARRAYS_TO_OBSERVE.some(key => {
       const nextArr = nextTorrent[key];
       const currentArr = this.props.torrent[key];
 
       return (
-        nextArr.length !== currentArr.length
-        || nextArr.some((nextValue, index) => nextValue !== currentArr[index])
+        nextArr.length !== currentArr.length || nextArr.some((nextValue, index) => nextValue !== currentArr[index])
       );
     });
 
@@ -109,7 +110,9 @@ class Torrent extends React.Component {
     }
 
     if (!shouldUpdate) {
-      shouldUpdate = Object.keys(nextProps.propWidths).some(key => nextProps.propWidths[key] !== this.props.propWidths[key]);
+      shouldUpdate = Object.keys(nextProps.propWidths).some(
+        key => nextProps.propWidths[key] !== this.props.propWidths[key],
+      );
     }
 
     if (!shouldUpdate) {
@@ -200,8 +203,7 @@ class Torrent extends React.Component {
           className={torrentClasses}
           onClick={this.handleClick}
           onContextMenu={this.handleRightClick}
-          onDoubleClick={this.handleDoubleClick}
-        >
+          onDoubleClick={this.handleDoubleClick}>
           {torrentPropertyColumns}
         </li>
       );
@@ -251,8 +253,7 @@ class Torrent extends React.Component {
         className={torrentClasses}
         onClick={this.handleClick}
         onContextMenu={this.handleRightClick}
-        onDoubleClick={this.handleDoubleClick}
-      >
+        onDoubleClick={this.handleDoubleClick}>
         <div className="torrent__details__section__wrapper">
           {sections.primary}
           <div className="torrent__details__section torrent__details__section--secondary">{sections.secondary}</div>
@@ -264,8 +265,7 @@ class Torrent extends React.Component {
         <button
           className="torrent__more-info floating-action__button"
           onClick={this.props.handleDetailsClick.bind(this, torrent)}
-          tabIndex="-1"
-        >
+          tabIndex="-1">
           {ICONS.information}
         </button>
       </li>

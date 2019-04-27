@@ -33,21 +33,24 @@ const getService = ({servicesMap, service, user}) => {
   return serviceInstance;
 };
 
-const getClientRequestManager = user => getService({servicesMap: clientRequestManagers, service: ClientRequestManager, user});
+const getClientRequestManager = user =>
+  getService({servicesMap: clientRequestManagers, service: ClientRequestManager, user});
 
-const getClientGatewayService = user => getService({servicesMap: clientGatewayServices, service: ClientGatewayService, user});
+const getClientGatewayService = user =>
+  getService({servicesMap: clientGatewayServices, service: ClientGatewayService, user});
 
 const getFeedService = user => getService({servicesMap: feedServices, service: FeedService, user});
 
 const getHistoryService = user => getService({servicesMap: historyServices, service: HistoryService, user});
 
-const getNotificationService = user => getService({servicesMap: notificationServices, service: NotificationService, user});
+const getNotificationService = user =>
+  getService({servicesMap: notificationServices, service: NotificationService, user});
 
 const getTaxonomyService = user => getService({servicesMap: taxonomyServices, service: TaxonomyService, user});
 
 const getTorrentService = user => getService({servicesMap: torrentServices, service: TorrentService, user});
 
-const bootstrapServicesForUser = (user) => {
+const bootstrapServicesForUser = user => {
   getClientRequestManager(user);
   getClientGatewayService(user);
   getFeedService(user);
@@ -57,9 +60,9 @@ const bootstrapServicesForUser = (user) => {
   getTorrentService(user);
 };
 
-const destroyUserServices = (user) => {
+const destroyUserServices = user => {
   const userId = user._id;
-  allServiceMaps.forEach((serviceMap) => {
+  allServiceMaps.forEach(serviceMap => {
     const userService = serviceMap.get(userId);
     if (userService != null) {
       userService.destroy();
@@ -98,9 +101,9 @@ const getAllServices = user => ({
   },
 });
 
-const updateUserServices = (user) => {
+const updateUserServices = user => {
   const userId = user._id;
-  allServiceMaps.forEach((serviceMap) => {
+  allServiceMaps.forEach(serviceMap => {
     const service = serviceMap.get(userId);
     if (service != null) {
       service.updateUser(user);

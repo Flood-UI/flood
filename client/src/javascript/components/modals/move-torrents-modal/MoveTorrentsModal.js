@@ -102,8 +102,8 @@ class MoveTorrents extends React.Component {
     let directoryPath = path.substring(0, path.length - filename.length);
 
     if (
-      directoryPath.charAt(directoryPath.length - 1) === '/'
-      || directoryPath.charAt(directoryPath.length - 1) === '\\'
+      directoryPath.charAt(directoryPath.length - 1) === '/' ||
+      directoryPath.charAt(directoryPath.length - 1) === '\\'
     ) {
       directoryPath = directoryPath.substring(0, directoryPath.length - 1);
     }

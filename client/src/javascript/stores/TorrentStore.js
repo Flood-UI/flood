@@ -217,7 +217,7 @@ class TorrentStoreClass extends BaseStore {
   }
 
   handleTorrentListDiffChange(torrentListDiff) {
-    Object.keys(torrentListDiff).forEach((torrentHash) => {
+    Object.keys(torrentListDiff).forEach(torrentHash => {
       const {action, data} = torrentListDiff[torrentHash];
 
       switch (action) {
@@ -232,7 +232,7 @@ class TorrentStoreClass extends BaseStore {
           delete this.torrents[torrentHash];
           break;
         case serverEventTypes.TORRENT_LIST_ACTION_TORRENT_DETAIL_UPDATED:
-          Object.keys(data).forEach((detailKey) => {
+          Object.keys(data).forEach(detailKey => {
             this.torrents[torrentHash][detailKey] = data[detailKey];
           });
           break;
@@ -295,7 +295,7 @@ class TorrentStoreClass extends BaseStore {
 
 const TorrentStore = new TorrentStoreClass();
 
-TorrentStore.dispatcherID = AppDispatcher.register((payload) => {
+TorrentStore.dispatcherID = AppDispatcher.register(payload => {
   const {action} = payload;
 
   switch (action.type) {

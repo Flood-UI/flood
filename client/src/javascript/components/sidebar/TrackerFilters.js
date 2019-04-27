@@ -17,7 +17,7 @@ export default class TrackerFilters extends React.Component {
       trackerFilter: TorrentFilterStore.getTrackerFilter(),
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -36,7 +36,8 @@ export default class TrackerFilters extends React.Component {
     const filterItems = Object.keys(this.state.trackerCount).sort((a, b) => {
       if (a === 'all') {
         return -1;
-      } if (b === 'all') {
+      }
+      if (b === 'all') {
         return 1;
       }
 

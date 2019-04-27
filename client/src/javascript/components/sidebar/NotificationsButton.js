@@ -88,7 +88,7 @@ class NotificationsButton extends React.Component {
     };
     this.tooltipRef = null;
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
 
@@ -120,12 +120,20 @@ class NotificationsButton extends React.Component {
 
   getBottomToolbar() {
     if (this.state.count.total > 0) {
-      const newerButtonClass = classnames('toolbar__item toolbar__item--button', 'tooltip__content--padding-surrogate', {
-        'is-disabled': this.state.paginationStart === 0,
-      });
-      const olderButtonClass = classnames('toolbar__item toolbar__item--button', 'tooltip__content--padding-surrogate', {
-        'is-disabled': this.state.paginationStart + NOTIFICATIONS_PER_PAGE >= this.state.count.total,
-      });
+      const newerButtonClass = classnames(
+        'toolbar__item toolbar__item--button',
+        'tooltip__content--padding-surrogate',
+        {
+          'is-disabled': this.state.paginationStart === 0,
+        },
+      );
+      const olderButtonClass = classnames(
+        'toolbar__item toolbar__item--button',
+        'tooltip__content--padding-surrogate',
+        {
+          'is-disabled': this.state.paginationStart + NOTIFICATIONS_PER_PAGE >= this.state.count.total,
+        },
+      );
 
       const olderFrom = this.state.paginationStart + NOTIFICATIONS_PER_PAGE + 1;
       let olderTo = this.state.paginationStart + NOTIFICATIONS_PER_PAGE * 2;
@@ -143,31 +151,19 @@ class NotificationsButton extends React.Component {
       return (
         <ul
           className="notifications__toolbar toolbar toolbar--dark
-          toolbar--bottom"
-        >
+          toolbar--bottom">
           <li className={newerButtonClass} onClick={this.handleNewerNotificationsClick}>
-            <ChevronLeftIcon />
-            {' '}
-            {newerFrom + 1}
-            {' '}
-&ndash;
-            {' '}
-            {newerTo}
+            <ChevronLeftIcon /> {newerFrom + 1} &ndash; {newerTo}
           </li>
           <li
             className="toolbar__item toolbar__item--button
             tooltip__content--padding-surrogate"
-            onClick={this.handleClearNotificationsClick}
-          >
+            onClick={this.handleClearNotificationsClick}>
             {this.props.intl.formatMessage(MESSAGES.clearAll)}
           </li>
           <li className={olderButtonClass} onClick={this.handleOlderNotificationsClick}>
-            {olderFrom}
-            {' '}
-&ndash;
-            {olderTo}
-            {' '}
-            <ChevronRightIcon />
+            {olderFrom} &ndash;
+            {olderTo} <ChevronRightIcon />
           </li>
         </ul>
       );
@@ -211,11 +207,7 @@ class NotificationsButton extends React.Component {
           </span>
           {' — '}
           <span className="notification__timestamp">
-            {date}
-            {' '}
-            {this.props.intl.formatMessage(MESSAGES.at)}
-            {' '}
-            {time}
+            {date} {this.props.intl.formatMessage(MESSAGES.at)} {time}
           </span>
         </div>
         <div className="notification__message">{notificationBody}</div>
@@ -260,8 +252,7 @@ class NotificationsButton extends React.Component {
       return (
         <div
           className="notifications notifications--empty
-          tooltip__content--padding-surrogate"
-        >
+          tooltip__content--padding-surrogate">
           {this.props.intl.formatMessage(MESSAGES.notifications)}
         </div>
       );
@@ -384,8 +375,7 @@ class NotificationsButton extends React.Component {
         width={this.state.count.total === 0 ? null : 340}
         position="bottom"
         wrapperClassName="sidebar__action sidebar__icon-button
-          tooltip__wrapper"
-      >
+          tooltip__wrapper">
         <NotificationIcon />
         {this.getBadge()}
       </Tooltip>

@@ -71,16 +71,14 @@ class RtorrentConnectionTypeSelection extends Component {
               label={this.props.intl.formatMessage({
                 id: 'auth.connectionType',
                 defaultMessage: 'rTorrent Connection Type',
-              })}
-            >
+              })}>
               <FormRow>
                 <Radio
                   onChange={this.handleTypeChange}
                   groupID="connectionType"
                   id="tcp"
                   grow={false}
-                  checked={this.state.connectionType === 'tcp'}
-                >
+                  checked={this.state.connectionType === 'tcp'}>
                   <FormattedMessage id="auth.connectionType.tcp" defaultMessage="TCP" />
                 </Radio>
                 <Radio
@@ -88,8 +86,7 @@ class RtorrentConnectionTypeSelection extends Component {
                   groupID="connectionType"
                   id="socket"
                   grow={false}
-                  checked={this.state.connectionType === 'socket'}
-                >
+                  checked={this.state.connectionType === 'socket'}>
                   <FormattedMessage id="auth.connectionType.socket" defaultMessage="Unix Socket" />
                 </Radio>
               </FormRow>

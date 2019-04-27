@@ -33,7 +33,7 @@ class ClientRequestManager extends BaseService {
       socketPath: this.user.socketPath,
     };
 
-    return scgiUtil.methodCall(connectionMethod, methodName, parameters).then((response) => {
+    return scgiUtil.methodCall(connectionMethod, methodName, parameters).then(response => {
       this.isRequestPending = false;
 
       // We avoid initiating any deffered requests until at least 250ms have
@@ -59,7 +59,10 @@ class ClientRequestManager extends BaseService {
     if (this.isRequestPending) {
       return new Promise((resolve, reject) => {
         this.pendingRequests.push({
-          methodName, parameters, resolve, reject,
+          methodName,
+          parameters,
+          resolve,
+          reject,
         });
       });
     }

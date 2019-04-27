@@ -164,11 +164,12 @@ class DownloadRulesTab extends React.Component {
     }
 
     return this.state.feeds.reduce(
-      (feedOptions, feed) => feedOptions.concat(
-        <SelectItem key={feed._id} id={feed._id}>
-          {feed.label}
-        </SelectItem>,
-      ),
+      (feedOptions, feed) =>
+        feedOptions.concat(
+          <SelectItem key={feed._id} id={feed._id}>
+            {feed.label}
+          </SelectItem>,
+        ),
       [
         <SelectItem key="select-feed" id="placeholder" placeholder>
           <em>
@@ -200,8 +201,7 @@ class DownloadRulesTab extends React.Component {
               id: 'feeds.applicable.feed',
               defaultMessage: 'Applicable Feed',
             })}
-            defaultID={rule.feedID}
-          >
+            defaultID={rule.feedID}>
             {this.getAvailableFeedsOptions()}
           </Select>
         </FormRow>
@@ -233,8 +233,7 @@ class DownloadRulesTab extends React.Component {
               id: 'feeds.test.match',
               defaultMessage: 'Test Match Pattern',
             })}
-            placeholder={this.props.intl.formatMessage(MESSAGES.check)}
-          >
+            placeholder={this.props.intl.formatMessage(MESSAGES.check)}>
             {doesPatternMatchTest && (
               <FormElementAddon>
                 <Checkmark />
@@ -288,8 +287,7 @@ class DownloadRulesTab extends React.Component {
       excludeNode = (
         <li
           className="interactive-list__detail-list__item
-          interactive-list__detail interactive-list__detail--tertiary"
-        >
+          interactive-list__detail interactive-list__detail--tertiary">
           <FormattedMessage id="feeds.exclude" defaultMessage="Exclude" /> {rule.exclude}
         </li>
       );
@@ -315,15 +313,13 @@ class DownloadRulesTab extends React.Component {
           <ul className="interactive-list__detail-list">
             <li
               className="interactive-list__detail-list__item
-              interactive-list__detail--primary"
-            >
+              interactive-list__detail--primary">
               {rule.label}
             </li>
             <li
               className="interactive-list__detail-list__item
               interactive-list__detail-list__item--overflow
-              interactive-list__detail interactive-list__detail--secondary"
-            >
+              interactive-list__detail interactive-list__detail--secondary">
               <FormattedMessage
                 id="feeds.match.count"
                 defaultMessage="{count, plural, =1 {# match} other
@@ -334,8 +330,7 @@ class DownloadRulesTab extends React.Component {
             {rule === this.state.currentlyEditingRule && (
               <li
                 className="interactive-list__detail-list__item
-              interactive-list__detail--primary"
-              >
+              interactive-list__detail--primary">
                 Modifying
               </li>
             )}
@@ -343,8 +338,7 @@ class DownloadRulesTab extends React.Component {
           <ul className="interactive-list__detail-list">
             <li
               className="interactive-list__detail-list__item
-              interactive-list__detail interactive-list__detail--tertiary"
-            >
+              interactive-list__detail interactive-list__detail--tertiary">
               <FormattedMessage id="feeds.match" defaultMessage="Match" /> {rule.match}
             </li>
             {excludeNode}
@@ -353,14 +347,12 @@ class DownloadRulesTab extends React.Component {
         </div>
         <span
           className="interactive-list__icon interactive-list__icon--action"
-          onClick={() => this.handleModifyRuleClick(rule)}
-        >
+          onClick={() => this.handleModifyRuleClick(rule)}>
           <Edit />
         </span>
         <span
           className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
-          onClick={() => this.handleRemoveRuleClick(rule)}
-        >
+          onClick={() => this.handleRemoveRuleClick(rule)}>
           <Close />
         </span>
       </li>
@@ -457,8 +449,7 @@ class DownloadRulesTab extends React.Component {
         className="inverse"
         onChange={this.handleFormChange}
         onSubmit={this.handleFormSubmit}
-        ref={ref => (this.formRef = ref)}
-      >
+        ref={ref => (this.formRef = ref)}>
         <ModalFormSectionHeader>
           <FormattedMessage id="feeds.existing.rules" defaultMessage="Existing Rules" />
         </ModalFormSectionHeader>

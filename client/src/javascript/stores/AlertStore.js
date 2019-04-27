@@ -44,7 +44,7 @@ class AlertStoreClass extends BaseStore {
   getAlerts() {
     const alertIDs = Object.keys(this.alerts).sort();
 
-    return alertIDs.map((id) => {
+    return alertIDs.map(id => {
       const alert = this.alerts[id];
 
       if (alert.accumulation) {
@@ -93,7 +93,7 @@ class AlertStoreClass extends BaseStore {
 
 const AlertStore = new AlertStoreClass();
 
-AlertStore.dispatcherID = AppDispatcher.register((payload) => {
+AlertStore.dispatcherID = AppDispatcher.register(payload => {
   // const {action, source} = payload;
   // switch (action.type) {
   // }

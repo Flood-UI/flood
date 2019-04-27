@@ -72,7 +72,9 @@ class AuthStoreClass extends BaseStore {
   }
 
   handleListUsersSuccess(nextUserList) {
-    this.optimisticUsers = this.optimisticUsers.filter(optimisticUser => !nextUserList.some(databaseUser => databaseUser.username === optimisticUser.username));
+    this.optimisticUsers = this.optimisticUsers.filter(
+      optimisticUser => !nextUserList.some(databaseUser => databaseUser.username === optimisticUser.username),
+    );
     this.users = nextUserList;
     this.emit(EventTypes.AUTH_LIST_USERS_SUCCESS);
   }
@@ -127,7 +129,7 @@ class AuthStoreClass extends BaseStore {
 
 let AuthStore = new AuthStoreClass();
 
-AuthStore.dispatcherID = AppDispatcher.register((payload) => {
+AuthStore.dispatcherID = AppDispatcher.register(payload => {
   const {action} = payload;
 
   switch (action.type) {

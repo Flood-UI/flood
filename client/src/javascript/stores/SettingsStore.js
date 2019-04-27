@@ -117,7 +117,7 @@ class SettingsStoreClass extends BaseStore {
   handleSettingsFetchSuccess(settings) {
     this.fetchStatus.floodSettingsFetched = true;
 
-    Object.keys(settings).forEach((property) => {
+    Object.keys(settings).forEach(property => {
       const incomingSettingsValue = settings[property];
 
       if (incomingSettingsValue != null) {
@@ -182,7 +182,7 @@ class SettingsStoreClass extends BaseStore {
   }
 
   updateLocalSettings(settings, settingsType) {
-    settings.forEach((setting) => {
+    settings.forEach(setting => {
       if (setting.overrideLocalSetting) {
         this[settingsType][setting.overrideID] = setting.overrideData;
       } else {
@@ -194,7 +194,7 @@ class SettingsStoreClass extends BaseStore {
 
 const SettingsStore = new SettingsStoreClass();
 
-SettingsStore.dispatcherID = AppDispatcher.register((payload) => {
+SettingsStore.dispatcherID = AppDispatcher.register(payload => {
   const {action} = payload;
 
   switch (action.type) {

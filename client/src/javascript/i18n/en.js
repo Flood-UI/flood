@@ -344,7 +344,7 @@ export default {
   'torrents.sort.title': 'Sort By',
 
   'connection-interruption.heading': 'Cannot connect to rTorrent',
-  'connection-interruption.verify-settings-prompt': 'Let\'s verify your connection settings.',
+  'connection-interruption.verify-settings-prompt': "Let's verify your connection settings.",
   'connection-interruption.verification-error': 'Connection could not be verified.',
   'connection-interruption.verification-success': 'Connection successful',
 };

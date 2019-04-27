@@ -76,7 +76,7 @@ module.exports = (req, res) => {
   // Add user's specified history snapshot change event listener.
   serviceInstances.historyService.on(
     historyServiceEvents[`${historySnapshotTypes[historySnapshot]}_SNAPSHOT_FULL_UPDATE`],
-    (payload) => {
+    payload => {
       const {data, id} = payload;
 
       serverEvent.setID(id);
@@ -86,7 +86,7 @@ module.exports = (req, res) => {
     },
   );
 
-  serviceInstances.notificationService.on(notificationServiceEvents.NOTIFICATION_COUNT_CHANGE, (payload) => {
+  serviceInstances.notificationService.on(notificationServiceEvents.NOTIFICATION_COUNT_CHANGE, payload => {
     const {data, id} = payload;
 
     serverEvent.setID(id);
@@ -96,7 +96,7 @@ module.exports = (req, res) => {
   });
 
   // Add diff event listeners.
-  serviceInstances.historyService.on(historyServiceEvents.TRANSFER_SUMMARY_DIFF_CHANGE, (payload) => {
+  serviceInstances.historyService.on(historyServiceEvents.TRANSFER_SUMMARY_DIFF_CHANGE, payload => {
     const {diff, id} = payload;
 
     serverEvent.setID(id);
@@ -105,7 +105,7 @@ module.exports = (req, res) => {
     serverEvent.emit();
   });
 
-  serviceInstances.taxonomyService.on(taxonomyServiceEvents.TAXONOMY_DIFF_CHANGE, (payload) => {
+  serviceInstances.taxonomyService.on(taxonomyServiceEvents.TAXONOMY_DIFF_CHANGE, payload => {
     const {diff, id} = payload;
 
     serverEvent.setID(id);
@@ -114,7 +114,7 @@ module.exports = (req, res) => {
     serverEvent.emit();
   });
 
-  serviceInstances.torrentService.on(torrentServiceEvents.TORRENT_LIST_DIFF_CHANGE, (payload) => {
+  serviceInstances.torrentService.on(torrentServiceEvents.TORRENT_LIST_DIFF_CHANGE, payload => {
     const {diff, id} = payload;
 
     serverEvent.setID(id);

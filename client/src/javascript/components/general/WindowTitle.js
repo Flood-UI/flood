@@ -16,7 +16,7 @@ class WindowTitle extends React.Component {
       title: 'Flood',
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }

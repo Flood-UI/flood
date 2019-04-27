@@ -1,17 +1,19 @@
 const diffActionTypes = require('../constants/diffActionTypes');
 
 const objectUtil = {
-  createStringMapFromArray: (array = []) => array.reduce((memo, key) => {
-    memo[key] = key;
+  createStringMapFromArray: (array = []) =>
+    array.reduce((memo, key) => {
+      memo[key] = key;
 
-    return memo;
-  }, {}),
+      return memo;
+    }, {}),
 
-  createSymbolMapFromArray: (array = []) => array.reduce((memo, key) => {
-    memo[key] = Symbol(key);
+  createSymbolMapFromArray: (array = []) =>
+    array.reduce((memo, key) => {
+      memo[key] = Symbol(key);
 
-    return memo;
-  }, {}),
+      return memo;
+    }, {}),
 
   getDiff: (prevObject = {}, nextObject = {}) => {
     const prevObjectKeys = Object.keys(prevObject);
@@ -45,7 +47,7 @@ const objectUtil = {
     }, []);
 
     if (shouldCheckForRemovals) {
-      prevObjectKeys.forEach((key) => {
+      prevObjectKeys.forEach(key => {
         if (nextObject[key] == null) {
           diff.push({
             action: diffActionTypes.ITEM_REMOVED,
@@ -58,12 +60,13 @@ const objectUtil = {
     return diff;
   },
 
-  reflect: object => Object.keys(object).reduce((memo, key) => {
-    memo[key] = object[key];
-    memo[object[key]] = key;
+  reflect: object =>
+    Object.keys(object).reduce((memo, key) => {
+      memo[key] = object[key];
+      memo[object[key]] = key;
 
-    return memo;
-  }, {}),
+      return memo;
+    }, {}),
 };
 
 module.exports = objectUtil;

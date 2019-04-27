@@ -49,14 +49,12 @@ class DirectoryFiles extends React.Component {
       <div className="file__checkbox directory-tree__checkbox">
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--checkbox"
-        >
+          directory-tree__checkbox__item--checkbox">
           <Checkbox checked={isSelected} id={file.index} onChange={changeHandler} useProps />
         </div>
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--icon"
-        >
+          directory-tree__checkbox__item--icon">
           {ICONS.file}
         </div>
       </div>
@@ -108,8 +106,7 @@ class DirectoryFiles extends React.Component {
           <div className="file__detail file__detail--secondary">{file.percentComplete}%</div>
           <div
             className="file__detail file__detail--secondary
-            file__detail--priority"
-          >
+            file__detail--priority">
             <PriorityMeter
               key={`${file.index}-${file.filename}`}
               level={file.priority}

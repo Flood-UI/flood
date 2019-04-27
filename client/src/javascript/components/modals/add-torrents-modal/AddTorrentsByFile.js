@@ -34,8 +34,7 @@ class AddTorrentsByFile extends React.Component {
           <span className="interactive-list__label">{file.name}</span>
           <span
             className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
-            onClick={() => this.handleFileRemove(index)}
-          >
+            onClick={() => this.handleFileRemove(index)}>
             <Close />
           </span>
         </li>
@@ -59,8 +58,7 @@ class AddTorrentsByFile extends React.Component {
           className="form__dropzone dropzone interactive-list"
           ref="dropzone"
           onDrop={this.handleFileDrop}
-          disablePreview
-        >
+          disablePreview>
           <div className="dropzone__copy">
             <div className="dropzone__icon">
               <Files />

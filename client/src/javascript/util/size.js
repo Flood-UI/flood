@@ -1,16 +1,12 @@
 export function compute(bytes, precision = 2) {
   const kilobyte = 1024;
 
-
   const megabyte = kilobyte * 1024;
-
 
   const gigabyte = megabyte * 1024;
 
-
   const terabyte = gigabyte * 1024;
   let value = 0;
-
 
   let unit = '';
 

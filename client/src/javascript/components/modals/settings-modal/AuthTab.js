@@ -66,8 +66,7 @@ class AuthTab extends SettingsTab {
         removeIcon = (
           <span
             className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
-            onClick={this.handleDeleteUserClick.bind(this, user.username)}
-          >
+            onClick={this.handleDeleteUserClick.bind(this, user.username)}>
             <Close />
           </span>
         );
@@ -195,8 +194,7 @@ class AuthTab extends SettingsTab {
               <CSSTransitionGroup
                 transitionName="interactive-list__loading-indicator"
                 transitionEnterTimeout={250}
-                transitionLeaveTimeout={250}
-              >
+                transitionLeaveTimeout={250}>
                 {loadingIndicator}
               </CSSTransitionGroup>
               {this.getUserList()}

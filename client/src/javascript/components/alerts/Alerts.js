@@ -15,7 +15,7 @@ export default class Alerts extends React.Component {
       alerts: [],
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -52,8 +52,7 @@ export default class Alerts extends React.Component {
         transitionName="alerts__list"
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}
-        className="alerts"
-      >
+        className="alerts">
         {alerts}
       </CSSTransitionGroup>
     );

@@ -1,7 +1,5 @@
 import {IntlProvider} from 'react-intl';
-import {
-  IndexRoute, Router, Route, browserHistory,
-} from 'react-router';
+import {IndexRoute, Router, Route, browserHistory} from 'react-router';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -37,7 +35,7 @@ class FloodApp extends React.Component {
       locale: SettingsStore.getFloodSettings('language'),
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
 

@@ -152,8 +152,7 @@ class FilesystemBrowser extends React.PureComponent {
       parentDirectory = (
         <li
           className="filesystem__directory-list__item filesystem__directory-list__item--parent"
-          onClick={this.handleParentDirectoryClick}
-        >
+          onClick={this.handleParentDirectoryClick}>
           <ArrowIcon />
           {this.props.intl.formatMessage({
             id: 'filesystem.parent.directory',
@@ -169,8 +168,7 @@ class FilesystemBrowser extends React.PureComponent {
           className="filesystem__directory-list__item
             filesystem__directory-list__item--directory"
           key={index}
-          onClick={() => this.handleDirectoryClick(directory)}
-        >
+          onClick={() => this.handleDirectoryClick(directory)}>
           <FolderClosedSolid />
           {directory}
         </li>

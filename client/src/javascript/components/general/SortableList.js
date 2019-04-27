@@ -79,8 +79,7 @@ class SortableList extends React.Component {
           isVisible={visible}
           key={id}
           onDrop={handleDrop}
-          onMove={handleMove}
-        >
+          onMove={handleMove}>
           {renderItem(item, index)}
         </SortableListItem>
       );

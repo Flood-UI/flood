@@ -34,7 +34,7 @@ class Users {
 
       argon2
         .verify(user.password, credentials.password)
-        .then((argon2Match) => {
+        .then(argon2Match => {
           if (argon2Match) {
             return callback(argon2Match, user.isAdmin);
           }
@@ -46,9 +46,7 @@ class Users {
   }
 
   createUser(credentials, callback) {
-    const {
-      password, username, host, port, socketPath, isAdmin,
-    } = credentials;
+    const {password, username, host, port, socketPath, isAdmin} = credentials;
 
     if (!this.ready) {
       return callback(null, 'Users database is not ready.');
@@ -60,24 +58,32 @@ class Users {
 
     argon2
       .hash(password)
-      .then((hash) => {
-        this.db.insert({
-          username, password: hash, host, port, socketPath, isAdmin,
-        }, (error, user) => {
-          if (error) {
-            if (error.errorType === 'uniqueViolated') {
-              error = 'Username already exists.';
+      .then(hash => {
+        this.db.insert(
+          {
+            username,
+            password: hash,
+            host,
+            port,
+            socketPath,
+            isAdmin,
+          },
+          (error, user) => {
+            if (error) {
+              if (error.errorType === 'uniqueViolated') {
+                error = 'Username already exists.';
+              }
+
+              return callback(null, error);
             }
 
-            return callback(null, error);
-          }
+            services.bootstrapServicesForUser(user);
 
-          services.bootstrapServicesForUser(user);
-
-          return callback({username});
-        });
+            return callback({username});
+          },
+        );
       })
-      .catch((error) => {
+      .catch(error => {
         callback(null, error);
       });
   }

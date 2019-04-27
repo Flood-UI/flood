@@ -78,10 +78,10 @@ class TorrentFilterStoreClass extends BaseStore {
   }
 
   handleTorrentTaxonomyDiffChange(diff) {
-    Object.keys(diff).forEach((taxonomyKey) => {
+    Object.keys(diff).forEach(taxonomyKey => {
       const changes = diff[taxonomyKey];
 
-      changes.forEach((change) => {
+      changes.forEach(change => {
         if (change.action === diffActionTypes.ITEM_REMOVED) {
           delete this.taxonomy[taxonomyKey][change.data];
         } else {
@@ -116,10 +116,10 @@ class TorrentFilterStoreClass extends BaseStore {
 
   isFilterActive() {
     return (
-      this.getStatusFilter() !== 'all'
-      || this.getSearchFilter() !== ''
-      || this.getTagFilter() !== 'all'
-      || this.getTrackerFilter() !== 'all'
+      this.getStatusFilter() !== 'all' ||
+      this.getSearchFilter() !== '' ||
+      this.getTagFilter() !== 'all' ||
+      this.getTrackerFilter() !== 'all'
     );
   }
 
@@ -161,7 +161,7 @@ class TorrentFilterStoreClass extends BaseStore {
 
 const TorrentFilterStore = new TorrentFilterStoreClass();
 
-TorrentFilterStore.dispatcherID = AppDispatcher.register((payload) => {
+TorrentFilterStore.dispatcherID = AppDispatcher.register(payload => {
   const {action} = payload;
 
   switch (action.type) {

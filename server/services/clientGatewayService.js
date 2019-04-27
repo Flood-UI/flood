@@ -76,7 +76,7 @@ class ClientGatewayService extends BaseService {
 
     return this.services.clientRequestManager
       .methodCall('system.multicall', [methodCalls])
-      .then((response) => {
+      .then(response => {
         if (options.deleteData) {
           const torrentCount = options.hashes.length;
           const filesToDelete = options.hashes.reduce((accumulator, hash, hashIndex) => {
@@ -101,8 +101,8 @@ class ClientGatewayService extends BaseService {
             return accumulator.concat(filesToDelete);
           }, []);
 
-          filesToDelete.forEach((file) => {
-            rimraf(file, {disableGlob: true}, (error) => {
+          filesToDelete.forEach(file => {
+            rimraf(file, {disableGlob: true}, error => {
               if (error) {
                 console.error(`Error deleting file: ${file}\n${error}`);
               }
@@ -199,7 +199,7 @@ class ClientGatewayService extends BaseService {
         }, {});
 
         // Assign values from external reducers to the torrent list object.
-        this.torrentListReducers.forEach((reducer) => {
+        this.torrentListReducers.forEach(reducer => {
           const {key, reduce} = reducer;
 
           processedTorrentDetailValues[key] = reduce(processedTorrentDetailValues);

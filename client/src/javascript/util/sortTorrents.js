@@ -25,9 +25,11 @@ export function sortTorrents(torrentsHash, sortBy) {
         // Keep Infinity and null values at bottom of array.
         if ((valA === 'Infinity' && valB !== 'Infinity') || (valA == null && valB != null)) {
           return 1;
-        } if ((valA !== 'Infinity' && valB === 'Infinity') || (valA != null && valB == null)) {
+        }
+        if ((valA !== 'Infinity' && valB === 'Infinity') || (valA != null && valB == null)) {
           return -1;
-        } if (valA == null && valB == null) {
+        }
+        if (valA == null && valB == null) {
           return 0;
         }
 

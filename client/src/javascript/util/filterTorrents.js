@@ -7,10 +7,12 @@ export function filterTorrents(torrentList, opts) {
     if (type === 'status') {
       const statusFilter = torrentStatusMap[filter];
       return torrentList.filter(torrent => torrent.status.includes(statusFilter));
-    } if (type === 'tracker') {
+    }
+    if (type === 'tracker') {
       return torrentList.filter(torrent => torrent.trackerURIs.includes(filter));
-    } if (type === 'tag') {
-      return torrentList.filter((torrent) => {
+    }
+    if (type === 'tag') {
+      return torrentList.filter(torrent => {
         if (filter === 'untagged') {
           return torrent.tags.length === 0;
         }

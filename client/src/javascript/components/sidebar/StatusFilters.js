@@ -25,7 +25,7 @@ class StatusFilters extends React.Component {
       trackerFilter: TorrentFilterStore.getTrackerFilter(),
     };
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }

@@ -310,8 +310,7 @@ class Tooltip extends React.Component {
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         {...elementProps}
-        ref="triggerNode"
-      >
+        ref="triggerNode">
         {props.children}
         <Portal>
           <div
@@ -319,8 +318,7 @@ class Tooltip extends React.Component {
             ref="tooltipNode"
             style={tooltipStyle}
             onMouseEnter={this.handleTooltipMouseEnter}
-            onMouseLeave={this.handleTooltipMouseLeave}
-          >
+            onMouseLeave={this.handleTooltipMouseLeave}>
             <div className={props.contentClassName}>{props.content}</div>
           </div>
         </Portal>

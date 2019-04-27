@@ -13,9 +13,7 @@ class Size extends React.Component {
   }
 
   render() {
-    const {
-      value, isSpeed, precision, intl,
-    } = this.props;
+    const {value, isSpeed, precision, intl} = this.props;
     const computed = compute(value, precision);
 
     let translatedUnit = intl.formatMessage({id: getTranslationString(computed.unit)});

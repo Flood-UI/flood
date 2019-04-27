@@ -201,8 +201,7 @@ class AuthEnforcer extends React.Component {
         <CSSTransitionGroup
           transitionEnterTimeout={1000}
           transitionLeaveTimeout={1000}
-          transitionName="application__loading-overlay"
-        >
+          transitionName="application__loading-overlay">
           {this.renderOverlay()}
         </CSSTransitionGroup>
         {this.props.children}

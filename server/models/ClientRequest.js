@@ -74,8 +74,8 @@ class ClientRequest {
   handleError(error) {
     if (error.code === 'ECONNREFUSED') {
       console.error(
-        `Connection refused at ${error.address}${error.port ? `:${error.port}` : ''}. `
-          + 'Check these values in config.js and ensure that rTorrent is running.',
+        `Connection refused at ${error.address}${error.port ? `:${error.port}` : ''}. ` +
+          'Check these values in config.js and ensure that rTorrent is running.',
       );
     }
 
@@ -127,7 +127,7 @@ class ClientRequest {
     const start = options.start;
     const tagsArr = options.tags;
 
-    files.forEach((file) => {
+    files.forEach(file => {
       let methodCall = 'load.raw_start';
       let parameters = ['', file.buffer];
       const timeAdded = Math.floor(Date.now() / 1000);
@@ -162,7 +162,7 @@ class ClientRequest {
     const tagsArr = options.tags;
     const urls = this.getEnsuredArray(options.urls);
 
-    urls.forEach((url) => {
+    urls.forEach(url => {
       let methodCall = 'load.start';
       let parameters = ['', url];
       const timeAdded = Math.floor(Date.now() / 1000);
@@ -190,13 +190,15 @@ class ClientRequest {
   checkHash(options) {
     const torrentService = this.services.torrentService;
     const hashes = this.getEnsuredArray(options.hashes);
-    const stoppedHashes = hashes.filter(hash => torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped));
+    const stoppedHashes = hashes.filter(hash =>
+      torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped),
+    );
 
     const hashesToStart = [];
 
     this.stopTorrents({hashes});
 
-    hashes.forEach((hash) => {
+    hashes.forEach(hash => {
       this.requests.push(this.getMethodCall('d.check_hash', [hash]));
 
       if (!stoppedHashes.includes(hash)) {
@@ -211,7 +213,7 @@ class ClientRequest {
 
   createDirectory(options) {
     if (options.path) {
-      mkdirp(options.path, (error) => {
+      mkdirp(options.path, error => {
         if (error) {
           console.trace('Error creating directory.', error);
         }
@@ -233,7 +235,7 @@ class ClientRequest {
       options.setRequestedKeysArr(requestedSettings);
     }
 
-    requestedSettings.forEach((settingsKey) => {
+    requestedSettings.forEach(settingsKey => {
       this.requests.push(this.getMethodCall(settingsKey));
     });
   }
@@ -253,7 +255,7 @@ class ClientRequest {
   }
 
   getTransferData(options) {
-    Object.keys(rTorrentPropMap.transferData).forEach((key) => {
+    Object.keys(rTorrentPropMap.transferData).forEach(key => {
       this.requests.push(this.getMethodCall(rTorrentPropMap.transferData[key]));
     });
   }
@@ -295,7 +297,7 @@ class ClientRequest {
       pathMethod = 'd.directory.set';
     }
 
-    hashes.forEach((hash) => {
+    hashes.forEach(hash => {
       this.requests.push(this.getMethodCall(pathMethod, [hash, options.path]));
       this.requests.push(this.getMethodCall('d.open', [hash]));
       this.requests.push(this.getMethodCall('d.close', [hash]));
@@ -306,8 +308,8 @@ class ClientRequest {
     const fileIndices = this.getEnsuredArray(options.fileIndices);
     const hashes = this.getEnsuredArray(options.hashes);
 
-    hashes.forEach((hash) => {
-      fileIndices.forEach((fileIndex) => {
+    hashes.forEach(hash => {
+      fileIndices.forEach(fileIndex => {
         this.requests.push(this.getMethodCall('f.priority.set', [`${hash}:f${fileIndex}`, options.priority]));
       });
       this.requests.push(this.getMethodCall('d.update_priorities', [hash]));
@@ -317,7 +319,7 @@ class ClientRequest {
   setPriority(options) {
     const hashes = this.getEnsuredArray(options.hashes);
 
-    hashes.forEach((hash) => {
+    hashes.forEach(hash => {
       this.requests.push(this.getMethodCall('d.priority.set', [hash, options.priority]));
       this.requests.push(this.getMethodCall('d.update_priorities', [hash]));
     });
@@ -326,7 +328,7 @@ class ClientRequest {
   setSettings(options) {
     const settings = this.getEnsuredArray(options.settings);
 
-    settings.forEach((setting) => {
+    settings.forEach(setting => {
       if (setting.overrideLocalSetting) {
         this.requests.push(this.getMethodCall(setting.id, setting.data));
       } else {
@@ -350,7 +352,7 @@ class ClientRequest {
       }, [])
       .join(',');
 
-    this.getEnsuredArray(options.hashes).forEach((hash) => {
+    this.getEnsuredArray(options.hashes).forEach(hash => {
       this.requests.push(this.getMethodCall(methodName, [hash, tags]));
     });
   }
@@ -369,7 +371,7 @@ class ClientRequest {
       return;
     }
 
-    this.getEnsuredArray(options.hashes).forEach((hash) => {
+    this.getEnsuredArray(options.hashes).forEach(hash => {
       this.requests.push(this.getMethodCall('d.open', [hash]));
       this.requests.push(this.getMethodCall('d.start', [hash]));
     });
@@ -381,7 +383,7 @@ class ClientRequest {
       return;
     }
 
-    this.getEnsuredArray(options.hashes).forEach((hash) => {
+    this.getEnsuredArray(options.hashes).forEach(hash => {
       this.requests.push(this.getMethodCall('d.stop', [hash]));
       this.requests.push(this.getMethodCall('d.close', [hash]));
     });

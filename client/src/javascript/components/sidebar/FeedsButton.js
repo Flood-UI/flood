@@ -20,7 +20,7 @@ class FeedsButton extends React.Component {
 
     this.tooltipRef = null;
 
-    METHODS_TO_BIND.forEach((method) => {
+    METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -43,8 +43,7 @@ class FeedsButton extends React.Component {
         ref={ref => (this.tooltipRef = ref)}
         position="bottom"
         wrapperClassName="sidebar__action sidebar__icon-button
-          sidebar__icon-button--interactive tooltip__wrapper"
-      >
+          sidebar__icon-button--interactive tooltip__wrapper">
         <FeedIcon />
       </Tooltip>
     );

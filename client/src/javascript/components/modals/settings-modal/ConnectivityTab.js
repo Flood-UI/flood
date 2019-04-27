@@ -53,8 +53,7 @@ export default class ConnectivityTab extends SettingsTab {
             grow={false}
             id="networkPortRandom"
             labelOffset
-            matchTextboxHeight
-          >
+            matchTextboxHeight>
             <FormattedMessage id="settings.connectivity.port.randomize.label" defaultMessage="Randomize Port" />
           </Checkbox>
           <Checkbox
@@ -62,8 +61,7 @@ export default class ConnectivityTab extends SettingsTab {
             grow={false}
             id="networkPortOpen"
             labelOffset
-            matchTextboxHeight
-          >
+            matchTextboxHeight>
             <FormattedMessage id="settings.connectivity.port.open.label" defaultMessage="Open Port" />
           </Checkbox>
         </FormRow>
@@ -78,12 +76,12 @@ export default class ConnectivityTab extends SettingsTab {
           <Textbox
             defaultValue={this.getFieldValue('networkHttpMaxOpen')}
             id="networkHttpMaxOpen"
-            label={(
+            label={
               <FormattedMessage
                 id="settings.connectivity.max.http.connections"
                 defaultMessage="Maximum HTTP Connections"
               />
-)}
+            }
           />
         </FormRow>
         <ModalFormSectionHeader>
@@ -104,8 +102,7 @@ export default class ConnectivityTab extends SettingsTab {
             grow={false}
             id="protocolPex"
             labelOffset
-            matchTextboxHeight
-          >
+            matchTextboxHeight>
             <FormattedMessage id="settings.connectivity.peer.exchange.label" defaultMessage="Enable Peer Exchange" />
           </Checkbox>
         </FormRow>
@@ -128,22 +125,22 @@ export default class ConnectivityTab extends SettingsTab {
           <Textbox
             defaultValue={this.getFieldValue('throttleMinPeersSeed')}
             id="throttleMinPeersSeed"
-            label={(
+            label={
               <FormattedMessage
                 id="settings.connectivity.peers.seeding.min.label"
                 defaultMessage="Minimum Peers Seeding"
               />
-)}
+            }
           />
           <Textbox
             defaultValue={this.getFieldValue('throttleMaxPeersSeed')}
             id="throttleMaxPeersSeed"
-            label={(
+            label={
               <FormattedMessage
                 id="settings.connectivity.peers.seeding.max.label"
                 defaultMessage="Maxmimum Peers Seeding"
               />
-)}
+            }
           />
         </FormRow>
         <FormRow>

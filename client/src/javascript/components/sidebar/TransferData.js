@@ -159,8 +159,7 @@ class TransferData extends React.Component {
           className="client-stats"
           onMouseMove={this.handleMouseMove}
           onMouseOut={this.handleMouseOut}
-          onMouseOver={this.handleMouseOver}
-        >
+          onMouseOver={this.handleMouseOver}>
           <TransferRateDetails
             isClientConnected={this.state.isClientConnected}
             inspectorPoint={this.state.graphInspectorPoint}

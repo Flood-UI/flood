@@ -58,14 +58,18 @@ let clientResponseUtil = {
     // peers, files, etc). Therefore we construct an array of objects, where each
     // object contains all of the requested keys and its value. We add an index
     // for each item, a requirement for file lists.
-    return clientResponse.map((listItem, index) => listItem.reduce(
-      (nestedMemo, value, nestedIndex) => {
-        nestedMemo[requestedKeys[nestedIndex]] = value;
+    return clientResponse.map(
+      (listItem, index) =>
+        listItem.reduce(
+          (nestedMemo, value, nestedIndex) => {
+            nestedMemo[requestedKeys[nestedIndex]] = value;
 
-        return nestedMemo;
-      },
-      {index},
-    ), []);
+            return nestedMemo;
+          },
+          {index},
+        ),
+      [],
+    );
   },
 
   processFile(file) {
@@ -90,7 +94,7 @@ let clientResponseUtil = {
     let fileTree = {};
 
     if (peersData && peersData.length) {
-      peers = clientResponseUtil.mapPropsToResponse(torrentPeerPropsMap.props, peersData).map((peer) => {
+      peers = clientResponseUtil.mapPropsToResponse(torrentPeerPropsMap.props, peersData).map(peer => {
         const geoData = geoip.lookup(peer.address) || {};
         peer.country = geoData.country;
 

@@ -80,10 +80,7 @@ export default class TorrentPeers extends React.Component {
             <td>
               <Size value={peer.uploadRate} isSpeed />
             </td>
-            <td>
-              {peer.completedPercent}
-%
-            </td>
+            <td>{peer.completedPercent}%</td>
             <td>{peer.clientVersion}</td>
             <td className="peers-list__encryption">{encryptedIcon}</td>
           </tr>

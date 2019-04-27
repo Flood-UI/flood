@@ -32,28 +32,29 @@ const handleWindowVisibilityChange = () => {
 global.document.addEventListener('visibilitychange', handleWindowVisibilityChange);
 
 const FloodActions = {
-  clearNotifications: options => axios
-    .delete(`${baseURI}api/notifications`)
-    .then((json = {}) => json.data)
-    .then(
-      (response = {}) => {
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_CLEAR_NOTIFICATIONS_SUCCESS,
-          data: {
-            ...response,
-            ...options,
-          },
-        });
-      },
-      (error) => {
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_CLEAR_NOTIFICATIONS_ERROR,
-          data: {
-            error,
-          },
-        });
-      },
-    ),
+  clearNotifications: options =>
+    axios
+      .delete(`${baseURI}api/notifications`)
+      .then((json = {}) => json.data)
+      .then(
+        (response = {}) => {
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_CLEAR_NOTIFICATIONS_SUCCESS,
+            data: {
+              ...response,
+              ...options,
+            },
+          });
+        },
+        error => {
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_CLEAR_NOTIFICATIONS_ERROR,
+            data: {
+              error,
+            },
+          });
+        },
+      ),
 
   closeActivityStream() {
     activityStreamEventSource.close();
@@ -100,83 +101,86 @@ const FloodActions = {
     activityStreamEventSource = null;
   },
 
-  fetchDirectoryList: (options = {}) => axios
-    .get(`${baseURI}api/directory-list`, {
-      params: options,
-    })
-    .then((json = {}) => json.data)
-    .then(
-      (response) => {
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_FETCH_DIRECTORY_LIST_SUCCESS,
-          data: {
-            ...options,
-            ...response,
-          },
-        });
-      },
-      (error = {}) => {
-        const {response: errorData} = error;
+  fetchDirectoryList: (options = {}) =>
+    axios
+      .get(`${baseURI}api/directory-list`, {
+        params: options,
+      })
+      .then((json = {}) => json.data)
+      .then(
+        response => {
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_FETCH_DIRECTORY_LIST_SUCCESS,
+            data: {
+              ...options,
+              ...response,
+            },
+          });
+        },
+        (error = {}) => {
+          const {response: errorData} = error;
 
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_FETCH_DIRECTORY_LIST_ERROR,
-          error: errorData,
-        });
-      },
-    ),
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_FETCH_DIRECTORY_LIST_ERROR,
+            error: errorData,
+          });
+        },
+      ),
 
-  fetchMediainfo: options => axios
-    .get(`${baseURI}api/mediainfo`, {
-      params: {
-        hash: options.hash,
-      },
-    })
-    .then((json = {}) => json.data)
-    .then(
-      (response) => {
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_FETCH_MEDIAINFO_SUCCESS,
-          data: {
-            ...response,
-            ...options,
-          },
-        });
-      },
-      (error) => {
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_FETCH_MEDIAINFO_ERROR,
-          error,
-        });
-      },
-    ),
-
-  fetchNotifications: options => axios
-    .get(`${baseURI}api/notifications`, {
-      params: {
-        limit: options.limit,
-        start: options.start,
-      },
-    })
-    .then((json = {}) => json.data)
-    .then(
-      (response) => {
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_FETCH_NOTIFICATIONS_SUCCESS,
-          data: {
-            ...response,
-            ...options,
-          },
-        });
-      },
-      (error) => {
-        AppDispatcher.dispatchServerAction({
-          type: ActionTypes.FLOOD_FETCH_NOTIFICATIONS_ERROR,
-          data: {
+  fetchMediainfo: options =>
+    axios
+      .get(`${baseURI}api/mediainfo`, {
+        params: {
+          hash: options.hash,
+        },
+      })
+      .then((json = {}) => json.data)
+      .then(
+        response => {
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_FETCH_MEDIAINFO_SUCCESS,
+            data: {
+              ...response,
+              ...options,
+            },
+          });
+        },
+        error => {
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_FETCH_MEDIAINFO_ERROR,
             error,
-          },
-        });
-      },
-    ),
+          });
+        },
+      ),
+
+  fetchNotifications: options =>
+    axios
+      .get(`${baseURI}api/notifications`, {
+        params: {
+          limit: options.limit,
+          start: options.start,
+        },
+      })
+      .then((json = {}) => json.data)
+      .then(
+        response => {
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_FETCH_NOTIFICATIONS_SUCCESS,
+            data: {
+              ...response,
+              ...options,
+            },
+          });
+        },
+        error => {
+          AppDispatcher.dispatchServerAction({
+            type: ActionTypes.FLOOD_FETCH_NOTIFICATIONS_ERROR,
+            data: {
+              error,
+            },
+          });
+        },
+      ),
 
   handleClientConnectivityStatusChange(event) {
     AppDispatcher.dispatchServerAction({
@@ -248,7 +252,8 @@ const FloodActions = {
 
   startActivityStream(options = {}) {
     const {historySnapshot = historySnapshotTypes.FIVE_MINUTE} = options;
-    const didHistorySnapshotChange = lastActivityStreamOptions && lastActivityStreamOptions.historySnapshot !== historySnapshot;
+    const didHistorySnapshotChange =
+      lastActivityStreamOptions && lastActivityStreamOptions.historySnapshot !== historySnapshot;
 
     lastActivityStreamOptions = options;
 

@@ -231,16 +231,14 @@ class TorrentFiles extends React.Component {
         <div className="file__checkbox directory-tree__checkbox">
           <div
             className="directory-tree__checkbox__item
-            directory-tree__checkbox__item--checkbox"
-          >
+            directory-tree__checkbox__item--checkbox">
             <FormRow>
               <Checkbox checked={this.state.allSelected} onChange={this.handleSelectAllClick} useProps />
             </FormRow>
           </div>
           <div
             className="directory-tree__checkbox__item
-            directory-tree__checkbox__item--icon"
-          >
+            directory-tree__checkbox__item--icon">
             <Disk />
           </div>
         </div>

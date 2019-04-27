@@ -15,35 +15,35 @@ export default class TextboxRepeater extends React.PureComponent {
     return ++this._idCounter;
   }
 
-  getTextboxes = () => this.state.textboxes.map((textbox, index) => {
-    let removeButton = null;
+  getTextboxes = () =>
+    this.state.textboxes.map((textbox, index) => {
+      let removeButton = null;
 
-    if (index > 0) {
-      removeButton = (
-        <FormElementAddon onClick={this.handleTextboxRemove.bind(textbox, index)}>
-          <RemoveMini size="mini" />
-        </FormElementAddon>
-      );
-    }
-
-    return (
-      <FormRow key={textbox.id}>
-        <Textbox
-          addonPlacement="after"
-          id={`${this.props.id}-${textbox.id}`}
-          defaultValue={textbox.value}
-          label={index === 0 && this.props.label}
-          placeholder={this.props.placeholder}
-          wrapperClassName="textbox-repeater"
-        >
-          <FormElementAddon onClick={this.handleTextboxAdd.bind(textbox, index)}>
-            <AddMini size="mini" />
+      if (index > 0) {
+        removeButton = (
+          <FormElementAddon onClick={this.handleTextboxRemove.bind(textbox, index)}>
+            <RemoveMini size="mini" />
           </FormElementAddon>
-          {removeButton}
-        </Textbox>
-      </FormRow>
-    );
-  });
+        );
+      }
+
+      return (
+        <FormRow key={textbox.id}>
+          <Textbox
+            addonPlacement="after"
+            id={`${this.props.id}-${textbox.id}`}
+            defaultValue={textbox.value}
+            label={index === 0 && this.props.label}
+            placeholder={this.props.placeholder}
+            wrapperClassName="textbox-repeater">
+            <FormElementAddon onClick={this.handleTextboxAdd.bind(textbox, index)}>
+              <AddMini size="mini" />
+            </FormElementAddon>
+            {removeButton}
+          </Textbox>
+        </FormRow>
+      );
+    });
 
   handleTextboxAdd = index => {
     const textboxes = Object.assign([], this.state.textboxes);

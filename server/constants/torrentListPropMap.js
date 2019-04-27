@@ -3,7 +3,7 @@ const regEx = require('../../shared/util/regEx');
 const torrentListPropMap = new Map();
 
 const booleanTransformer = value => value === '1';
-const dateTransformer = (dirtyDate) => {
+const dateTransformer = dirtyDate => {
   if (!dirtyDate) {
     return '';
   }
@@ -160,7 +160,7 @@ torrentListPropMap.set('isPrivate', {
 
 torrentListPropMap.set('tags', {
   methodCall: 'd.custom1=',
-  transformValue: (value) => {
+  transformValue: value => {
     if (value === '') {
       return [];
     }
@@ -174,7 +174,7 @@ torrentListPropMap.set('tags', {
 
 torrentListPropMap.set('comment', {
   methodCall: 'd.custom2=',
-  transformValue: (value) => {
+  transformValue: value => {
     let comment = decodeURIComponent(value);
 
     if (comment.match(/^VRS24mrker/)) {
@@ -192,11 +192,11 @@ torrentListPropMap.set('ignoreScheduler', {
 
 torrentListPropMap.set('trackerURIs', {
   methodCall: 'cat="$t.multicall=d.hash=,t.url=,cat={|||}"',
-  transformValue: (value) => {
+  transformValue: value => {
     const trackers = value.split('|||');
     const trackerDomains = [];
 
-    trackers.forEach((tracker) => {
+    trackers.forEach(tracker => {
       let domain = regEx.domainName.exec(tracker);
 
       if (domain && domain[1]) {

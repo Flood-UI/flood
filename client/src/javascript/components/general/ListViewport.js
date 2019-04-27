@@ -253,8 +253,7 @@ class ListViewport extends React.Component {
         onScrollStop={this.handleScrollStop}
         ref={ref => (this.nodeRefs.outerScrollbar = ref)}
         scrollHandler={this.handleScroll}
-        style={scrollbarStyle}
-      >
+        style={scrollbarStyle}>
         {props.children}
         {listContent}
       </CustomScrollbars>
