@@ -38,7 +38,7 @@ class Portal extends React.Component {
         <IntlProvider locale={locale} messages={i18n[locale]}>
           {props.children}
         </IntlProvider>,
-        this.nodeEl
+        this.nodeEl,
       );
     }
   }

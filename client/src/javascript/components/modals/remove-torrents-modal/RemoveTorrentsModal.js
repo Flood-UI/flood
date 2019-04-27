@@ -45,7 +45,7 @@ class RemoveTorrentsModal extends React.Component {
   getContent(torrents) {
     let modalContent = null;
     let deleteDataContent = null;
-    let selectedTorrentCount = torrents.length;
+    const selectedTorrentCount = torrents.length;
 
     if (selectedTorrentCount === 0) {
       modalContent = (
@@ -93,8 +93,8 @@ class RemoveTorrentsModal extends React.Component {
   };
 
   render() {
-    let selectedTorrents = TorrentStore.getSelectedTorrents();
-    let modalHeading = this.props.intl.formatMessage({
+    const selectedTorrents = TorrentStore.getSelectedTorrents();
+    const modalHeading = this.props.intl.formatMessage({
       id: 'torrents.remove',
       defaultMessage: 'Remove Torrents',
     });

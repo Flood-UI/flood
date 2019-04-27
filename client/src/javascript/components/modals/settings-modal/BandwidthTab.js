@@ -67,46 +67,46 @@ export default class BandwidthTab extends SettingsTab {
         <FormRow>
           <Textbox
             defaultValue={this.getDownloadValue()}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.transferrate.dropdown.preset.download.label"
                 defaultMessage="Dropdown Presets: Download"
               />
-            }
+)}
             id="dropdownPresetDownload"
           />
         </FormRow>
         <FormRow>
           <Textbox
             defaultValue={this.getUploadValue()}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.transferrate.dropdown.preset.upload.label"
                 defaultMessage="Dropdown Presets: Upload"
               />
-            }
+)}
             id="dropdownPresetUpload"
           />
         </FormRow>
         <FormRow>
           <Textbox
             defaultValue={this.getFieldValue('throttleGlobalDownMax')}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.transferrate.global.throttle.download"
                 defaultMessage="Global Download Rate Throttle"
               />
-            }
+)}
             id="throttleGlobalDownMax"
           />
           <Textbox
             defaultValue={this.getFieldValue('throttleGlobalUpMax')}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.transferrate.global.throttle.upload"
                 defaultMessage="Global Upload Rate Throttle"
               />
-            }
+)}
             id="throttleGlobalUpMax"
           />
         </FormRow>
@@ -123,54 +123,54 @@ export default class BandwidthTab extends SettingsTab {
           />
           <Textbox
             defaultValue={this.getFieldValue('throttleMaxUploadsDiv')}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.slots.upload.divider.label"
                 defaultMessage="Upload Slots Divider"
               />
-            }
+)}
             id="throttleMaxUploadsDiv"
           />
           <Textbox
             defaultValue={this.getFieldValue('throttleMaxUploadsGlobal')}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.slots.upload.global.label"
                 defaultMessage="Upload Slots Global"
               />
-            }
+)}
             id="throttleMaxUploadsGlobal"
           />
         </FormRow>
         <FormRow>
           <Textbox
             defaultValue={this.getFieldValue('throttleMaxDownloads')}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.slots.download.label"
                 defaultMessage="Download Slots Per Torrent"
               />
-            }
+)}
             id="throttleMaxDownloads"
           />
           <Textbox
             defaultValue={this.getFieldValue('throttleMaxDownloadsDiv')}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.slots.download.divider.label"
                 defaultMessage="Download Slots Divider"
               />
-            }
+)}
             id="throttleMaxDownloadsDiv"
           />
           <Textbox
             defaultValue={this.getFieldValue('throttleMaxDownloadsGlobal')}
-            label={
+            label={(
               <FormattedMessage
                 id="settings.bandwidth.slots.download.global.label"
                 defaultMessage="Download Slots Global"
               />
-            }
+)}
             id="throttleMaxDownloadsGlobal"
           />
         </FormRow>

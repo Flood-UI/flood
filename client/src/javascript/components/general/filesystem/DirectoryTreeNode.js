@@ -51,17 +51,19 @@ class DirectoryTreeNode extends React.Component {
       <div className="file__checkbox directory-tree__checkbox">
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--checkbox">
+          directory-tree__checkbox__item--checkbox"
+        >
           <Checkbox
             checked={this.props.isSelected}
             id={this.props.id}
             onChange={this.handleDirectorySelection}
-            useProps={true}
+            useProps
           />
         </div>
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--icon">
+          directory-tree__checkbox__item--icon"
+        >
           {icon}
         </div>
       </div>
@@ -109,15 +111,15 @@ class DirectoryTreeNode extends React.Component {
   }
 
   render() {
-    let branchClasses = classnames('directory-tree__branch', `directory-tree__branch--depth-${this.props.depth}`, {
+    const branchClasses = classnames('directory-tree__branch', `directory-tree__branch--depth-${this.props.depth}`, {
       'directory-tree__node--selected': this.props.isSelected,
     });
-    let directoryClasses = classnames(
+    const directoryClasses = classnames(
       'directory-tree__node',
       'directory-tree__node--selectable directory-tree__node--directory',
       {
         'is-expanded': this.state.expanded,
-      }
+      },
     );
 
     return (

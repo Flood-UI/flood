@@ -128,28 +128,22 @@ class TransferRateGraph extends React.Component {
       .linear()
       .domain([
         0,
-        d3.max(historicalData.download, (dataPoint, index) => {
-          return Math.max(dataPoint, historicalData.upload[index]);
-        }),
+        d3.max(historicalData.download, (dataPoint, index) => Math.max(dataPoint, historicalData.upload[index])),
       ])
       .range([height - margin.top, margin.bottom]);
 
-    const lineFunc = interpolation => {
-      return d3.svg
-        .line()
-        .x((dataPoint, index) => this.xScale(index))
-        .y(dataPoint => this.yScale(dataPoint))
-        .interpolate(interpolation);
-    };
+    const lineFunc = interpolation => d3.svg
+      .line()
+      .x((dataPoint, index) => this.xScale(index))
+      .y(dataPoint => this.yScale(dataPoint))
+      .interpolate(interpolation);
 
-    const areaFunc = interpolation => {
-      return d3.svg
-        .area()
-        .x((dataPoint, index) => this.xScale(index))
-        .y0(height)
-        .y1(dataPoint => this.yScale(dataPoint))
-        .interpolate(interpolation);
-    };
+    const areaFunc = interpolation => d3.svg
+      .area()
+      .x((dataPoint, index) => this.xScale(index))
+      .y0(height)
+      .y1(dataPoint => this.yScale(dataPoint))
+      .interpolate(interpolation);
 
     const interpolation = 'monotone';
     const downloadLinePath = lineFunc(interpolation)(historicalData.download);
@@ -214,7 +208,7 @@ class TransferRateGraph extends React.Component {
 
     const coordinates = {x: xScale(hoverPoint), y: yScale(speedAtHoverPoint)};
 
-    inspectPoint.attr('transform', 'translate(' + coordinates.x + ',' + coordinates.y + ')');
+    inspectPoint.attr('transform', `translate(${coordinates.x},${coordinates.y})`);
 
     return speedAtHoverPoint;
   }

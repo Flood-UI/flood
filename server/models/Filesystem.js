@@ -10,7 +10,7 @@ class Filesystem {
       const directories = [];
       const files = [];
 
-      fs.readdirSync(sourcePath).forEach(item => {
+      fs.readdirSync(sourcePath).forEach((item) => {
         const joinedPath = path.join(sourcePath, item);
         if (fs.existsSync(joinedPath)) {
           if (fs.statSync(joinedPath).isDirectory()) {

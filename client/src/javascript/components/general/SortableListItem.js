@@ -89,23 +89,19 @@ class SortableListItem extends React.Component {
         <div className={classes}>
           {lockedIcon}
           {children}
-        </div>
-      )
+        </div>,
+      ),
     );
   }
 }
 
 export default _.flow([
-  DragSource('globally-draggable-item', itemSource, (connect, monitor) => {
-    return {
-      connectDragPreview: connect.dragPreview(),
-      connectDragSource: connect.dragSource(),
-      isDragging: monitor.isDragging(),
-    };
-  }),
-  DropTarget('globally-draggable-item', itemTarget, connect => {
-    return {
-      connectDropTarget: connect.dropTarget(),
-    };
-  }),
+  DragSource('globally-draggable-item', itemSource, (connect, monitor) => ({
+    connectDragPreview: connect.dragPreview(),
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging(),
+  })),
+  DropTarget('globally-draggable-item', itemTarget, connect => ({
+    connectDropTarget: connect.dropTarget(),
+  })),
 ])(SortableListItem);

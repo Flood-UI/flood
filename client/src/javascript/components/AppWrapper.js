@@ -158,7 +158,7 @@ class AuthEnforcer extends React.Component {
 
     // Iterate over current dependencies looking for unsatisified dependencies.
     const isDependencyActive = Object.keys(this.state.dependencies).some(
-      dependencyKey => !this.state.dependencies[dependencyKey].satisfied
+      dependencyKey => !this.state.dependencies[dependencyKey].satisfied,
     );
 
     // If any dependency is unsatisfied, show the loading indicator.
@@ -175,7 +175,7 @@ class AuthEnforcer extends React.Component {
     if (this.isLoading()) {
       return (
         <div className="application__loading-overlay">
-          <LoadingIndicator inverse={true} />
+          <LoadingIndicator inverse />
           {this.renderDependencyList()}
         </div>
       );
@@ -201,7 +201,8 @@ class AuthEnforcer extends React.Component {
         <CSSTransitionGroup
           transitionEnterTimeout={1000}
           transitionLeaveTimeout={1000}
-          transitionName="application__loading-overlay">
+          transitionName="application__loading-overlay"
+        >
           {this.renderOverlay()}
         </CSSTransitionGroup>
         {this.props.children}

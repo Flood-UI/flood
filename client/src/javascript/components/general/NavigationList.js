@@ -37,7 +37,7 @@ class NavigationList extends React.Component {
         selectedSlug = this.props.defaultItem;
       }
 
-      let classes = classnames(this.props.itemClassName, {
+      const classes = classnames(this.props.itemClassName, {
         [this.props.selectedClassName]: item.slug === selectedSlug,
       });
 
@@ -58,7 +58,7 @@ class NavigationList extends React.Component {
   }
 
   render() {
-    let classes = classnames(this.props.listClassName, {
+    const classes = classnames(this.props.listClassName, {
       [this.props.uniqueClassName]: this.props.uniqueClassName,
     });
 

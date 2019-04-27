@@ -46,16 +46,14 @@ class GlobalContextMenuMountPoint extends React.Component {
     let shouldUpdate = true;
 
     if (
-      this.state.clickPosition.x === nextState.clickPosition.x &&
-      this.state.clickPosition.y === nextState.clickPosition.y
+      this.state.clickPosition.x === nextState.clickPosition.x
+      && this.state.clickPosition.y === nextState.clickPosition.y
     ) {
       shouldUpdate = false;
     }
 
     if (!shouldUpdate) {
-      return this.state.items.some((item, index) => {
-        return item !== nextState.items[index];
-      });
+      return this.state.items.some((item, index) => item !== nextState.items[index]);
     }
 
     return shouldUpdate;
@@ -79,7 +77,9 @@ class GlobalContextMenuMountPoint extends React.Component {
 
   getMenuItems() {
     return this.state.items.map((item, index) => {
-      let labelAction, labelSecondary, menuItemContent;
+      let labelAction,
+        labelSecondary,
+        menuItemContent;
       const menuItemClasses = classnames('menu__item', {
         'is-selectable': item.clickHandler,
         'menu__item--separator': item.type === 'separator',
@@ -163,7 +163,8 @@ class GlobalContextMenuMountPoint extends React.Component {
       <ContextMenu
         triggerCoordinates={this.state.clickPosition}
         onOverlayClick={this.handleOverlayClick}
-        in={this.state.isOpen}>
+        in={this.state.isOpen}
+      >
         {this.getMenuItems()}
       </ContextMenu>
     );

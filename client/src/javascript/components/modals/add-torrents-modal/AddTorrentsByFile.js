@@ -26,21 +26,20 @@ class AddTorrentsByFile extends React.Component {
     let fileContent = null;
 
     if (this.state.files.length > 0) {
-      const files = this.state.files.map((file, index) => {
-        return (
-          <li className="dropzone__selected-files__file interactive-list__item" key={index} title={file.name}>
-            <span className="interactive-list__icon">
-              <File />
-            </span>
-            <span className="interactive-list__label">{file.name}</span>
-            <span
-              className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
-              onClick={() => this.handleFileRemove(index)}>
-              <Close />
-            </span>
-          </li>
-        );
-      });
+      const files = this.state.files.map((file, index) => (
+        <li className="dropzone__selected-files__file interactive-list__item" key={index} title={file.name}>
+          <span className="interactive-list__icon">
+            <File />
+          </span>
+          <span className="interactive-list__label">{file.name}</span>
+          <span
+            className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
+            onClick={() => this.handleFileRemove(index)}
+          >
+            <Close />
+          </span>
+        </li>
+      ));
 
       fileContent = (
         <ul className="dropzone__selected-files interactive-list" onClick={this.handleFilesClick}>
@@ -60,7 +59,8 @@ class AddTorrentsByFile extends React.Component {
           className="form__dropzone dropzone interactive-list"
           ref="dropzone"
           onDrop={this.handleFileDrop}
-          disablePreview>
+          disablePreview
+        >
           <div className="dropzone__copy">
             <div className="dropzone__icon">
               <Files />
@@ -83,9 +83,7 @@ class AddTorrentsByFile extends React.Component {
       delete nextErrorsState.files;
     }
 
-    this.setState(state => {
-      return {errors: nextErrorsState, files: state.files.concat(files)};
-    });
+    this.setState(state => ({errors: nextErrorsState, files: state.files.concat(files)}));
   };
 
   handleFileRemove = fileIndex => {

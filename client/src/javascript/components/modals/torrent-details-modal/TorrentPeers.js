@@ -17,7 +17,7 @@ export default class TorrentPeers extends React.Component {
   }
 
   flagImageAsErrored(countryCode) {
-    let {erroredCountryImages} = this.state;
+    const {erroredCountryImages} = this.state;
     erroredCountryImages.push(countryCode);
     this.setState({erroredCountryImages});
   }
@@ -80,7 +80,10 @@ export default class TorrentPeers extends React.Component {
             <td>
               <Size value={peer.uploadRate} isSpeed />
             </td>
-            <td>{peer.completedPercent}%</td>
+            <td>
+              {peer.completedPercent}
+%
+            </td>
             <td>{peer.clientVersion}</td>
             <td className="peers-list__encryption">{encryptedIcon}</td>
           </tr>

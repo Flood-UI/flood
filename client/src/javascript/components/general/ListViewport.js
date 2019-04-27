@@ -115,7 +115,7 @@ class ListViewport extends React.Component {
     let {itemHeight, listVerticalPadding, scrollTop, viewportHeight} = this.state;
 
     if (listVerticalPadding) {
-      viewportHeight = viewportHeight - listVerticalPadding;
+      viewportHeight -= listVerticalPadding;
     }
 
     // The number of elements in view is the height of the viewport divided
@@ -128,7 +128,7 @@ class ListViewport extends React.Component {
 
     // The maximum item index to render is the minimum item rendered, plus the
     // number of items in view, plus double the offset.
-    let maxItemIndex = Math.min(this.props.listLength, minItemIndex + elementsInView + offsetBottom + offsetTop);
+    const maxItemIndex = Math.min(this.props.listLength, minItemIndex + elementsInView + offsetBottom + offsetTop);
 
     return {minItemIndex, maxItemIndex};
   }
@@ -156,7 +156,7 @@ class ListViewport extends React.Component {
       },
       () => {
         this.nodeRefs.outerScrollbar.scrollbarRef.scrollTop(0);
-      }
+      },
     );
   }
 
@@ -253,7 +253,8 @@ class ListViewport extends React.Component {
         onScrollStop={this.handleScrollStop}
         ref={ref => (this.nodeRefs.outerScrollbar = ref)}
         scrollHandler={this.handleScroll}
-        style={scrollbarStyle}>
+        style={scrollbarStyle}
+      >
         {props.children}
         {listContent}
       </CustomScrollbars>

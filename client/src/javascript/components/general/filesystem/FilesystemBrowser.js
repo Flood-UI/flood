@@ -1,11 +1,11 @@
 import React from 'react';
 import {defineMessages} from 'react-intl';
 
-import ArrowIcon from '../../../components/icons/ArrowIcon';
-import CustomScrollbars from '../../../components/general/CustomScrollbars';
+import ArrowIcon from '../../icons/ArrowIcon';
+import CustomScrollbars from '../CustomScrollbars';
 import EventTypes from '../../../constants/EventTypes';
-import File from '../../../components/icons/File';
-import FolderClosedSolid from '../../../components/icons/FolderClosedSolid';
+import File from '../../icons/File';
+import FolderClosedSolid from '../../icons/FolderClosedSolid';
 import UIStore from '../../../stores/UIStore';
 
 const MESSAGES = defineMessages({
@@ -102,7 +102,7 @@ class FilesystemBrowser extends React.PureComponent {
       directory = directory.substring(0, directory.length - 1);
     }
 
-    let directoryArr = directory.split(separator);
+    const directoryArr = directory.split(separator);
     directoryArr.pop();
 
     directory = directoryArr.join(separator);
@@ -152,7 +152,8 @@ class FilesystemBrowser extends React.PureComponent {
       parentDirectory = (
         <li
           className="filesystem__directory-list__item filesystem__directory-list__item--parent"
-          onClick={this.handleParentDirectoryClick}>
+          onClick={this.handleParentDirectoryClick}
+        >
           <ArrowIcon />
           {this.props.intl.formatMessage({
             id: 'filesystem.parent.directory',
@@ -163,27 +164,24 @@ class FilesystemBrowser extends React.PureComponent {
     }
 
     if (shouldShowDirectoryList) {
-      const directoryList = directories.map((directory, index) => {
-        return (
-          <li
-            className="filesystem__directory-list__item
+      const directoryList = directories.map((directory, index) => (
+        <li
+          className="filesystem__directory-list__item
             filesystem__directory-list__item--directory"
-            key={index}
-            onClick={() => this.handleDirectoryClick(directory)}>
-            <FolderClosedSolid />
-            {directory}
-          </li>
-        );
-      });
+          key={index}
+          onClick={() => this.handleDirectoryClick(directory)}
+        >
+          <FolderClosedSolid />
+          {directory}
+        </li>
+      ));
 
-      const filesList = files.map((file, index) => {
-        return (
-          <li className="filesystem__directory-list__item filesystem__directory-list__item--file" key={`file.${index}`}>
-            <File />
-            {file}
-          </li>
-        );
-      });
+      const filesList = files.map((file, index) => (
+        <li className="filesystem__directory-list__item filesystem__directory-list__item--file" key={`file.${index}`}>
+          <File />
+          {file}
+        </li>
+      ));
 
       listItems = directoryList.concat(filesList);
     }
@@ -197,7 +195,7 @@ class FilesystemBrowser extends React.PureComponent {
     }
 
     return (
-      <CustomScrollbars autoHeight={true} autoHeightMin={0} autoHeightMax={this.props.maxHeight}>
+      <CustomScrollbars autoHeight autoHeightMin={0} autoHeightMax={this.props.maxHeight}>
         <div className="filesystem__directory-list context-menu__items__padding-surrogate">
           {parentDirectory}
           {errorMessage}

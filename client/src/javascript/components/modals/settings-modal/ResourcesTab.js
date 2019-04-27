@@ -22,12 +22,12 @@ export default class ResourcesTab extends SettingsTab {
           <Textbox
             defaultValue={this.getFieldValue('directoryDefault')}
             id="directoryDefault"
-            label={
+            label={(
               <FormattedMessage
                 id="settings.resources.disk.download.location.label"
                 defaultMessage="Default Download Directory"
               />
-            }
+)}
           />
         </FormRow>
         <FormRow>
@@ -42,7 +42,8 @@ export default class ResourcesTab extends SettingsTab {
             grow={false}
             id="piecesHashOnCompletion"
             labelOffset
-            matchTextboxHeight>
+            matchTextboxHeight
+          >
             <FormattedMessage
               id="settings.resources.disk.check.hash.label"
               defaultMessage="Verify Hash on Completion"
@@ -56,12 +57,12 @@ export default class ResourcesTab extends SettingsTab {
           <Textbox
             defaultValue={this.getFieldValue('piecesMemoryMax')}
             id="piecesMemoryMax"
-            label={
+            label={(
               <div>
                 <FormattedMessage id="settings.resources.memory.max.label" defaultMessage="Max Memory Usage" />{' '}
                 <em className="unit">(MB)</em>
               </div>
-            }
+)}
             width="one-half"
           />
         </FormRow>

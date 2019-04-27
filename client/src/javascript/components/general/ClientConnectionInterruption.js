@@ -75,7 +75,7 @@ export default class ClientConnectionInterruption extends React.Component {
               isTestingConnection: false,
             });
           });
-      }
+      },
     );
   };
 

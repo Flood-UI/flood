@@ -75,6 +75,7 @@ const defaultRule = {
 
 class DownloadRulesTab extends React.Component {
   formRef;
+
   validatedFields = {
     destination: {
       isValid: Validator.isNotEmpty,
@@ -89,9 +90,7 @@ class DownloadRulesTab extends React.Component {
       error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel),
     },
     match: {
-      isValid: value => {
-        return Validator.isNotEmpty(value) && Validator.isRegExValid(value);
-      },
+      isValid: value => Validator.isNotEmpty(value) && Validator.isRegExValid(value),
       error: this.props.intl.formatMessage(MESSAGES.invalidRegularExpression),
     },
     exclude: {
@@ -165,20 +164,18 @@ class DownloadRulesTab extends React.Component {
     }
 
     return this.state.feeds.reduce(
-      (feedOptions, feed) => {
-        return feedOptions.concat(
-          <SelectItem key={feed._id} id={feed._id}>
-            {feed.label}
-          </SelectItem>
-        );
-      },
+      (feedOptions, feed) => feedOptions.concat(
+        <SelectItem key={feed._id} id={feed._id}>
+          {feed.label}
+        </SelectItem>,
+      ),
       [
         <SelectItem key="select-feed" id="placeholder" placeholder>
           <em>
             <FormattedMessage id="feeds.select.feed" defaultMessage="Select feed" />
           </em>
         </SelectItem>,
-      ]
+      ],
     );
   }
 
@@ -203,7 +200,8 @@ class DownloadRulesTab extends React.Component {
               id: 'feeds.applicable.feed',
               defaultMessage: 'Applicable Feed',
             })}
-            defaultID={rule.feedID}>
+            defaultID={rule.feedID}
+          >
             {this.getAvailableFeedsOptions()}
           </Select>
         </FormRow>
@@ -235,7 +233,8 @@ class DownloadRulesTab extends React.Component {
               id: 'feeds.test.match',
               defaultMessage: 'Test Match Pattern',
             })}
-            placeholder={this.props.intl.formatMessage(MESSAGES.check)}>
+            placeholder={this.props.intl.formatMessage(MESSAGES.check)}
+          >
             {doesPatternMatchTest && (
               <FormElementAddon>
                 <Checkmark />
@@ -289,20 +288,19 @@ class DownloadRulesTab extends React.Component {
       excludeNode = (
         <li
           className="interactive-list__detail-list__item
-          interactive-list__detail interactive-list__detail--tertiary">
+          interactive-list__detail interactive-list__detail--tertiary"
+        >
           <FormattedMessage id="feeds.exclude" defaultMessage="Exclude" /> {rule.exclude}
         </li>
       );
     }
 
     if (rule.tags && rule.tags.length > 0) {
-      const tagNodes = rule.tags.map((tag, index) => {
-        return (
-          <span className="tag" key={index}>
-            {tag}
-          </span>
-        );
-      });
+      const tagNodes = rule.tags.map((tag, index) => (
+        <span className="tag" key={index}>
+          {tag}
+        </span>
+      ));
 
       tags = (
         <li className="interactive-list__detail-list__item interactive-list__detail interactive-list__detail--tertiary">
@@ -317,13 +315,15 @@ class DownloadRulesTab extends React.Component {
           <ul className="interactive-list__detail-list">
             <li
               className="interactive-list__detail-list__item
-              interactive-list__detail--primary">
+              interactive-list__detail--primary"
+            >
               {rule.label}
             </li>
             <li
               className="interactive-list__detail-list__item
               interactive-list__detail-list__item--overflow
-              interactive-list__detail interactive-list__detail--secondary">
+              interactive-list__detail interactive-list__detail--secondary"
+            >
               <FormattedMessage
                 id="feeds.match.count"
                 defaultMessage="{count, plural, =1 {# match} other
@@ -334,7 +334,8 @@ class DownloadRulesTab extends React.Component {
             {rule === this.state.currentlyEditingRule && (
               <li
                 className="interactive-list__detail-list__item
-              interactive-list__detail--primary">
+              interactive-list__detail--primary"
+              >
                 Modifying
               </li>
             )}
@@ -342,7 +343,8 @@ class DownloadRulesTab extends React.Component {
           <ul className="interactive-list__detail-list">
             <li
               className="interactive-list__detail-list__item
-              interactive-list__detail interactive-list__detail--tertiary">
+              interactive-list__detail interactive-list__detail--tertiary"
+            >
               <FormattedMessage id="feeds.match" defaultMessage="Match" /> {rule.match}
             </li>
             {excludeNode}
@@ -351,12 +353,14 @@ class DownloadRulesTab extends React.Component {
         </div>
         <span
           className="interactive-list__icon interactive-list__icon--action"
-          onClick={() => this.handleModifyRuleClick(rule)}>
+          onClick={() => this.handleModifyRuleClick(rule)}
+        >
           <Edit />
         </span>
         <span
           className="interactive-list__icon interactive-list__icon--action interactive-list__icon--action--warning"
-          onClick={() => this.handleRemoveRuleClick(rule)}>
+          onClick={() => this.handleRemoveRuleClick(rule)}
+        >
           <Close />
         </span>
       </li>
@@ -374,9 +378,7 @@ class DownloadRulesTab extends React.Component {
       );
     }
 
-    const rulesList = this.state.rules.map(rule => {
-      return this.getRulesListItem(rule);
-    });
+    const rulesList = this.state.rules.map(rule => this.getRulesListItem(rule));
 
     return <ul className="interactive-list">{rulesList}</ul>;
   }
@@ -444,20 +446,19 @@ class DownloadRulesTab extends React.Component {
   }
 
   render() {
-    const errors = Object.keys(this.state.errors).map((errorID, index) => {
-      return (
-        <FormRow key={index}>
-          <FormError>{this.state.errors[errorID]}</FormError>
-        </FormRow>
-      );
-    });
+    const errors = Object.keys(this.state.errors).map((errorID, index) => (
+      <FormRow key={index}>
+        <FormError>{this.state.errors[errorID]}</FormError>
+      </FormRow>
+    ));
 
     return (
       <Form
         className="inverse"
         onChange={this.handleFormChange}
         onSubmit={this.handleFormSubmit}
-        ref={ref => (this.formRef = ref)}>
+        ref={ref => (this.formRef = ref)}
+      >
         <ModalFormSectionHeader>
           <FormattedMessage id="feeds.existing.rules" defaultMessage="Existing Rules" />
         </ModalFormSectionHeader>

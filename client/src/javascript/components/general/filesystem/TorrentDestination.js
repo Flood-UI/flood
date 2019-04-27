@@ -5,22 +5,22 @@ import React from 'react';
 
 import EventTypes from '../../../constants/EventTypes';
 import FilesystemBrowser from './FilesystemBrowser';
-import Search from '../../../components/icons/Search';
+import Search from '../../icons/Search';
 import SettingsStore from '../../../stores/SettingsStore';
 import UIStore from '../../../stores/UIStore';
 
 class NewTorrentDestination extends React.Component {
   contextMenuInstanceRef = null;
+
   contextMenuNodeRef = null;
 
   constructor(props) {
     super(props);
 
-    const destination =
-      props.suggested ||
-      SettingsStore.getFloodSettings('torrentDestination') ||
-      SettingsStore.getClientSettings('directoryDefault') ||
-      '';
+    const destination = props.suggested
+      || SettingsStore.getFloodSettings('torrentDestination')
+      || SettingsStore.getClientSettings('directoryDefault')
+      || '';
 
     this.state = {
       destination,
@@ -148,7 +148,8 @@ class NewTorrentDestination extends React.Component {
               id: 'torrents.add.destination.placeholder',
               defaultMessage: 'Destination',
             })}
-            setRef={this.setTextboxRef}>
+            setRef={this.setTextboxRef}
+          >
             <FormElementAddon onClick={this.handleDirectoryListButtonClick}>
               <Search />
             </FormElementAddon>
@@ -161,14 +162,15 @@ class NewTorrentDestination extends React.Component {
                 ref={ref => (this.contextMenuInstanceRef = ref)}
                 setRef={ref => (this.contextMenuNodeRef = ref)}
                 scrolling={false}
-                triggerRef={this.state.textboxRef}>
+                triggerRef={this.state.textboxRef}
+              >
                 <FilesystemBrowser
                   directory={this.state.destination}
                   intl={this.props.intl}
                   maxHeight={
-                    this.contextMenuInstanceRef &&
-                    this.contextMenuInstanceRef.dropdownStyle &&
-                    this.contextMenuInstanceRef.dropdownStyle.maxHeight
+                    this.contextMenuInstanceRef
+                    && this.contextMenuInstanceRef.dropdownStyle
+                    && this.contextMenuInstanceRef.dropdownStyle.maxHeight
                   }
                   onDirectorySelection={this.handleDirectorySelection}
                 />

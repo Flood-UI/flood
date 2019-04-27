@@ -67,7 +67,7 @@ class TransferData extends React.Component {
     TransferDataStore.unlisten(EventTypes.CLIENT_TRANSFER_SUMMARY_CHANGE, this.onTransferSummaryChange);
     TransferDataStore.unlisten(
       EventTypes.CLIENT_TRANSFER_HISTORY_REQUEST_SUCCESS,
-      this.onTransferHistoryRequestSuccess
+      this.onTransferHistoryRequestSuccess,
     );
   }
 
@@ -159,7 +159,8 @@ class TransferData extends React.Component {
           className="client-stats"
           onMouseMove={this.handleMouseMove}
           onMouseOut={this.handleMouseOut}
-          onMouseOver={this.handleMouseOver}>
+          onMouseOver={this.handleMouseOver}
+        >
           <TransferRateDetails
             isClientConnected={this.state.isClientConnected}
             inspectorPoint={this.state.graphInspectorPoint}
@@ -169,7 +170,7 @@ class TransferData extends React.Component {
         </div>
       );
     } else {
-      content = <LoadingIndicator inverse={true} />;
+      content = <LoadingIndicator inverse />;
     }
 
     return <div className="client-stats__wrapper sidebar__item">{content}</div>;

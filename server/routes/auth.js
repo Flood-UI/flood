@@ -10,6 +10,7 @@ const config = require('../../config');
 const router = express.Router();
 const services = require('../services');
 const Users = require('../models/Users');
+
 const failedLoginResponse = 'Failed login.';
 
 const setAuthToken = (res, username, isAdmin) => {
@@ -23,7 +24,9 @@ const setAuthToken = (res, username, isAdmin) => {
 
   res.cookie('jwt', token, {expires: new Date(cookieExpiration), httpOnly: true});
 
-  return res.json({success: true, token: `JWT ${token}`, username, isAdmin});
+  return res.json({
+    success: true, token: `JWT ${token}`, username, isAdmin,
+  });
 };
 
 const authValidation = joi.object().keys({
@@ -100,7 +103,7 @@ router.post('/register', (req, res) => {
       }
 
       setAuthToken(res, req.body.username, true);
-    }
+    },
   );
 });
 
@@ -153,7 +156,7 @@ router.patch('/users/:username', (req, res, next) => {
     userPatch.port = null;
   }
 
-  Users.updateUser(username, userPatch, user => {
+  Users.updateUser(username, userPatch, (user) => {
     Users.lookupUser({username}, (err, user) => {
       if (err) return req.status(500).json({error: err});
       services.updateUserServices(user);
@@ -172,7 +175,7 @@ router.put('/users', (req, res, next) => {
       socketPath: req.body.socketPath,
       isAdmin: req.body.isAdmin,
     },
-    ajaxUtil.getResponseFn(res)
+    ajaxUtil.getResponseFn(res),
   );
 });
 

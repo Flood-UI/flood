@@ -49,12 +49,14 @@ class DirectoryFiles extends React.Component {
       <div className="file__checkbox directory-tree__checkbox">
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--checkbox">
-          <Checkbox checked={isSelected} id={file.index} onChange={changeHandler} useProps={true} />
+          directory-tree__checkbox__item--checkbox"
+        >
+          <Checkbox checked={isSelected} id={file.index} onChange={changeHandler} useProps />
         </div>
         <div
           className="directory-tree__checkbox__item
-          directory-tree__checkbox__item--icon">
+          directory-tree__checkbox__item--icon"
+        >
           {ICONS.file}
         </div>
       </div>
@@ -80,20 +82,18 @@ class DirectoryFiles extends React.Component {
   }
 
   render() {
-    let branch = Object.assign([], this.props.fileList);
+    const branch = Object.assign([], this.props.fileList);
 
-    branch.sort((a, b) => {
-      return a.filename.localeCompare(b.filename);
-    });
+    branch.sort((a, b) => a.filename.localeCompare(b.filename));
 
-    let files = branch.map((file, index) => {
-      let isSelected = this.props.selectedItems[file.filename] && this.props.selectedItems[file.filename].isSelected;
-      let classes = classnames(
+    const files = branch.map((file, index) => {
+      const isSelected = this.props.selectedItems[file.filename] && this.props.selectedItems[file.filename].isSelected;
+      const classes = classnames(
         'directory-tree__node file',
         'directory-tree__node--file directory-tree__node--selectable',
         {
           'directory-tree__node--selected': isSelected,
-        }
+        },
       );
 
       return (
@@ -108,7 +108,8 @@ class DirectoryFiles extends React.Component {
           <div className="file__detail file__detail--secondary">{file.percentComplete}%</div>
           <div
             className="file__detail file__detail--secondary
-            file__detail--priority">
+            file__detail--priority"
+          >
             <PriorityMeter
               key={`${file.index}-${file.filename}`}
               level={file.priority}

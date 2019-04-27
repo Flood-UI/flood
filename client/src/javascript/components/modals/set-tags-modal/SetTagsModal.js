@@ -22,7 +22,7 @@ class SetTagsModal extends React.Component {
   };
 
   getActions() {
-    let primaryButtonText = this.props.intl.formatMessage({
+    const primaryButtonText = this.props.intl.formatMessage({
       id: 'torrents.set.tags.button.set',
       defaultMessage: 'Set Tags',
     });

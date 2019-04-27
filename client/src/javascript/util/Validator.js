@@ -22,7 +22,7 @@ export default class Validator {
   static isPositiveInteger(value) {
     if (value === null || value === '') return false;
 
-    let number = parseInt(value, 10);
+    const number = parseInt(value, 10);
 
     return !isNaN(number) && number > 0;
   }

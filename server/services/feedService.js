@@ -26,12 +26,10 @@ class FeedService extends BaseService {
   }
 
   modifyFeed(id, feed, callback) {
-    const modifiedFeed = this.feeds.find(feed => {
-      return feed.options._id === id;
-    });
+    const modifiedFeed = this.feeds.find(feed => feed.options._id === id);
     modifiedFeed.stopReader();
     modifiedFeed.modify(feed);
-    this.modifyItem(id, feed, err => {
+    this.modifyItem(id, feed, (err) => {
       callback(err);
     });
   }
@@ -54,7 +52,7 @@ class FeedService extends BaseService {
       return;
     }
 
-    this.db.update({_id: id}, {$set: newItem}, {}, err => {
+    this.db.update({_id: id}, {$set: newItem}, {}, (err) => {
       if (err) {
         callback(null, err);
         return;
@@ -120,18 +118,14 @@ class FeedService extends BaseService {
   }
 
   getItems(query, callback) {
-    let feed = this.feeds.find(feed => {
-      return feed.options._id === query.id;
-    });
+    const feed = this.feeds.find(feed => feed.options._id === query.id);
 
     if (feed) {
       const items = feed.getItems();
 
       if (query.search) {
         callback(
-          items.filter(item => {
-            return item.title.toLowerCase().indexOf(query.search.toLowerCase()) !== -1;
-          })
+          items.filter(item => item.title.toLowerCase().indexOf(query.search.toLowerCase()) !== -1),
         );
       } else {
         callback(items);

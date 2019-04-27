@@ -34,7 +34,7 @@ class DirectoryTree extends React.Component {
 
   getDirectoryTreeDomNodes(tree = {}, depth = 0) {
     let {directories = {}, files = []} = tree;
-    let {hash} = this.props;
+    const {hash} = this.props;
     let fileList = null;
     depth++;
 
@@ -47,9 +47,9 @@ class DirectoryTree extends React.Component {
           subSelectedItems = this.props.selectedItems.directories[directoryName];
         }
 
-        let subTree = directories[directoryName];
-        let id = `${index}${depth}${directoryName}`;
-        let isSelected = subSelectedItems && subSelectedItems.isSelected;
+        const subTree = directories[directoryName];
+        const id = `${index}${depth}${directoryName}`;
+        const isSelected = subSelectedItems && subSelectedItems.isSelected;
 
         return (
           <DirectoryTreeNode
@@ -70,7 +70,7 @@ class DirectoryTree extends React.Component {
       });
 
     if (files.length) {
-      let subSelectedItems = this.props.selectedItems.files;
+      const subSelectedItems = this.props.selectedItems.files;
 
       fileList = (
         <DirectoryFileList

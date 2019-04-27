@@ -95,7 +95,7 @@ const client = {
       const selectedTorrent = services.torrentService.getTorrent(hash);
       if (!selectedTorrent) return res.status(404).json({error: 'Torrent not found.'});
 
-      this.getTorrentDetails(user, services, hash, torrentDetails => {
+      this.getTorrentDetails(user, services, hash, (torrentDetails) => {
         if (!torrentDetails) return res.status(404).json({error: 'Torrent details not found'});
 
         let files;
@@ -105,9 +105,7 @@ const client = {
           files = fileString.split(',');
         }
 
-        const filePathsToDownload = this.findFilesByIndicies(files, torrentDetails.fileTree).map(file =>
-          path.join(selectedTorrent.directory, file.path)
-        );
+        const filePathsToDownload = this.findFilesByIndicies(files, torrentDetails.fileTree).map(file => path.join(selectedTorrent.directory, file.path));
 
         if (filePathsToDownload.length === 1) {
           const file = filePathsToDownload[0];
@@ -122,10 +120,10 @@ const client = {
         const pack = tar.pack();
         pack.pipe(res);
 
-        const tasks = filePathsToDownload.map(filePath => {
+        const tasks = filePathsToDownload.map((filePath) => {
           const filename = path.basename(filePath);
 
-          return next => {
+          return (next) => {
             fs.stat(filePath, (err, stats) => {
               if (err) return next(err);
 
@@ -135,14 +133,14 @@ const client = {
                   name: filename,
                   size: stats.size,
                 },
-                next
+                next,
               );
               stream.pipe(entry);
             });
           };
         });
 
-        series(tasks, error => {
+        series(tasks, (error) => {
           if (error) return res.status(500).json(error);
 
           pack.finalize();
@@ -162,8 +160,8 @@ const client = {
       selectedFiles = selectedFiles.concat(
         Object.keys(directories).reduce(
           (accumulator, directory) => accumulator.concat(this.findFilesByIndicies(indices, directories[directory])),
-          []
-        )
+          [],
+        ),
       );
     }
 
@@ -183,12 +181,12 @@ const client = {
 
     request.fetchSettings({
       options,
-      setRequestedKeysArr: requestedSettingsKeysArr => {
+      setRequestedKeysArr: (requestedSettingsKeysArr) => {
         requestedSettingsKeys = requestedSettingsKeysArr;
       },
     });
 
-    request.postProcess(data => {
+    request.postProcess((data) => {
       if (!data) {
         return null;
       }
@@ -242,7 +240,7 @@ const client = {
     const mainRequest = new ClientRequest(user, services);
 
     const hashesToRestart = hashes.filter(
-      hash => !services.torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped)
+      hash => !services.torrentService.getTorrent(hash).status.includes(torrentStatusMap.stopped),
     );
 
     let afterCheckHash;
@@ -330,7 +328,7 @@ const client = {
       }),
     };
 
-    const transformedPayloads = payloads.map(payload => {
+    const transformedPayloads = payloads.map((payload) => {
       if (inboundTransformation[payload.id]) {
         return inboundTransformation[payload.id](payload);
       }
