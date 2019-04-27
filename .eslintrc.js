@@ -1,15 +1,16 @@
-const path = require('path');
-
 module.exports = {
   extends: ['airbnb', 'plugin:import/errors', 'plugin:import/warnings', 'prettier'],
   parser: 'babel-eslint',
-  plugins: ['flowtype', 'import'],
+  plugins: ['import'],
   rules: {
     'arrow-parens': 0,
     'implicit-arrow-linebreak': 0,
     'import/no-extraneous-dependencies': 0,
     'import/prefer-default-export': 0,
-    'max-len': ['error', {code: 120}],
+    'max-len': ['error', {code: 121}],
+    'no-param-reassign': 0,
+    'no-plusplus': 0,
+    'no-underscore-dangle': [2, {allow: ['_id']}],
     'object-curly-newline': 0,
     'object-curly-spacing': 0,
     'react/button-has-type': 0,
