@@ -22,26 +22,6 @@ import Size from '../general/Size';
 import TrackerMessageIcon from '../icons/TrackerMessageIcon';
 import UploadThickIcon from '../icons/UploadThickIcon';
 
-const booleanRenderer = value => (value ? icons.checkmark : null);
-const dateRenderer = date => <FormattedDate value={date * 1000} />;
-const peersRenderer = (peersConnected, totalPeers) => (
-  <FormattedMessage
-    id="torrent.list.peers"
-    defaultMessage="{connected} {of} {total}"
-    values={{
-      connected: <FormattedNumber value={peersConnected} />,
-      of: (
-        <em className="unit">
-          <FormattedMessage id="torrent.list.peers.of" defaultMessage="of" />
-        </em>
-      ),
-      total: <FormattedNumber value={totalPeers} />,
-    }}
-  />
-);
-const speedRenderer = value => <Size value={value} isSpeed />;
-const sizeRenderer = value => <Size value={value} />;
-
 const icons = {
   checkmark: <Checkmark className="torrent__detail__icon torrent__detail__icon--checkmark" />,
   comment: <CommentIcon />,
@@ -63,6 +43,26 @@ const icons = {
   upTotal: <UploadThickIcon />,
 };
 
+const booleanRenderer = value => (value ? icons.checkmark : null);
+const dateRenderer = date => <FormattedDate value={date * 1000} />;
+const peersRenderer = (peersConnected, totalPeers) => (
+  <FormattedMessage
+    id="torrent.list.peers"
+    defaultMessage="{connected} {of} {total}"
+    values={{
+      connected: <FormattedNumber value={peersConnected} />,
+      of: (
+        <em className="unit">
+          <FormattedMessage id="torrent.list.peers.of" defaultMessage="of" />
+        </em>
+      ),
+      total: <FormattedNumber value={totalPeers} />,
+    }}
+  />
+);
+const speedRenderer = value => <Size value={value} isSpeed />;
+const sizeRenderer = value => <Size value={value} />;
+
 const transformers = {
   dateAdded: dateRenderer,
   dateCreated: dateRenderer,
@@ -82,8 +82,8 @@ const transformers = {
   seeds: peersRenderer,
   tags: tags => (
     <ul className="torrent__tags tag">
-      {tags.map((tag, index) => (
-        <li className="torrent__tag" key={index}>
+      {tags.map(tag => (
+        <li className="torrent__tag" key={tag}>
           {tag}
         </li>
       ))}
@@ -105,7 +105,8 @@ const transformers = {
 
 class TorrentDetail extends React.PureComponent {
   render() {
-    let {className, icon, preventTransform, secondaryValue, slug, value, width} = this.props;
+    const {className, preventTransform, secondaryValue, slug, width} = this.props;
+    let {icon, value} = this.props;
 
     if (!preventTransform && slug in transformers) {
       value = transformers[slug](value, secondaryValue);

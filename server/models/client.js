@@ -14,18 +14,16 @@ const torrentTrackerPropsMap = require('../../shared/constants/torrentTrackerPro
 
 const client = {
   addFiles(user, services, req, callback) {
-    const files = req.files;
-    const path = req.body.destination;
-    const isBasePath = req.body.isBasePath;
+    const {files} = req;
+    const {destination: destinationPath, isBasePath, start} = req.body;
+    let {tags} = req.body;
     const request = new ClientRequest(user, services);
-    const start = req.body.start;
-    let tags = req.body.tags;
 
     if (!Array.isArray(tags)) {
       tags = tags.split(',');
     }
 
-    request.createDirectory({path});
+    request.createDirectory({path: destinationPath});
     request.send();
 
     // Each torrent is sent individually because rTorrent accepts a total
@@ -37,7 +35,7 @@ const client = {
       const fileRequest = new ClientRequest(user, services);
       fileRequest.addFiles({
         files: file,
-        path,
+        path: destinationPath,
         isBasePath,
         start,
         tags,
@@ -58,17 +56,13 @@ const client = {
   },
 
   addUrls(user, services, data, callback) {
-    const urls = data.urls;
-    const path = data.destination;
-    const isBasePath = data.isBasePath;
-    const start = data.start;
-    const tags = data.tags;
+    const {urls, path: destinationPath, isBasePath, start, tags} = data;
     const request = new ClientRequest(user, services);
 
-    request.createDirectory({path});
+    request.createDirectory({path: destinationPath});
     request.addURLs({
       urls,
-      path,
+      path: destinationPath,
       isBasePath,
       start,
       tags,
@@ -234,11 +228,7 @@ const client = {
 
   moveTorrents(user, services, data, callback) {
     const destinationPath = data.destination;
-    const isBasePath = data.isBasePath;
-    const hashes = data.hashes;
-    const filenames = data.filenames;
-    const moveFiles = data.moveFiles;
-    const sourcePaths = data.sources;
+    const {isBasePath, hashes, filenames, moveFiles, sourcePaths} = data;
     const mainRequest = new ClientRequest(user, services);
 
     const hashesToRestart = hashes.filter(
@@ -289,7 +279,7 @@ const client = {
 
   setFilePriority(user, services, hashes, data, callback) {
     // TODO Add support for multiple hashes.
-    const fileIndices = data.fileIndices;
+    const {fileIndices} = data;
     const request = new ClientRequest(user, services);
 
     request.setFilePriority({hashes, fileIndices, priority: data.priority});

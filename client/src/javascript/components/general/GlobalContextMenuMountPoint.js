@@ -23,15 +23,10 @@ class GlobalContextMenuMountPoint extends React.Component {
     clickPosition: {},
     isOpen: false,
     items: [],
-    menuPosition: {},
   };
 
   componentDidMount() {
     UIStore.listen(EventTypes.UI_CONTEXT_MENU_CHANGE, this.handleContextMenuChange);
-  }
-
-  componentWillUnmount() {
-    UIStore.unlisten(EventTypes.UI_CONTEXT_MENU_CHANGE, this.handleContextMenuChange);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -75,9 +70,16 @@ class GlobalContextMenuMountPoint extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    UIStore.unlisten(EventTypes.UI_CONTEXT_MENU_CHANGE, this.handleContextMenuChange);
+  }
+
   getMenuItems() {
     return this.state.items.map((item, index) => {
-      let labelAction, labelSecondary, menuItemContent;
+      let labelAction;
+      let labelSecondary;
+      let menuItemContent;
+
       const menuItemClasses = classnames('menu__item', {
         'is-selectable': item.clickHandler,
         'menu__item--separator': item.type === 'separator',
@@ -107,6 +109,8 @@ class GlobalContextMenuMountPoint extends React.Component {
       }
 
       return (
+        // TODO: Find a better key for this
+        // eslint-disable-next-line react/no-array-index-key
         <li className={menuItemClasses} key={index} onClick={this.handleMenuItemClick.bind(this, item)}>
           {menuItemContent}
         </li>

@@ -28,7 +28,7 @@ class NavigationList extends React.Component {
   }
 
   getNavigationItems(items) {
-    return items.map((item, index) => {
+    return items.map(item => {
       let selectedSlug = null;
 
       if (this.state.selectedItem) {
@@ -42,7 +42,7 @@ class NavigationList extends React.Component {
       });
 
       return (
-        <li className={classes} key={index} onClick={this.handleItemClick.bind(this, item)}>
+        <li className={classes} key={item.slug} onClick={this.handleItemClick.bind(this, item)}>
           {item.label}
         </li>
       );

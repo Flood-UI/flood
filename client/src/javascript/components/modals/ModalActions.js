@@ -13,6 +13,7 @@ export default class ModalActions extends React.Component {
 
       if (action.type === 'checkbox') {
         return (
+          // eslint-disable-next-line react/no-array-index-key
           <Checkbox checked={action.checked} id={action.id} key={index} onChange={this.getClickHandler(action)}>
             {action.content}
           </Checkbox>
@@ -25,6 +26,7 @@ export default class ModalActions extends React.Component {
           isLoading={action.isLoading}
           onClick={this.getClickHandler(action)}
           priority={action.type}
+          // eslint-disable-next-line react/no-array-index-key
           key={index}
           type={action.submit ? 'submit' : 'button'}>
           {action.content}

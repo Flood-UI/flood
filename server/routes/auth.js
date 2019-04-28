@@ -81,8 +81,8 @@ router.use('/register', (req, res, next) => {
       next();
     },
     handleSubsequentUser: () => {
-      passport.authenticate('jwt', {session: false}, (req, res, next) => {
-        res.json({username: req.username});
+      passport.authenticate('jwt', {session: false}, (passportReq, passportRes) => {
+        passportRes.json({username: req.username});
       });
     },
   });
@@ -124,7 +124,7 @@ router.use('/verify', (req, res, next) => {
   });
 });
 
-router.get('/verify', (req, res, next) => {
+router.get('/verify', (req, res) => {
   res.json({
     initialUser: req.initialUser,
     username: req.user && req.user.username,
@@ -139,17 +139,17 @@ router.get('/logout', (req, res) => {
   res.clearCookie('jwt').send();
 });
 
-router.get('/users', (req, res, next) => {
+router.get('/users', (req, res) => {
   Users.listUsers(ajaxUtil.getResponseFn(res));
 });
 
-router.delete('/users/:username', (req, res, next) => {
+router.delete('/users/:username', (req, res) => {
   Users.removeUser(req.params.username, ajaxUtil.getResponseFn(res));
   services.destroyUserServices(req.user);
 });
 
-router.patch('/users/:username', (req, res, next) => {
-  const username = req.params.username;
+router.patch('/users/:username', (req, res) => {
+  const {username} = req.params;
   const userPatch = req.body;
 
   if (!userPatch.socketPath) {
@@ -159,7 +159,7 @@ router.patch('/users/:username', (req, res, next) => {
     userPatch.port = null;
   }
 
-  Users.updateUser(username, userPatch, user => {
+  Users.updateUser(username, userPatch, () => {
     Users.lookupUser({username}, (err, user) => {
       if (err) return req.status(500).json({error: err});
       services.updateUserServices(user);
@@ -168,7 +168,7 @@ router.patch('/users/:username', (req, res, next) => {
   });
 });
 
-router.put('/users', (req, res, next) => {
+router.put('/users', (req, res) => {
   Users.createUser(
     {
       username: req.body.username,

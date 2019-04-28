@@ -5,9 +5,10 @@ export default class Validator {
     return value != null && value !== '';
   }
 
-  static isRegExValid(regEx) {
+  static isRegExValid(regExToCheck) {
     try {
-      new RegExp(regEx);
+      // eslint-disable-next-line no-new
+      new RegExp(regExToCheck);
     } catch (err) {
       return false;
     }
@@ -24,6 +25,6 @@ export default class Validator {
 
     const number = parseInt(value, 10);
 
-    return !isNaN(number) && number > 0;
+    return !Number.isNaN(number) && number > 0;
   }
 }

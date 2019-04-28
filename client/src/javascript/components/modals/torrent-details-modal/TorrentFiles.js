@@ -7,7 +7,7 @@ import React from 'react';
 import ConfigStore from '../../../stores/ConfigStore';
 import Disk from '../../icons/Disk';
 import DirectoryTree from '../../general/filesystem/DirectoryTree';
-import TorrentStore from '../../../stores/TorrentStore';
+import TorrentActions from '../../../actions/TorrentActions';
 
 const TORRENT_PROPS_TO_CHECK = ['bytesDone'];
 const METHODS_TO_BIND = ['handleItemSelect', 'handlePriorityChange', 'handleSelectAllClick'];
@@ -99,18 +99,25 @@ class TorrentFiles extends React.Component {
     link.click();
   };
 
-  handleFormChange = ({event, formData}) => {
+  handleFormChange = ({event}) => {
     if (event.target.name === 'file-priority') {
       this.handlePriorityChange();
-      TorrentStore.setFilePriority(this.props.hash, this.state.selectedFiles, event.target.value);
+      TorrentActions.setFilePriority(this.props.hash, this.state.selectedFiles, event.target.value);
     }
   };
 
   handleItemSelect(selectedItem) {
     this.hasSelectionChanged = true;
-    const selectedItems = this.mergeSelection(selectedItem, this.state.selectedItems, 0, this.props.fileTree);
-    const selectedFiles = this.getSelectedFiles(selectedItems);
-    this.setState({selectedItems, allSelected: false, selectedFiles});
+    this.setState(state => {
+      const selectedItems = this.mergeSelection(selectedItem, state.selectedItems, 0, this.props.fileTree);
+      const selectedFiles = this.getSelectedFiles(selectedItems);
+
+      return {
+        selectedItems,
+        allSelected: false,
+        selectedFiles,
+      };
+    });
   }
 
   handlePriorityChange() {
@@ -119,12 +126,16 @@ class TorrentFiles extends React.Component {
 
   handleSelectAllClick() {
     this.hasSelectionChanged = true;
-    const selectedItems = this.selectAll(this.state.selectedItems, this.props.fileTree, this.state.allSelected);
-    const selectedFiles = this.getSelectedFiles(selectedItems);
-    this.setState({
-      selectedItems,
-      allSelected: !this.state.allSelected,
-      selectedFiles,
+
+    this.setState((state, props) => {
+      const selectedItems = this.selectAll(state.selectedItems, props.fileTree, state.allSelected);
+      const selectedFiles = this.getSelectedFiles(selectedItems);
+
+      return {
+        selectedItems,
+        allSelected: !state.allSelected,
+        selectedFiles,
+      };
     });
   }
 

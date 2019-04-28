@@ -1,11 +1,30 @@
+const chalk = require('chalk');
+const debug = require('debug')('flood:server');
+const fs = require('fs');
+const http = require('http');
+const spdy = require('spdy');
+
+const app = require('../app');
+const config = require('../../config');
+
+// Normalize a port into a number, string, or false.
+const normalizePort = val => {
+  const port = parseInt(val, 10);
+
+  // Named pipe.
+  if (Number.isNaN(port)) {
+    return val;
+  }
+
+  // Port number.
+  if (port >= 0) {
+    return port;
+  }
+
+  return false;
+};
+
 const startWebServer = () => {
-  const chalk = require('chalk');
-  const debug = require('debug')('flood:server');
-  const fs = require('fs');
-
-  const app = require('../app');
-  const config = require('../../config');
-
   const port = normalizePort(config.floodServerPort);
   const host = config.floodServerHost;
   const useSSL = config.ssl;
@@ -22,7 +41,7 @@ const startWebServer = () => {
       process.exit(1);
     }
 
-    server = require('spdy').createServer(
+    server = spdy.createServer(
       {
         key: fs.readFileSync(config.sslKey),
         cert: fs.readFileSync(config.sslCert),
@@ -30,32 +49,10 @@ const startWebServer = () => {
       app,
     );
   } else {
-    server = require('http').createServer(app);
+    server = http.createServer(app);
   }
 
-  // Listen on provided port, on all network interfaces.
-  server.listen(port, host);
-  server.on('error', onError);
-  server.on('listening', onListening);
-
-  // Normalize a port into a number, string, or false.
-  function normalizePort(val) {
-    const port = parseInt(val, 10);
-
-    // Named pipe.
-    if (isNaN(port)) {
-      return val;
-    }
-
-    // Port number.
-    if (port >= 0) {
-      return port;
-    }
-
-    return false;
-  }
-
-  function onError(error) {
+  const handleError = error => {
     if (error.syscall !== 'listen') {
       throw error;
     }
@@ -75,14 +72,19 @@ const startWebServer = () => {
       default:
         throw error;
     }
-  }
+  };
 
   // Event listener for HTTP server "listening" event.
-  function onListening() {
+  const handleListening = () => {
     const addr = server.address();
     const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
     debug(`Listening on ${bind}`);
-  }
+  };
+
+  // Listen on provided port, on all network interfaces.
+  server.listen(port, host);
+  server.on('error', handleError);
+  server.on('listening', handleListening);
 
   const address = chalk.underline(`${useSSL ? 'https' : 'http'}://${host}:${port}`);
 

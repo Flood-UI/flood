@@ -21,8 +21,7 @@ const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const paths = require('../config/paths');
 const config = require('../config/webpack.config.prod');
 
-const measureFileSizesBeforeBuild = FileSizeReporter.measureFileSizesBeforeBuild;
-const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
+const {measureFileSizesBeforeBuild, printFileSizesAfterBuild} = FileSizeReporter;
 
 // These sizes are pretty large. We'll warn for bundles exceeding them.
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
@@ -32,6 +31,48 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
+
+const copyPublicFolder = () => {
+  fs.copySync(paths.appPublic, paths.appBuild, {
+    dereference: true,
+    filter: file => file !== paths.appHtml,
+  });
+};
+
+// Create the production build and print the deployment instructions.
+const build = previousFileSizes => {
+  console.log('Creating an optimized production build...');
+
+  const compiler = webpack(config);
+  return new Promise((resolve, reject) => {
+    compiler.run((err, stats) => {
+      if (err) {
+        return reject(err);
+      }
+      const messages = formatWebpackMessages(stats.toJson({}, true));
+      if (messages.errors.length) {
+        return reject(new Error(messages.errors.join('\n\n')));
+      }
+      if (
+        process.env.CI &&
+        (typeof process.env.CI !== 'string' || process.env.CI.toLowerCase() !== 'false') &&
+        messages.warnings.length
+      ) {
+        console.log(
+          chalk.yellow(
+            '\nTreating warnings as errors because process.env.CI = true.\n Most CI servers set it automatically.\n',
+          ),
+        );
+        return reject(new Error(messages.warnings.join('\n\n')));
+      }
+      return resolve({
+        stats,
+        previousFileSizes,
+        warnings: messages.warnings,
+      });
+    });
+  });
+};
 
 // First, read the current file sizes in build directory.
 // This lets us display how much they changed later.
@@ -71,45 +112,3 @@ measureFileSizesBeforeBuild(paths.appBuild)
       process.exit(1);
     },
   );
-
-// Create the production build and print the deployment instructions.
-function build(previousFileSizes) {
-  console.log('Creating an optimized production build...');
-
-  const compiler = webpack(config);
-  return new Promise((resolve, reject) => {
-    compiler.run((err, stats) => {
-      if (err) {
-        return reject(err);
-      }
-      const messages = formatWebpackMessages(stats.toJson({}, true));
-      if (messages.errors.length) {
-        return reject(new Error(messages.errors.join('\n\n')));
-      }
-      if (
-        process.env.CI &&
-        (typeof process.env.CI !== 'string' || process.env.CI.toLowerCase() !== 'false') &&
-        messages.warnings.length
-      ) {
-        console.log(
-          chalk.yellow(
-            '\nTreating warnings as errors because process.env.CI = true.\n Most CI servers set it automatically.\n',
-          ),
-        );
-        return reject(new Error(messages.warnings.join('\n\n')));
-      }
-      return resolve({
-        stats,
-        previousFileSizes,
-        warnings: messages.warnings,
-      });
-    });
-  });
-}
-
-function copyPublicFolder() {
-  fs.copySync(paths.appPublic, paths.appBuild, {
-    dereference: true,
-    filter: file => file !== paths.appHtml,
-  });
-}

@@ -20,13 +20,15 @@ const doFilesExist = files => {
 const enforcePrerequisites = () =>
   new Promise((resolve, reject) => {
     if (!doFilesExist(configFiles)) {
-      reject("Configuration files missing. Please check the 'Configuring' section of README.md.");
+      reject(new Error(`Configuration files missing. Please check the 'Configuring' section of README.md.`));
       return;
     }
 
     if (!doFilesExist(staticAssets)) {
       reject(
-        "Static assets (index.html) are missing. Please check the 'Compiling assets and starting the server' section of README.md.",
+        new Error(
+          `Static assets (index.html) are missing. Please check the 'Compiling assets and starting the server' section of README.md.`,
+        ),
       );
       return;
     }

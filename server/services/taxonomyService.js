@@ -5,8 +5,8 @@ const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents');
 const torrentStatusMap = require('../../shared/constants/torrentStatusMap');
 
 class TaxonomyService extends BaseService {
-  constructor() {
-    super(...arguments);
+  constructor(...serviceConfig) {
+    super(...serviceConfig);
 
     this.lastStatusCounts = {all: 0};
     this.lastTagCounts = {all: 0};
@@ -20,7 +20,7 @@ class TaxonomyService extends BaseService {
     this.handleProcessTorrentListStart = this.handleProcessTorrentListStart.bind(this);
     this.handleProcessTorrentListEnd = this.handleProcessTorrentListEnd.bind(this);
 
-    const clientGatewayService = this.services.clientGatewayService;
+    const {clientGatewayService} = this.services;
 
     clientGatewayService.on(clientGatewayServiceEvents.PROCESS_TORRENT_LIST_START, this.handleProcessTorrentListStart);
 
@@ -30,7 +30,7 @@ class TaxonomyService extends BaseService {
   }
 
   destroy() {
-    const clientGatewayService = this.services.clientGatewayService;
+    const {clientGatewayService} = this.services;
 
     clientGatewayService.removeListener(
       clientGatewayServiceEvents.PROCESS_TORRENT_LIST_START,

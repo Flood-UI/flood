@@ -6,8 +6,7 @@ export function sortTorrents(torrentsHash, sortBy) {
   const torrents = Object.keys(torrentsHash).map(hash => ({hash, ...torrentsHash[hash]}));
 
   if (torrents.length) {
-    const direction = sortBy.direction;
-    const property = sortBy.property;
+    const {direction, property} = sortBy;
 
     torrents.sort((a, b) => {
       let valA = a[property];

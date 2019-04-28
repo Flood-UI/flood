@@ -70,7 +70,6 @@ class FilesystemBrowser extends React.PureComponent {
 
     this.setState({
       directory: nextDirectory,
-      isFetching: true,
     });
 
     if (this.props.onDirectorySelection) {
@@ -81,7 +80,6 @@ class FilesystemBrowser extends React.PureComponent {
   handleDirectoryListFetchError = error => {
     this.setState({
       error,
-      isFetching: false,
     });
   };
 
@@ -91,12 +89,12 @@ class FilesystemBrowser extends React.PureComponent {
       ...response,
       directory: response.path,
       error: null,
-      isFetching: false,
     });
   };
 
   handleParentDirectoryClick = () => {
-    let {directory, separator} = this.state;
+    const {separator} = this.state;
+    let {directory} = this.state;
 
     if (directory.endsWith(separator)) {
       directory = directory.substring(0, directory.length - 1);
@@ -109,7 +107,6 @@ class FilesystemBrowser extends React.PureComponent {
 
     this.setState({
       directory,
-      isFetching: true,
     });
 
     if (this.props.onDirectorySelection) {
@@ -167,6 +164,8 @@ class FilesystemBrowser extends React.PureComponent {
         <li
           className="filesystem__directory-list__item
             filesystem__directory-list__item--directory"
+          // TODO: Find a better key
+          // eslint-disable-next-line react/no-array-index-key
           key={index}
           onClick={() => this.handleDirectoryClick(directory)}>
           <FolderClosedSolid />
@@ -175,6 +174,8 @@ class FilesystemBrowser extends React.PureComponent {
       ));
 
       const filesList = files.map((file, index) => (
+        // TODO: Find a better key
+        // eslint-disable-next-line react/no-array-index-key
         <li className="filesystem__directory-list__item filesystem__directory-list__item--file" key={`file.${index}`}>
           <File />
           {file}

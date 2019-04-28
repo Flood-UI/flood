@@ -2,7 +2,6 @@ import _ from 'lodash';
 import classnames from 'classnames';
 import {DragSource, DropTarget} from 'react-dnd';
 import {getEmptyImage} from 'react-dnd-html5-backend';
-import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -19,7 +18,7 @@ const itemSource = {
 };
 
 const itemTarget = {
-  drop(props, monitor, component) {
+  drop(props) {
     if (props.onDrop) {
       props.onDrop();
     }
@@ -35,6 +34,8 @@ const itemTarget = {
     }
 
     // Determine rectangle on screen
+    // TODO: Add ref to component and use instead of findDOMNode
+    // eslint-disable-next-line react/no-find-dom-node
     const hoverBoundingRect = ReactDOM.findDOMNode(component).getBoundingClientRect();
 
     // Determine mouse position
@@ -59,10 +60,6 @@ const itemTarget = {
 };
 
 class SortableListItem extends React.Component {
-  static propTypes = {
-    id: PropTypes.string,
-  };
-
   componentDidMount() {
     // Replace the native drag preview with an empty image.
     this.props.connectDragPreview(getEmptyImage(), {

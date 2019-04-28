@@ -44,6 +44,7 @@ choosePort(HOST, DEFAULT_PORT)
       return;
     }
     const protocol = process.env.DEV_SERVER_HTTPS === 'true' ? 'https' : 'http';
+    // eslint-disable-next-line import/no-dynamic-require
     const appName = require(paths.appPackageJson).name;
     const urls = prepareUrls(protocol, HOST, port);
     // Create a webpack compiler that is configured with custom messages.

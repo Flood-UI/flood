@@ -10,10 +10,6 @@ import SettingsStore from '../../../stores/SettingsStore';
 import UIStore from '../../../stores/UIStore';
 
 class NewTorrentDestination extends React.Component {
-  contextMenuInstanceRef = null;
-
-  contextMenuNodeRef = null;
-
   constructor(props) {
     super(props);
 
@@ -26,10 +22,6 @@ class NewTorrentDestination extends React.Component {
     this.state = {
       destination,
       isBasePath: false,
-      error: null,
-      directories: null,
-      files: null,
-      isFetching: false,
       isDirectoryListOpen: false,
     };
 
@@ -57,6 +49,10 @@ class NewTorrentDestination extends React.Component {
     global.document.addEventListener('click', this.handleDocumentClick);
     global.addEventListener('resize', this.handleWindowResize);
   }
+
+  contextMenuInstanceRef = null;
+
+  contextMenuNodeRef = null;
 
   closeDirectoryList = () => {
     if (this.state.isDirectoryListOpen) {
@@ -86,12 +82,13 @@ class NewTorrentDestination extends React.Component {
     this.setState({destination});
   };
 
-  handleDirectoryListButtonClick = event => {
-    const isOpening = !this.state.isDirectoryListOpen;
+  handleDirectoryListButtonClick = () => {
+    this.setState(state => {
+      const isOpening = !state.isDirectoryListOpen;
 
-    this.setState({
-      isDirectoryListOpen: isOpening,
-      isFetching: isOpening,
+      return {
+        isDirectoryListOpen: isOpening,
+      };
     });
   };
 
@@ -129,8 +126,10 @@ class NewTorrentDestination extends React.Component {
   };
 
   toggleOpenState = () => {
-    this.setState({
-      isDirectoryListOpen: !this.state.isDirectoryListOpen,
+    this.setState(state => {
+      return {
+        isDirectoryListOpen: !state.isDirectoryListOpen,
+      };
     });
   };
 
@@ -159,8 +158,12 @@ class NewTorrentDestination extends React.Component {
                 onClick={event => event.nativeEvent.stopImmediatePropagation()}
                 overlayProps={{isInteractive: false}}
                 padding={false}
-                ref={ref => (this.contextMenuInstanceRef = ref)}
-                setRef={ref => (this.contextMenuNodeRef = ref)}
+                ref={ref => {
+                  this.contextMenuInstanceRef = ref;
+                }}
+                setRef={ref => {
+                  this.contextMenuNodeRef = ref;
+                }}
                 scrolling={false}
                 triggerRef={this.state.textboxRef}>
                 <FilesystemBrowser

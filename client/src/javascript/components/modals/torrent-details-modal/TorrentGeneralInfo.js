@@ -5,15 +5,15 @@ import Size from '../../general/Size';
 
 class TorrentGeneralInfo extends React.Component {
   getTags(tags) {
-    return tags.map((tag, index) => (
-      <span className="tag" key={index}>
+    return tags.map(tag => (
+      <span className="tag" key={tag}>
         {tag}
       </span>
     ));
   }
 
   render() {
-    const torrent = this.props.torrent;
+    const {torrent} = this.props;
 
     let dateAdded = null;
     if (torrent.dateAdded) {

@@ -7,8 +7,8 @@ import EventTypes from '../constants/EventTypes';
 import FloodActions from '../actions/FloodActions';
 
 class UIStoreClass extends BaseStore {
-  constructor() {
-    super(...arguments);
+  constructor(...storeConfig) {
+    super(...storeConfig);
 
     this.activeContextMenu = null;
     this.activeDropdownMenu = null;
@@ -18,9 +18,15 @@ class UIStoreClass extends BaseStore {
     this.latestTorrentLocation = null;
     this.torrentDetailsHash = null;
     this.createStyleElement();
-
-    this.fetchDirectoryList = _.debounce(this.fetchDirectoryList, 100, {leading: true});
   }
+
+  static fetchDirectoryList = _.debounce(
+    options => {
+      FloodActions.fetchDirectoryList(options);
+    },
+    100,
+    {leading: true},
+  );
 
   addGlobalStyle(cssString) {
     this.globalStyles.push(cssString);
@@ -63,10 +69,6 @@ class UIStoreClass extends BaseStore {
 
   dismissModal() {
     this.setActiveModal(null);
-  }
-
-  fetchDirectoryList(options) {
-    FloodActions.fetchDirectoryList(options);
   }
 
   getActiveContextMenu() {

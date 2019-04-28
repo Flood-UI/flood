@@ -12,32 +12,40 @@ class FeedsStoreClass extends BaseStore {
     this.items = [];
   }
 
-  addFeed(feed) {
+  static addFeed(feed) {
     SettingsActions.addFeed(feed);
   }
 
-  modifyFeed(id, feed) {
+  static modifyFeed(id, feed) {
     SettingsActions.modifyFeed(id, feed);
   }
 
-  addRule(feed) {
+  static addRule(feed) {
     SettingsActions.addRule(feed);
   }
 
-  fetchFeedMonitors(query) {
+  static fetchFeedMonitors(query) {
     SettingsActions.fetchFeedMonitors(query);
   }
 
-  fetchFeeds(query) {
+  static fetchFeeds(query) {
     SettingsActions.fetchFeeds(query);
   }
 
-  fetchItems(query) {
+  static fetchItems(query) {
     SettingsActions.fetchItems(query);
   }
 
-  fetchRules(query) {
+  static fetchRules(query) {
     SettingsActions.fetchRules(query);
+  }
+
+  static removeFeed(id) {
+    SettingsActions.removeFeedMonitor(id);
+  }
+
+  static removeRule(id) {
+    SettingsActions.removeFeedMonitor(id);
   }
 
   getFeeds() {
@@ -57,7 +65,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleFeedAddSuccess() {
-    this.fetchFeedMonitors();
+    this.constructor.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_FEED_ADD_SUCCESS);
   }
 
@@ -66,7 +74,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleFeedModifySuccess() {
-    this.fetchFeedMonitors();
+    this.constructor.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_FEED_MODIFY_SUCCESS);
   }
 
@@ -75,7 +83,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleRuleAddSuccess() {
-    this.fetchFeedMonitors();
+    this.constructor.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_RULE_ADD_SUCCESS);
   }
 
@@ -94,7 +102,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleFeedMonitorRemoveSuccess(id) {
-    this.fetchFeedMonitors();
+    this.constructor.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_REMOVE_SUCCESS, id);
   }
 
@@ -123,14 +131,6 @@ class FeedsStoreClass extends BaseStore {
   handleItemsFetchSuccess(items) {
     this.items = items;
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS);
-  }
-
-  removeFeed(id) {
-    SettingsActions.removeFeedMonitor(id);
-  }
-
-  removeRule(id) {
-    SettingsActions.removeFeedMonitor(id);
   }
 
   setItems(type, items) {

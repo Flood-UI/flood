@@ -4,8 +4,8 @@ import React from 'react';
 import BaseIcon from './BaseIcon';
 
 export default class SpinnerIcon extends BaseIcon {
-  constructor() {
-    super(...arguments);
+  constructor(...iconConfig) {
+    super(...iconConfig);
 
     this.id = _.uniqueId();
   }

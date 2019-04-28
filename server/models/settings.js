@@ -37,7 +37,7 @@ const transformLegacyKeys = settings => {
   }
 
   if (settings.torrentDetails) {
-    settings.torrentDetails = settings.torrentDetails.reduce((accumulator, detailItem, index) => {
+    settings.torrentDetails = settings.torrentDetails.reduce((accumulator, detailItem) => {
       if (
         detailItem &&
         detailItem.id in changedKeys &&
@@ -85,7 +85,7 @@ function getDb(user) {
 const settings = {
   get: (user, opts, callback) => {
     const query = {};
-    const settings = {};
+    const settingsToReturn = {};
 
     if (opts.property) {
       query.id = opts.property;
@@ -100,10 +100,10 @@ const settings = {
         }
 
         docs.forEach(doc => {
-          settings[doc.id] = doc.data;
+          settingsToReturn[doc.id] = doc.data;
         });
 
-        callback(transformLegacyKeys(settings));
+        callback(transformLegacyKeys(settingsToReturn));
       });
   },
 

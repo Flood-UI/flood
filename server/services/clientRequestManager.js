@@ -2,8 +2,8 @@ const BaseService = require('./BaseService');
 const scgiUtil = require('../util/scgiUtil');
 
 class ClientRequestManager extends BaseService {
-  constructor() {
-    super(...arguments);
+  constructor(...serviceConfig) {
+    super(...serviceConfig);
 
     this.isRequestPending = false;
     this.lastResponseTimestamp = 0;

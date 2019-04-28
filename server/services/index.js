@@ -23,10 +23,11 @@ const allServiceMaps = [
   torrentServices,
 ];
 
-const getService = ({servicesMap, service, user}) => {
+const getService = ({servicesMap, service: Service, user}) => {
   let serviceInstance = servicesMap.get(user._id);
   if (!serviceInstance) {
-    serviceInstance = new service(user, getAllServices(user));
+    // eslint-disable-next-line no-use-before-define
+    serviceInstance = new Service(user, getAllServices(user));
     servicesMap.set(user._id, serviceInstance);
   }
 

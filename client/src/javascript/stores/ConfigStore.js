@@ -1,11 +1,11 @@
 import BaseStore from './BaseStore';
 
 class ConfigStoreClass extends BaseStore {
-  getBaseURI() {
+  static getBaseURI() {
     return process.env.BASE_URI;
   }
 
-  getPollInterval() {
+  static getPollInterval() {
     return process.env.POLL_INTERVAL || 5000;
   }
 }

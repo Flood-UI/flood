@@ -7,12 +7,11 @@ import TorrentActions from '../../../actions/TorrentActions';
 import TorrentStore from '../../../stores/TorrentStore';
 
 class SetTagsModal extends React.Component {
-  formRef = null;
-
   state = {
     isSettingTags: false,
-    tags: '',
   };
+
+  formRef = null;
 
   handleSetTagsClick = () => {
     const formData = this.formRef.getFormData();
@@ -52,7 +51,10 @@ class SetTagsModal extends React.Component {
 
     return (
       <div className="modal__content inverse">
-        <Form ref={ref => (this.formRef = ref)}>
+        <Form
+          ref={ref => {
+            this.formRef = ref;
+          }}>
           <FormRow>
             <Textbox
               defaultValue={tagsValue}

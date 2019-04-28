@@ -23,7 +23,7 @@ class SidebarFilter extends React.Component {
     const classNames = classnames('sidebar-filter__item', {
       'is-active': this.props.isActive,
     });
-    let name = this.props.name;
+    let {name} = this.props;
 
     if (this.props.name === 'all') {
       name = this.props.intl.formatMessage({

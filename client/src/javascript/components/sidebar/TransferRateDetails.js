@@ -41,14 +41,14 @@ class TransferRateDetails extends React.Component {
     ClientStatusStore.listen(EventTypes.CLIENT_CONNECTION_STATUS_CHANGE, this.handleClientStatusChange);
   }
 
-  componentWillUnmount() {
-    ClientStatusStore.unlisten(EventTypes.CLIENT_CONNECTION_STATUS_CHANGE, this.handleClientStatusChange);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.inspectorPoint != null) {
       this.setState({timestamp: nextProps.inspectorPoint.nearestTimestamp});
     }
+  }
+
+  componentWillUnmount() {
+    ClientStatusStore.unlisten(EventTypes.CLIENT_CONNECTION_STATUS_CHANGE, this.handleClientStatusChange);
   }
 
   getCurrentTansferRate(slug, options = {}) {

@@ -34,7 +34,7 @@ export default class TorrentHeading extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps() {
     if (this.state.optimisticData.currentStatus) {
       this.setState({optimisticData: {currentStatus: null}});
     }
@@ -74,6 +74,8 @@ export default class TorrentHeading extends React.Component {
       });
 
       torrentActionElements.push(
+        // TODO: Find a better key
+        // eslint-disable-next-line react/no-array-index-key
         <li className={classes} key={index} onClick={this[`handle${capitalizedAction}`]}>
           {statusIcons[torrentAction]}
           <FormattedMessage id={`torrents.details.actions.${torrentAction}`} defaultMessage={capitalizedAction} />
@@ -99,8 +101,7 @@ export default class TorrentHeading extends React.Component {
   }
 
   render() {
-    const torrent = this.props.torrent;
-
+    const {torrent} = this.props;
     const torrentClasses = torrentStatusClasses(torrent, 'torrent-details__header');
     const torrentStatusIcon = torrentStatusIcons(torrent.status);
 

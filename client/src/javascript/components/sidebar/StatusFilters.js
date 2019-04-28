@@ -22,7 +22,6 @@ class StatusFilters extends React.Component {
     this.state = {
       statusCount: {},
       statusFilter: TorrentFilterStore.getStatusFilter(),
-      trackerFilter: TorrentFilterStore.getTrackerFilter(),
     };
 
     METHODS_TO_BIND.forEach(method => {

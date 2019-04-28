@@ -44,7 +44,7 @@ export default class TrackerFilters extends React.Component {
       return a.localeCompare(b);
     });
 
-    const filterElements = filterItems.map((filter, index) => (
+    const filterElements = filterItems.map(filter => (
       <SidebarFilter
         handleClick={this.handleClick}
         count={this.state.trackerCount[filter] || 0}

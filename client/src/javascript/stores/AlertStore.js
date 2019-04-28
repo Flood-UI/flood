@@ -23,8 +23,8 @@ class AlertStoreClass extends BaseStore {
   }
 
   add(alert) {
-    alert.duration = this.getDuration(alert);
-    alert.id = this.getID(alert);
+    alert.duration = alert.duration || DEFAULT_DURATION;
+    alert.id = alert.id || Date.now();
 
     if (alert.accumulation) {
       this.accumulate(alert);
@@ -35,10 +35,6 @@ class AlertStoreClass extends BaseStore {
     this.alerts[alert.id] = alert;
 
     this.emit(EventTypes.ALERTS_CHANGE);
-  }
-
-  getDuration(alert) {
-    return alert.duration || DEFAULT_DURATION;
   }
 
   getAlerts() {
@@ -53,10 +49,6 @@ class AlertStoreClass extends BaseStore {
 
       return alert;
     });
-  }
-
-  getID(alert) {
-    return alert.id || Date.now();
   }
 
   removeExpired(alert) {
@@ -93,10 +85,6 @@ class AlertStoreClass extends BaseStore {
 
 const AlertStore = new AlertStoreClass();
 
-AlertStore.dispatcherID = AppDispatcher.register(payload => {
-  // const {action, source} = payload;
-  // switch (action.type) {
-  // }
-});
+AlertStore.dispatcherID = AppDispatcher.register(() => {});
 
 export default AlertStore;

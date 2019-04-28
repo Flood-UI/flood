@@ -9,10 +9,10 @@ export default class TextboxRepeater extends React.PureComponent {
     textboxes: this.props.defaultValues || [{id: 0, value: ''}],
   };
 
-  _idCounter = 0;
+  idCounter = 0;
 
   getID() {
-    return ++this._idCounter;
+    return ++this.idCounter;
   }
 
   getTextboxes = () =>
@@ -21,7 +21,10 @@ export default class TextboxRepeater extends React.PureComponent {
 
       if (index > 0) {
         removeButton = (
-          <FormElementAddon onClick={this.handleTextboxRemove.bind(textbox, index)}>
+          <FormElementAddon
+            onClick={() => {
+              this.handleTextboxRemove(index);
+            }}>
             <RemoveMini size="mini" />
           </FormElementAddon>
         );
@@ -36,7 +39,10 @@ export default class TextboxRepeater extends React.PureComponent {
             label={index === 0 && this.props.label}
             placeholder={this.props.placeholder}
             wrapperClassName="textbox-repeater">
-            <FormElementAddon onClick={this.handleTextboxAdd.bind(textbox, index)}>
+            <FormElementAddon
+              onClick={() => {
+                this.handleTextboxAddthis(index);
+              }}>
               <AddMini size="mini" />
             </FormElementAddon>
             {removeButton}
@@ -46,15 +52,19 @@ export default class TextboxRepeater extends React.PureComponent {
     });
 
   handleTextboxAdd = index => {
-    const textboxes = Object.assign([], this.state.textboxes);
-    textboxes.splice(index + 1, 0, {id: this.getID(), value: ''});
-    this.setState({textboxes});
+    this.setState(state => {
+      const textboxes = Object.assign([], state.textboxes);
+      textboxes.splice(index + 1, 0, {id: this.getID(), value: ''});
+      return {textboxes};
+    });
   };
 
   handleTextboxRemove = index => {
-    const textboxes = Object.assign([], this.state.textboxes);
-    textboxes.splice(index, 1);
-    this.setState({textboxes});
+    this.setState(state => {
+      const textboxes = Object.assign([], state.textboxes);
+      textboxes.splice(index, 1);
+      return {textboxes};
+    });
   };
 
   render() {

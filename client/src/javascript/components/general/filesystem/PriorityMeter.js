@@ -67,7 +67,7 @@ class PriorityMeter extends React.Component {
     return this.props.level;
   }
 
-  handleClick(event) {
+  handleClick() {
     let level = this.getPriorityLevel();
 
     if (level++ >= this.props.maxLevel) {

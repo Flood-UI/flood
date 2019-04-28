@@ -17,6 +17,29 @@ const METHODS_TO_BIND = [
   'triggerClose',
 ];
 
+const TOOLTIP_PROPS = [
+  'align',
+  'anchor',
+  'children',
+  'className',
+  'contentClassName',
+  'content',
+  'elementTag',
+  'interactive',
+  'maxWidth',
+  'onMouseLeave',
+  'offset',
+  'onClose',
+  'onOpen',
+  'position',
+  'scrollContainer',
+  'stayOpen',
+  'suppress',
+  'width',
+  'wrapperClassName',
+  'wrapText',
+];
+
 class Tooltip extends React.Component {
   static propTypes = {
     align: PropTypes.oneOf(['start', 'center', 'end']),
@@ -150,6 +173,7 @@ class Tooltip extends React.Component {
       if (align === 'center') {
         left = clearance.boundingRect.left + clearance.boundingRect.width / 2;
       } else if (align === 'start') {
+        // eslint-disable-next-line prefer-destructuring
         left = clearance.boundingRect.left;
       } else if (align === 'end') {
         left = clearance.boundingRect.left + clearance.boundingRect.width - tooltipWidth;
@@ -193,9 +217,9 @@ class Tooltip extends React.Component {
   }
 
   getIdealLocation(anchor, position) {
-    const clearance = this.getNodeClearance(this.refs.triggerNode);
+    const clearance = this.getNodeClearance(this.triggerNode);
     const isVertical = this.isVertical(position);
-    const tooltipRect = this.refs.tooltipNode.getBoundingClientRect();
+    const tooltipRect = this.tooltipNode.getBoundingClientRect();
     const tooltipHeight = tooltipRect.height + ARROW_SIZE;
     const tooltipWidth = tooltipRect.width + ARROW_SIZE;
 
@@ -269,13 +293,13 @@ class Tooltip extends React.Component {
     const {props, state} = this;
     let tooltipStyle = {};
 
-    const align = props.align;
+    const {align} = props;
     // Get the anchor and position from state if possible. If not, get it from
     // the props.
     const anchor = state.anchor || props.anchor;
     const position = state.position || props.position;
     // Pass along any props that aren't specific to the Tooltip.
-    const elementProps = _.omit(props, Object.keys(Tooltip.propTypes));
+    const elementProps = _.omit(props, TOOLTIP_PROPS);
 
     const tooltipClasses = classnames(
       props.className,
@@ -310,12 +334,16 @@ class Tooltip extends React.Component {
         onMouseEnter={this.handleMouseEnter}
         onMouseLeave={this.handleMouseLeave}
         {...elementProps}
-        ref="triggerNode">
+        ref={ref => {
+          this.triggerNode = ref;
+        }}>
         {props.children}
         <Portal>
           <div
             className={tooltipClasses}
-            ref="tooltipNode"
+            ref={ref => {
+              this.tooltipNode = ref;
+            }}
             style={tooltipStyle}
             onMouseEnter={this.handleTooltipMouseEnter}
             onMouseLeave={this.handleTooltipMouseLeave}>

@@ -113,6 +113,37 @@ class TransferRateGraph extends React.Component {
     this.graphRefs.download.inspectPoint.style('opacity', 1);
   }
 
+  setInspectorCoordinates(slug, hoverPoint) {
+    const {
+      graphRefs: {
+        [slug]: {inspectPoint},
+      },
+      xScale,
+      yScale,
+    } = this;
+
+    const historicalData = TransferDataStore.getTransferRates();
+    const upperSpeed = historicalData[slug][Math.ceil(hoverPoint)];
+    const lowerSpeed = historicalData[slug][Math.floor(hoverPoint)];
+
+    const delta = upperSpeed - lowerSpeed;
+    const speedAtHoverPoint = lowerSpeed + delta * (hoverPoint % 1);
+
+    const coordinates = {x: xScale(hoverPoint), y: yScale(speedAtHoverPoint)};
+
+    inspectPoint.attr('transform', `translate(${coordinates.x},${coordinates.y})`);
+
+    return speedAtHoverPoint;
+  }
+
+  updateGraph() {
+    this.renderGraphData();
+
+    if (this.graphRefs.isHovered) {
+      this.renderPrecisePointInspectors();
+    }
+  }
+
   renderGraphData() {
     const historicalData = TransferDataStore.getTransferRates();
     const {height, id, width} = this.props;
@@ -192,40 +223,14 @@ class TransferRateGraph extends React.Component {
     }
   }
 
-  setInspectorCoordinates(slug, hoverPoint) {
-    const {
-      graphRefs: {
-        [slug]: {inspectPoint},
-      },
-      xScale,
-      yScale,
-    } = this;
-
-    const historicalData = TransferDataStore.getTransferRates();
-    const upperSpeed = historicalData[slug][Math.ceil(hoverPoint)];
-    const lowerSpeed = historicalData[slug][Math.floor(hoverPoint)];
-
-    const delta = upperSpeed - lowerSpeed;
-    const speedAtHoverPoint = lowerSpeed + delta * (hoverPoint % 1);
-
-    const coordinates = {x: xScale(hoverPoint), y: yScale(speedAtHoverPoint)};
-
-    inspectPoint.attr('transform', `translate(${coordinates.x},${coordinates.y})`);
-
-    return speedAtHoverPoint;
-  }
-
-  updateGraph() {
-    this.renderGraphData();
-
-    if (this.graphRefs.isHovered) {
-      this.renderPrecisePointInspectors();
-    }
-  }
-
   render() {
     return (
-      <svg className="graph" id={this.props.id} ref={ref => (this.graphRefs.graph = ref)}>
+      <svg
+        className="graph"
+        id={this.props.id}
+        ref={ref => {
+          this.graphRefs.graph = ref;
+        }}>
         <defs>
           {this.getGradient('upload')}
           {this.getGradient('download')}

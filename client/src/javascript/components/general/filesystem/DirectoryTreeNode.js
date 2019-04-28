@@ -5,6 +5,8 @@ import React from 'react';
 
 import FolderClosedSolid from '../../icons/FolderClosedSolid';
 import FolderOpenSolid from '../../icons/FolderOpenSolid';
+// TODO: Fix this circular dependency
+// eslint-disable-next-line import/no-cycle
 import DirectoryTree from './DirectoryTree';
 
 const METHODS_TO_BIND = ['handleDirectoryClick', 'handleDirectorySelection'];
@@ -90,9 +92,11 @@ class DirectoryTreeNode extends React.Component {
     return null;
   }
 
-  handleDirectoryClick(event) {
-    this.setState({
-      expanded: !this.state.expanded,
+  handleDirectoryClick() {
+    this.setState(state => {
+      return {
+        expanded: !state.expanded,
+      };
     });
   }
 

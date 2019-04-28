@@ -10,8 +10,8 @@ const scgiUtil = require('../util/scgiUtil');
 const fileListMethodCallConfig = methodCallUtil.getMethodCallConfigFromPropMap(fileListPropMap, ['pathComponents']);
 
 class ClientGatewayService extends BaseService {
-  constructor() {
-    super(...arguments);
+  constructor(...serviceConfig) {
+    super(...serviceConfig);
 
     this.hasError = null;
     this.torrentListReducers = [];
@@ -83,7 +83,7 @@ class ClientGatewayService extends BaseService {
             const fileList = response[hashIndex][0];
             const directoryBase = response[hashIndex + torrentCount][0];
 
-            const filesToDelete = fileList.reduce((fileListAccumulator, file) => {
+            const torrentFilesToDelete = fileList.reduce((fileListAccumulator, file) => {
               // We only look at the first path component returned because
               // if it's a directory within the torrent, then we'll remove
               // the entire directory.
@@ -98,7 +98,7 @@ class ClientGatewayService extends BaseService {
               return fileListAccumulator;
             }, []);
 
-            return accumulator.concat(filesToDelete);
+            return accumulator.concat(torrentFilesToDelete);
           }, []);
 
           filesToDelete.forEach(file => {

@@ -9,7 +9,7 @@ export default class ModalTabs extends React.Component {
   }
 
   render() {
-    const tabs = Object.keys(this.props.tabs).map((tabId, index) => {
+    const tabs = Object.keys(this.props.tabs).map(tabId => {
       const currentTab = this.props.tabs[tabId];
 
       currentTab.id = tabId;
@@ -19,7 +19,7 @@ export default class ModalTabs extends React.Component {
       });
 
       return (
-        <li className={classes} key={index} onClick={this.handleTabClick.bind(this, currentTab)}>
+        <li className={classes} key={tabId} onClick={this.handleTabClick.bind(this, currentTab)}>
           {currentTab.label}
         </li>
       );

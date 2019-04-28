@@ -124,7 +124,7 @@ const TorrentActions = {
             },
           });
         },
-        error => {
+        () => {
           AppDispatcher.dispatchServerAction({
             type: ActionTypes.CLIENT_FETCH_TORRENT_DETAILS_ERROR,
             data: {

@@ -74,7 +74,21 @@ const defaultRule = {
 };
 
 class DownloadRulesTab extends React.Component {
-  formRef;
+  state = {
+    errors: {},
+    feeds: FeedMonitorStore.getFeeds(),
+    rules: FeedMonitorStore.getRules(),
+    currentlyEditingRule: null,
+    doesPatternMatchTest: false,
+  };
+
+  componentDidMount() {
+    FeedMonitorStore.listen(EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS, this.handleFeedMonitorsFetchSuccess);
+  }
+
+  componentWillUnmount() {
+    FeedMonitorStore.unlisten(EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS, this.handleFeedMonitorsFetchSuccess);
+  }
 
   validatedFields = {
     destination: {
@@ -105,21 +119,7 @@ class DownloadRulesTab extends React.Component {
     },
   };
 
-  state = {
-    errors: {},
-    feeds: FeedMonitorStore.getFeeds(),
-    rules: FeedMonitorStore.getRules(),
-    currentlyEditingRule: null,
-    doesPatternMatchTest: false,
-  };
-
-  componentDidMount() {
-    FeedMonitorStore.listen(EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS, this.handleFeedMonitorsFetchSuccess);
-  }
-
-  componentWillUnmount() {
-    FeedMonitorStore.unlisten(EventTypes.SETTINGS_FEED_MONITORS_FETCH_SUCCESS, this.handleFeedMonitorsFetchSuccess);
-  }
+  formRef = null;
 
   checkFieldValidity = _.throttle((fieldName, fieldValue) => {
     const {errors} = this.state;
@@ -294,8 +294,8 @@ class DownloadRulesTab extends React.Component {
     }
 
     if (rule.tags && rule.tags.length > 0) {
-      const tagNodes = rule.tags.map((tag, index) => (
-        <span className="tag" key={index}>
+      const tagNodes = rule.tags.map(tag => (
+        <span className="tag" key={tag}>
           {tag}
         </span>
       ));
@@ -438,8 +438,8 @@ class DownloadRulesTab extends React.Component {
   }
 
   render() {
-    const errors = Object.keys(this.state.errors).map((errorID, index) => (
-      <FormRow key={index}>
+    const errors = Object.keys(this.state.errors).map(errorID => (
+      <FormRow key={errorID}>
         <FormError>{this.state.errors[errorID]}</FormError>
       </FormRow>
     ));
@@ -449,7 +449,9 @@ class DownloadRulesTab extends React.Component {
         className="inverse"
         onChange={this.handleFormChange}
         onSubmit={this.handleFormSubmit}
-        ref={ref => (this.formRef = ref)}>
+        ref={ref => {
+          this.formRef = ref;
+        }}>
         <ModalFormSectionHeader>
           <FormattedMessage id="feeds.existing.rules" defaultMessage="Existing Rules" />
         </ModalFormSectionHeader>

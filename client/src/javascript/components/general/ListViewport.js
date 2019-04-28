@@ -63,10 +63,22 @@ class ListViewport extends React.Component {
     this.setViewportHeight();
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const scrollDelta = Math.abs(this.state.scrollTop - nextState.scrollTop);
+
+    if (this.isScrolling && scrollDelta > 20) {
+      return false;
+    }
+
+    return true;
+  }
+
   componentDidUpdate() {
     const {nodeRefs, state} = this;
 
     if (state.itemHeight == null && nodeRefs.topSpacer != null) {
+      // TODO: Decouple this
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         itemHeight: nodeRefs.topSpacer.nextSibling.offsetHeight,
       });
@@ -77,6 +89,8 @@ class ListViewport extends React.Component {
       const paddingBottom = Number(listStyle['padding-bottom'].replace('px', ''));
       const paddingTop = Number(listStyle['padding-top'].replace('px', ''));
 
+      // TODO: Decouple this
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         listVerticalPadding: paddingBottom + paddingTop,
       });
@@ -85,16 +99,6 @@ class ListViewport extends React.Component {
 
   componentWillUnmount() {
     global.removeEventListener('resize', this.setViewportHeight);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const scrollDelta = Math.abs(this.state.scrollTop - nextState.scrollTop);
-
-    if (this.isScrolling && scrollDelta > 20) {
-      return false;
-    }
-
-    return true;
   }
 
   getViewportLimits(scrollDelta) {
@@ -112,7 +116,8 @@ class ListViewport extends React.Component {
     const offsetBottom = scrollDelta > 0 ? itemScrollOffset * 2 : itemScrollOffset / 2;
     const offsetTop = scrollDelta < 0 ? itemScrollOffset * 2 : itemScrollOffset / 2;
 
-    let {itemHeight, listVerticalPadding, scrollTop, viewportHeight} = this.state;
+    const {itemHeight, listVerticalPadding, scrollTop} = this.state;
+    let {viewportHeight} = this.state;
 
     if (listVerticalPadding) {
       viewportHeight -= listVerticalPadding;
@@ -228,10 +233,16 @@ class ListViewport extends React.Component {
     }
 
     const listContent = (
-      <ul className={props.listClass} ref={ref => (nodeRefs.list = ref)}>
+      <ul
+        className={props.listClass}
+        ref={ref => {
+          nodeRefs.list = ref;
+        }}>
         <li
           className={props.topSpacerClass}
-          ref={ref => (nodeRefs.topSpacer = ref)}
+          ref={ref => {
+            nodeRefs.topSpacer = ref;
+          }}
           style={{height: `${listPadding.top}px`}}
         />
         {list}
@@ -251,7 +262,9 @@ class ListViewport extends React.Component {
         getVerticalThumb={props.getVerticalThumb}
         onScrollStart={this.handleScrollStart}
         onScrollStop={this.handleScrollStop}
-        ref={ref => (this.nodeRefs.outerScrollbar = ref)}
+        ref={ref => {
+          this.nodeRefs.outerScrollbar = ref;
+        }}
         scrollHandler={this.handleScroll}
         style={scrollbarStyle}>
         {props.children}

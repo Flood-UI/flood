@@ -13,25 +13,40 @@ class AuthStoreClass extends BaseStore {
     this.currentUser = {};
   }
 
-  authenticate(credentials) {
+  static authenticate(credentials) {
     AuthActions.authenticate(credentials);
+  }
+
+  static createUser(credentials) {
+    AuthActions.createUser(credentials);
+  }
+
+  static deleteUser(username) {
+    AuthActions.deleteUser(username);
+  }
+
+  static fetchUserList() {
+    AuthActions.fetchUsers();
+  }
+
+  static register(credentials) {
+    AuthActions.register({
+      username: credentials.username,
+      password: credentials.password,
+      host: credentials.host,
+      port: credentials.port,
+      socketPath: credentials.socketPath,
+      isAdmin: true,
+    });
+  }
+
+  static verify() {
+    AuthActions.verify();
   }
 
   addOptimisticUser(credentials) {
     this.optimisticUsers.push({username: credentials.username});
     this.emit(EventTypes.AUTH_LIST_USERS_SUCCESS);
-  }
-
-  createUser(credentials) {
-    AuthActions.createUser(credentials);
-  }
-
-  deleteUser(username) {
-    AuthActions.deleteUser(username);
-  }
-
-  fetchUserList() {
-    AuthActions.fetchUsers();
   }
 
   getCurrentUsername() {
@@ -67,7 +82,7 @@ class AuthStoreClass extends BaseStore {
     this.emit(EventTypes.AUTH_DELETE_USER_SUCCESS, data.username);
   }
 
-  handleListUsersError(error) {
+  handleListUsersError() {
     this.emit(EventTypes.AUTH_LIST_USERS_ERROR);
   }
 
@@ -101,33 +116,18 @@ class AuthStoreClass extends BaseStore {
     this.emit(EventTypes.AUTH_REGISTER_ERROR, error);
   }
 
-  register(credentials) {
-    AuthActions.register({
-      username: credentials.username,
-      password: credentials.password,
-      host: credentials.host,
-      port: credentials.port,
-      socketPath: credentials.socketPath,
-      isAdmin: true,
-    });
-  }
-
-  verify() {
-    AuthActions.verify();
-  }
-
   handleAuthVerificationSuccess(data) {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
-    AuthStore.emit(EventTypes.AUTH_VERIFY_SUCCESS, data);
+    this.emit(EventTypes.AUTH_VERIFY_SUCCESS, data);
   }
 
   handleAuthVerificationError(action) {
-    AuthStore.emit(EventTypes.AUTH_VERIFY_ERROR, action.error);
+    this.emit(EventTypes.AUTH_VERIFY_ERROR, action.error);
   }
 }
 
-let AuthStore = new AuthStoreClass();
+const AuthStore = new AuthStoreClass();
 
 AuthStore.dispatcherID = AppDispatcher.register(payload => {
   const {action} = payload;

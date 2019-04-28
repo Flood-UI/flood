@@ -10,8 +10,8 @@ const DEFAULT_QUERY_LIMIT = 20;
 const INITIAL_COUNT_VALUE = {read: 0, total: 0, unread: 0};
 
 class NotificationService extends BaseService {
-  constructor() {
-    super(...arguments);
+  constructor(...serviceConfig) {
+    super(...serviceConfig);
 
     this.count = Object.assign({}, INITIAL_COUNT_VALUE);
     this.ready = false;

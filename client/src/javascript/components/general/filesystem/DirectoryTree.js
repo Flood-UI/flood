@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import DirectoryFileList from './DirectoryFileList';
+// TODO: Fix this circular dependency
+// eslint-disable-next-line import/no-cycle
 import DirectoryTreeNode from './DirectoryTreeNode';
 
 const METHODS_TO_BIND = ['getDirectoryTreeDomNodes'];
@@ -33,7 +35,8 @@ class DirectoryTree extends React.Component {
   }
 
   getDirectoryTreeDomNodes(tree = {}, depth = 0) {
-    let {directories = {}, files = []} = tree;
+    const {files = []} = tree;
+    let {directories = {}} = tree;
     const {hash} = this.props;
     let fileList = null;
     depth++;

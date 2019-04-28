@@ -32,8 +32,8 @@ const processData = (opts, callback, data, error) => {
 };
 
 class HistoryService extends BaseService {
-  constructor() {
-    super(...arguments);
+  constructor(...serviceConfig) {
+    super(...serviceConfig);
 
     this.errorCount = 0;
     this.lastSnapshots = {};

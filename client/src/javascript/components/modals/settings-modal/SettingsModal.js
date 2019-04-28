@@ -73,13 +73,15 @@ class SettingsModal extends React.Component {
     ];
   }
 
-  handleCustomsSettingChange(data) {
-    this.setState({
-      changedClientSettings: this.mergeObjects(this.state.changedClientSettings, {
-        [data.id]: {...data, overrideLocalSetting: true},
-      }),
+  handleCustomsSettingChange = data => {
+    this.setState(state => {
+      return {
+        changedClientSettings: this.mergeObjects(state.changedClientSettings, {
+          [data.id]: {...data, overrideLocalSetting: true},
+        }),
+      };
     });
-  }
+  };
 
   handleSaveSettingsClick() {
     const floodSettings = Object.keys(this.state.changedFloodSettings).map(settingsKey => ({
@@ -114,10 +116,6 @@ class SettingsModal extends React.Component {
     this.setState({isSavingSettings: false});
   }
 
-  handleSettingsFetchRequestError(error) {
-    console.log(error);
-  }
-
   handleSettingsStoreChange() {
     this.setState({
       clientSettings: SettingsStore.getClientSettings(),
@@ -126,17 +124,21 @@ class SettingsModal extends React.Component {
   }
 
   handleFloodSettingsChange(changedSettings) {
-    const floodSettings = this.mergeObjects(this.state.floodSettings, changedSettings);
-    const changedFloodSettings = this.mergeObjects(this.state.changedFloodSettings, changedSettings);
+    this.setState(state => {
+      const floodSettings = this.mergeObjects(state.floodSettings, changedSettings);
+      const changedFloodSettings = this.mergeObjects(state.changedFloodSettings, changedSettings);
 
-    this.setState({floodSettings, changedFloodSettings});
+      return {floodSettings, changedFloodSettings};
+    });
   }
 
   handleClientSettingsChange(changedSettings) {
-    const clientSettings = this.mergeObjects(this.state.clientSettings, changedSettings);
-    const changedClientSettings = this.mergeObjects(this.state.changedClientSettings, changedSettings);
+    this.setState(state => {
+      const clientSettings = this.mergeObjects(state.clientSettings, changedSettings);
+      const changedClientSettings = this.mergeObjects(state.changedClientSettings, changedSettings);
 
-    this.setState({clientSettings, changedClientSettings});
+      return {clientSettings, changedClientSettings};
+    });
   }
 
   handleModalRefSet(id, ref) {
@@ -147,7 +149,7 @@ class SettingsModal extends React.Component {
 
   mergeObjects(objA, objB) {
     Object.keys(objB).forEach(key => {
-      if (!objB.hasOwnProperty(key) || objB[key] == null) {
+      if (!Object.prototype.hasOwnProperty.call(objB, key) || objB[key] == null) {
         return;
       }
 

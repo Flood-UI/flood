@@ -117,7 +117,9 @@ class UITab extends SettingsTab {
           className="tooltip tooltip--is-error"
           content={tooltipContent}
           offset={-5}
-          ref={ref => (this.tooltipRef = ref)}
+          ref={ref => {
+            this.tooltipRef = ref;
+          }}
           scrollContainer={this.props.scrollContainer}
           width={200}
           wrapperClassName="sortable-list__content sortable-list__content--secondary tooltip__wrapper"
@@ -152,7 +154,7 @@ class UITab extends SettingsTab {
       let nextUnlockedIndex = lockedIDs.length;
 
       torrentDetailItems = torrentDetailItems
-        .reduce((accumulator, detail, index) => {
+        .reduce((accumulator, detail) => {
           const lockedIDIndex = lockedIDs.indexOf(detail.id);
 
           if (lockedIDIndex > -1) {

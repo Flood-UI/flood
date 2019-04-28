@@ -39,7 +39,9 @@ class SettingsButton extends React.Component {
       <Tooltip
         content={label}
         onClick={this.handleSettingsButtonClick}
-        ref={ref => (this.tooltipRef = ref)}
+        ref={ref => {
+          this.tooltipRef = ref;
+        }}
         position="bottom"
         wrapperClassName="sidebar__action sidebar__icon-button
           sidebar__icon-button--interactive tooltip__wrapper">

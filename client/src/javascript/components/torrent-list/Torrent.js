@@ -78,12 +78,6 @@ class Torrent extends React.Component {
     });
   }
 
-  componentWillUpdate(nextProps) {
-    if (nextProps.selected !== this.props.selected) {
-      this.setState({isSelected: nextProps.selected});
-    }
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     if (
       nextProps.selected !== this.props.selected ||
@@ -122,9 +116,17 @@ class Torrent extends React.Component {
     return shouldUpdate;
   }
 
+  componentWillUpdate(nextProps) {
+    if (nextProps.selected !== this.props.selected) {
+      // TODO: Fix this, don't duplicate selected state from props
+      // eslint-disable-next-line react/no-will-update-set-state
+      this.setState({isSelected: nextProps.selected});
+    }
+  }
+
   getTags(tags) {
-    return tags.map((tag, index) => (
-      <li className="torrent__tag" key={index}>
+    return tags.map(tag => (
+      <li className="torrent__tag" key={tag}>
         {tag}
       </li>
     ));

@@ -20,13 +20,13 @@ const methodCall = (connectionMethod, methodName, parameters) =>
 
     const headerItems = [`CONTENT_LENGTH${NULL_CHAR}${xmlLength}${NULL_CHAR}`, `SCGI${NULL_CHAR}1${NULL_CHAR}`];
 
-    const headerLength = headerItems.reduce((accumulator, headerItem) => (accumulator += headerItem.length), 0);
+    const headerLength = headerItems.reduce((accumulator, headerItem) => accumulator + headerItem.length, 0);
 
     stream.write(`${headerLength}:${headerItems.join('')},${xml}`);
 
     deserializer.deserializeMethodResponse(stream, (error, response) => {
       if (error) return reject(error);
-      resolve(response);
+      return resolve(response);
     });
   });
 

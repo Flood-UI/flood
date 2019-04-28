@@ -1,8 +1,8 @@
 const EventEmitter = require('events');
 
 class BaseService extends EventEmitter {
-  constructor(user, services, ...args) {
-    super(...args);
+  constructor(user, services, ...eventEmitterConfig) {
+    super(...eventEmitterConfig);
     if (!user || !user._id) throw new Error('Missing user ID');
     this.user = user;
     this.services = services;

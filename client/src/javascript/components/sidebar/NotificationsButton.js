@@ -325,30 +325,38 @@ class NotificationsButton extends React.Component {
 
   handleNewerNotificationsClick() {
     if (this.state.paginationStart - NOTIFICATIONS_PER_PAGE >= 0) {
-      this.setState({
-        isLoading: true,
-        paginationStart: this.state.paginationStart - NOTIFICATIONS_PER_PAGE,
-      });
+      this.setState(state => {
+        const paginationStart = state.paginationStart - NOTIFICATIONS_PER_PAGE;
 
-      NotificationStore.fetchNotifications({
-        id: 'notification-tooltip',
-        limit: NOTIFICATIONS_PER_PAGE,
-        start: this.state.paginationStart - NOTIFICATIONS_PER_PAGE,
+        NotificationStore.fetchNotifications({
+          id: 'notification-tooltip',
+          limit: NOTIFICATIONS_PER_PAGE,
+          start: paginationStart,
+        });
+
+        return {
+          isLoading: true,
+          paginationStart,
+        };
       });
     }
   }
 
   handleOlderNotificationsClick() {
     if (this.state.count.total > this.state.paginationStart + NOTIFICATIONS_PER_PAGE) {
-      this.setState({
-        isLoading: true,
-        paginationStart: this.state.paginationStart + NOTIFICATIONS_PER_PAGE,
-      });
+      this.setState(state => {
+        const paginationStart = state.paginationStart + NOTIFICATIONS_PER_PAGE;
 
-      NotificationStore.fetchNotifications({
-        id: 'notification-tooltip',
-        limit: NOTIFICATIONS_PER_PAGE,
-        start: this.state.paginationStart + NOTIFICATIONS_PER_PAGE,
+        NotificationStore.fetchNotifications({
+          id: 'notification-tooltip',
+          limit: NOTIFICATIONS_PER_PAGE,
+          start: paginationStart,
+        });
+
+        return {
+          isLoading: true,
+          paginationStart,
+        };
       });
     }
   }
@@ -371,7 +379,9 @@ class NotificationsButton extends React.Component {
         interactive={this.state.count.total !== 0}
         onClose={this.handleTooltipClose}
         onOpen={this.handleTooltipOpen}
-        ref={ref => (this.tooltipRef = ref)}
+        ref={ref => {
+          this.tooltipRef = ref;
+        }}
         width={this.state.count.total === 0 ? null : 340}
         position="bottom"
         wrapperClassName="sidebar__action sidebar__icon-button

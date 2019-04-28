@@ -121,6 +121,7 @@ class Dropdown extends React.Component {
   }
 
   getDropdownMenu(items) {
+    // TODO: Rewrite this function, wtf was I thinking
     const arrayMethod = this.props.direction === 'up' ? 'unshift' : 'push';
     const content = [
       <div className="dropdown__header" key="dropdown-header">
@@ -128,6 +129,8 @@ class Dropdown extends React.Component {
       </div>,
     ];
     const dropdownLists = items.map((itemList, index) => (
+      // TODO: Find a better key
+      // eslint-disable-next-line react/no-array-index-key
       <div className="dropdown__list" key={index}>
         {this.getDropdownMenuItems(itemList)}
       </div>
@@ -155,6 +158,8 @@ class Dropdown extends React.Component {
       }
 
       return (
+        // TODO: Find a better key
+        // eslint-disable-next-line react/no-array-index-key
         <li className={classes} key={index} onClick={clickHandler}>
           {property.displayName}
         </li>

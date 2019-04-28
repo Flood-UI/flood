@@ -12,25 +12,6 @@ let activityStreamEventSource = null;
 let lastActivityStreamOptions;
 let visibilityChangeTimeout = null;
 
-const handleProlongedInactivity = () => {
-  FloodActions.closeActivityStream();
-};
-
-const handleWindowVisibilityChange = () => {
-  if (global.document.hidden) {
-    // After 30 seconds of inactivity, we stop the event stream.
-    visibilityChangeTimeout = global.setTimeout(handleProlongedInactivity, 1000 * 30);
-  } else {
-    global.clearTimeout(visibilityChangeTimeout);
-
-    if (activityStreamEventSource == null) {
-      FloodActions.startActivityStream(lastActivityStreamOptions);
-    }
-  }
-};
-
-global.document.addEventListener('visibilitychange', handleWindowVisibilityChange);
-
 const FloodActions = {
   clearNotifications: options =>
     axios
@@ -309,5 +290,24 @@ const FloodActions = {
     }
   },
 };
+
+const handleProlongedInactivity = () => {
+  FloodActions.closeActivityStream();
+};
+
+const handleWindowVisibilityChange = () => {
+  if (global.document.hidden) {
+    // After 30 seconds of inactivity, we stop the event stream.
+    visibilityChangeTimeout = global.setTimeout(handleProlongedInactivity, 1000 * 30);
+  } else {
+    global.clearTimeout(visibilityChangeTimeout);
+
+    if (activityStreamEventSource == null) {
+      FloodActions.startActivityStream(lastActivityStreamOptions);
+    }
+  }
+};
+
+global.document.addEventListener('visibilitychange', handleWindowVisibilityChange);
 
 export default FloodActions;

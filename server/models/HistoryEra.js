@@ -7,11 +7,24 @@ const MAX_NEXT_ERA_UPDATE_INTERVAL = 1000 * 60 * 60 * 12; // 12 hours
 const CUMULATIVE_DATA_BUFFER_DIFF = 500; // 500 miliseconds
 const REQUIRED_FIELDS = ['interval', 'maxTime', 'name'];
 
+const hasRequiredFields = opts => {
+  let requirementsMet = true;
+
+  REQUIRED_FIELDS.forEach(field => {
+    if (opts[field] == null) {
+      console.error(`HistoryEra requires ${field}`);
+      requirementsMet = false;
+    }
+  });
+
+  return requirementsMet;
+};
+
 class HistoryEra {
   constructor(user, opts) {
     opts = opts || {};
 
-    if (!this.hasRequiredFields(opts)) {
+    if (!hasRequiredFields(opts)) {
       return;
     }
 
@@ -26,7 +39,7 @@ class HistoryEra {
     this.removeOutdatedData(this.db);
 
     let cleanupInterval = this.opts.maxTime;
-    let nextEraUpdateInterval = this.opts.nextEraUpdateInterval;
+    let {nextEraUpdateInterval} = this.opts;
 
     if (cleanupInterval === 0 || cleanupInterval > config.dbCleanInterval) {
       cleanupInterval = config.dbCleanInterval;
@@ -86,7 +99,11 @@ class HistoryEra {
             console.error('Warning: null values set in database!');
             console.error(`DB: ${this.opts.name}`);
             console.error(
-              `numUpdates: ${numUpdates}\ncurrentDownAvg: ${currentDownAvg}\ncurrentUpAvg: ${currentUpAvg}\ndownAvg: ${downAvg}\nupAvg: ${upAvg}`,
+              `numUpdates: ${numUpdates}
+currentDownAvg: ${currentDownAvg}
+currentUpAvg: ${currentUpAvg}
+downAvg: ${downAvg}
+upAvg: ${upAvg}`,
             );
             console.error('\n\n');
           }
@@ -128,19 +145,6 @@ class HistoryEra {
       });
   }
 
-  hasRequiredFields(opts) {
-    let requirementsMet = true;
-
-    REQUIRED_FIELDS.forEach(field => {
-      if (opts[field] == null) {
-        console.error(`HistoryEra requires ${field}`);
-        requirementsMet = false;
-      }
-    });
-
-    return requirementsMet;
-  }
-
   removeOutdatedData(db) {
     if (this.opts.maxTime > 0) {
       const minTimestamp = Date.now() - this.opts.maxTime;
@@ -174,12 +178,12 @@ class HistoryEra {
     this.autoCleanupInterval = null;
   }
 
-  stopNextEraUpdate(interval, db) {
+  stopNextEraUpdate() {
     clearInterval(this.nextEraUpdateInterval);
     this.nextEraUpdateInterval = null;
   }
 
-  updateNextEra(currentDB, nextDB) {
+  updateNextEra(currentDB) {
     const minTimestamp = Date.now() - this.opts.nextEraUpdateInterval;
     currentDB.find({ts: {$gte: minTimestamp}}, (err, docs) => {
       let downTotal = 0;

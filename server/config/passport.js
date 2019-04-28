@@ -1,4 +1,4 @@
-const jwtStrategy = require('passport-jwt').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
 
 const config = require('../../config');
 const Users = require('../models/Users');
@@ -19,7 +19,7 @@ module.exports = passport => {
   };
 
   passport.use(
-    new jwtStrategy(options, (jwtPayload, callback) => {
+    new JwtStrategy(options, (jwtPayload, callback) => {
       Users.lookupUser({username: jwtPayload.username}, (err, user) => {
         if (err) {
           return callback(err, false);

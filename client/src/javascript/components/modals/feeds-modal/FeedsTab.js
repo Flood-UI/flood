@@ -77,25 +77,6 @@ const defaultFeed = {
 };
 
 class FeedsTab extends React.Component {
-  formRef;
-
-  manualAddingFormRef;
-
-  validatedFields = {
-    url: {
-      isValid: Validator.isURLValid,
-      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyURL),
-    },
-    label: {
-      isValid: Validator.isNotEmpty,
-      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel),
-    },
-    interval: {
-      isValid: Validator.isPositiveInteger,
-      error: this.props.intl.formatMessage(MESSAGES.intervalNotPositive),
-    },
-  };
-
   state = {
     errors: {},
     intervalmultipliers: [
@@ -129,6 +110,25 @@ class FeedsTab extends React.Component {
     FeedMonitorStore.unlisten(EventTypes.SETTINGS_FEED_MONITOR_ITEMS_FETCH_SUCCESS, this.handleFeedItemsFetchSuccess);
   }
 
+  formRef;
+
+  manualAddingFormRef;
+
+  validatedFields = {
+    url: {
+      isValid: Validator.isURLValid,
+      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyURL),
+    },
+    label: {
+      isValid: Validator.isNotEmpty,
+      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel),
+    },
+    interval: {
+      isValid: Validator.isPositiveInteger,
+      error: this.props.intl.formatMessage(MESSAGES.intervalNotPositive),
+    },
+  };
+
   checkFieldValidity = _.throttle((fieldName, fieldValue) => {
     const {errors} = this.state;
 
@@ -147,8 +147,8 @@ class FeedsTab extends React.Component {
   }
 
   getIntervalSelectOptions() {
-    return this.state.intervalmultipliers.map((interval, index) => (
-      <SelectItem key={index} id={interval.value}>
+    return this.state.intervalmultipliers.map(interval => (
+      <SelectItem key={interval.value} id={interval.value}>
         {interval.displayName}
       </SelectItem>
     ));
@@ -183,6 +183,11 @@ class FeedsTab extends React.Component {
   }
 
   getModifyFeedForm(feed) {
+    const isDayInterval = feed.interval % 1440;
+    const minutesDivisor = feed.interval % 60 ? 1 : 60;
+    const defaultIntervalTextValue = feed.interval / isDayInterval ? minutesDivisor : 1440;
+    const defaultIntervalMultiplierId = isDayInterval ? minutesDivisor : 1440;
+
     return (
       <FormRowGroup>
         <FormRow>
@@ -199,14 +204,10 @@ class FeedsTab extends React.Component {
               defaultMessage: 'Interval',
             })}
             placeholder={this.props.intl.formatMessage(MESSAGES.interval)}
-            defaultValue={feed.interval / (feed.interval % 1440 ? (feed.interval % 60 ? 1 : 60) : 1440)}
+            defaultValue={defaultIntervalTextValue}
             width="one-eighth"
           />
-          <Select
-            labelOffset
-            defaultID={feed.interval % 1440 ? (feed.interval % 60 ? 1 : 60) : 1440}
-            id="intervalMultiplier"
-            width="one-eighth">
+          <Select labelOffset defaultID={defaultIntervalMultiplierId} id="intervalMultiplier" width="one-eighth">
             {this.getIntervalSelectOptions()}
           </Select>
         </FormRow>
@@ -271,7 +272,7 @@ class FeedsTab extends React.Component {
               className="interactive-list__detail-list__item
               interactive-list__detail-list__item--overflow
               interactive-list__detail interactive-list__detail--tertiary">
-              <a href={feed.url} target="_blank">
+              <a href={feed.url} rel="noopener noreferrer" target="_blank">
                 {feed.url}
               </a>
             </li>
@@ -297,7 +298,9 @@ class FeedsTab extends React.Component {
         className="inverse"
         onChange={this.handleFormChange}
         onSubmit={this.handleFormSubmit}
-        ref={ref => (this.formRef = ref)}>
+        ref={ref => {
+          this.formRef = ref;
+        }}>
         <ModalFormSectionHeader>
           <FormattedMessage id="feeds.existing.feeds" defaultMessage="Existing Feeds" />
         </ModalFormSectionHeader>
@@ -341,7 +344,9 @@ class FeedsTab extends React.Component {
         className="inverse"
         onChange={this.handleBrowseFeedChange}
         onSubmit={this.handleBrowseFeedSubmit}
-        ref={ref => (this.manualAddingFormRef = ref)}>
+        ref={ref => {
+          this.manualAddingFormRef = ref;
+        }}>
         <ModalFormSectionHeader>
           <FormattedMessage id="feeds.browse.feeds" defaultMessage="Browse feeds" />
         </ModalFormSectionHeader>
@@ -379,9 +384,7 @@ class FeedsTab extends React.Component {
     }
 
     const itemsList = this.state.items.map((item, index) => (
-      <li
-        className="interactive-list__item interactive-list__item--stacked-content feed-list__feed"
-        key={`item${index}`}>
+      <li className="interactive-list__item interactive-list__item--stacked-content feed-list__feed" key={item.title}>
         <div className="interactive-list__label feed-list__feed-label">{item.title}</div>
         <Checkbox id={index} />
       </li>
@@ -508,8 +511,8 @@ class FeedsTab extends React.Component {
   };
 
   render() {
-    const errors = Object.keys(this.state.errors).map((errorID, index) => (
-      <FormRow key={index}>
+    const errors = Object.keys(this.state.errors).map(errorID => (
+      <FormRow key={errorID}>
         <FormError>{this.state.errors[errorID]}</FormError>
       </FormRow>
     ));
