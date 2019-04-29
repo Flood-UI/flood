@@ -13,23 +13,23 @@ class AuthStoreClass extends BaseStore {
     this.currentUser = {};
   }
 
-  static authenticate(credentials) {
+  authenticate(credentials) {
     AuthActions.authenticate(credentials);
   }
 
-  static createUser(credentials) {
+  createUser(credentials) {
     AuthActions.createUser(credentials);
   }
 
-  static deleteUser(username) {
+  deleteUser(username) {
     AuthActions.deleteUser(username);
   }
 
-  static fetchUserList() {
+  fetchUserList() {
     AuthActions.fetchUsers();
   }
 
-  static register(credentials) {
+  register(credentials) {
     AuthActions.register({
       username: credentials.username,
       password: credentials.password,
@@ -40,7 +40,7 @@ class AuthStoreClass extends BaseStore {
     });
   }
 
-  static verify() {
+  verify() {
     AuthActions.verify();
   }
 

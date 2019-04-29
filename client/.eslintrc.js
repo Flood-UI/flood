@@ -12,7 +12,6 @@ module.exports = {
   },
   plugins: ['import'],
   rules: {
-    'class-methods-use-this': 0,
     // TODO: Enable a11y features
     'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/label-has-associated-control': 0,

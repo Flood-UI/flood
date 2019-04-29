@@ -59,10 +59,6 @@ const defaultPropWidths = {
 };
 
 class TorrentListContainer extends React.Component {
-  static handleClearFiltersClick() {
-    TorrentFilterStore.clearAllFilters();
-  }
-
   constructor(props) {
     super();
 
@@ -140,6 +136,10 @@ class TorrentListContainer extends React.Component {
     TorrentStore.unlisten(EventTypes.CLIENT_TORRENTS_REQUEST_ERROR, this.onReceiveTorrentsError);
     TorrentFilterStore.unlisten(EventTypes.UI_TORRENTS_FILTER_CHANGE, this.onTorrentFilterChange);
     global.removeEventListener('resize', this.updateTorrentListViewWidth);
+  }
+
+  handleClearFiltersClick() {
+    TorrentFilterStore.clearAllFilters();
   }
 
   getContextMenuItems(torrent) {
@@ -388,7 +388,7 @@ class TorrentListContainer extends React.Component {
     if (TorrentFilterStore.isFilterActive()) {
       clearFilters = (
         <div className="torrents__alert__action">
-          <Button onClick={this.constructor.handleClearFiltersClick} priority="tertiary">
+          <Button onClick={this.handleClearFiltersClick} priority="tertiary">
             <FormattedMessage id="torrents.list.clear.filters" defaultMessage="Clear filters" />
           </Button>
         </div>

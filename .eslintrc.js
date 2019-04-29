@@ -4,6 +4,7 @@ module.exports = {
   plugins: ['import'],
   rules: {
     'arrow-parens': 0,
+    'class-methods-use-this': 0,
     'consistent-return': 0,
     'implicit-arrow-linebreak': 0,
     'import/no-extraneous-dependencies': 0,

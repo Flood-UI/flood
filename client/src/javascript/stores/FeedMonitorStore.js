@@ -12,39 +12,39 @@ class FeedsStoreClass extends BaseStore {
     this.items = [];
   }
 
-  static addFeed(feed) {
+  addFeed(feed) {
     SettingsActions.addFeed(feed);
   }
 
-  static modifyFeed(id, feed) {
+  modifyFeed(id, feed) {
     SettingsActions.modifyFeed(id, feed);
   }
 
-  static addRule(feed) {
+  addRule(feed) {
     SettingsActions.addRule(feed);
   }
 
-  static fetchFeedMonitors(query) {
+  fetchFeedMonitors(query) {
     SettingsActions.fetchFeedMonitors(query);
   }
 
-  static fetchFeeds(query) {
+  fetchFeeds(query) {
     SettingsActions.fetchFeeds(query);
   }
 
-  static fetchItems(query) {
+  fetchItems(query) {
     SettingsActions.fetchItems(query);
   }
 
-  static fetchRules(query) {
+  fetchRules(query) {
     SettingsActions.fetchRules(query);
   }
 
-  static removeFeed(id) {
+  removeFeed(id) {
     SettingsActions.removeFeedMonitor(id);
   }
 
-  static removeRule(id) {
+  removeRule(id) {
     SettingsActions.removeFeedMonitor(id);
   }
 
@@ -65,7 +65,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleFeedAddSuccess() {
-    this.constructor.fetchFeedMonitors();
+    this.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_FEED_ADD_SUCCESS);
   }
 
@@ -74,7 +74,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleFeedModifySuccess() {
-    this.constructor.fetchFeedMonitors();
+    this.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_FEED_MODIFY_SUCCESS);
   }
 
@@ -83,7 +83,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleRuleAddSuccess() {
-    this.constructor.fetchFeedMonitors();
+    this.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_RULE_ADD_SUCCESS);
   }
 
@@ -102,7 +102,7 @@ class FeedsStoreClass extends BaseStore {
   }
 
   handleFeedMonitorRemoveSuccess(id) {
-    this.constructor.fetchFeedMonitors();
+    this.fetchFeedMonitors();
     this.emit(EventTypes.SETTINGS_FEED_MONITOR_REMOVE_SUCCESS, id);
   }
 

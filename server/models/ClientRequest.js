@@ -68,7 +68,7 @@ class ClientRequest {
   }
 
   // TODO: Move this to util, doesn't belong here
-  static createDirectory = options => {
+  createDirectory(options) {
     if (options.path) {
       mkdirp(options.path, error => {
         if (error) {
@@ -76,7 +76,7 @@ class ClientRequest {
         }
       });
     }
-  };
+  }
 
   clearRequestQueue() {
     this.requests = [];

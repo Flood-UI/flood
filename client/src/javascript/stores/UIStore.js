@@ -20,7 +20,7 @@ class UIStoreClass extends BaseStore {
     this.createStyleElement();
   }
 
-  static fetchDirectoryList = _.debounce(
+  fetchDirectoryList = _.debounce(
     options => {
       FloodActions.fetchDirectoryList(options);
     },

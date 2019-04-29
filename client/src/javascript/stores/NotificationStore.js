@@ -13,7 +13,7 @@ class NotificationStoreClass extends BaseStore {
     this.ongoingPolls = {};
   }
 
-  static fetchNotifications(options = {}) {
+  fetchNotifications(options = {}) {
     FloodActions.fetchNotifications(options);
   }
 
@@ -32,7 +32,7 @@ class NotificationStoreClass extends BaseStore {
   }
 
   handleNotificationsClearSuccess(options) {
-    this.constructor.fetchNotifications({
+    this.fetchNotifications({
       ...options,
       start: 0,
     });
