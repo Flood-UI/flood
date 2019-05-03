@@ -215,6 +215,10 @@ module.exports = {
       }),
     ],
   },
+  performance: {
+    // TODO: Add code-splitting and re-enable this when the bundle is smaller
+    hints: false,
+  },
   plugins: [
     // Makes some environment variables available in index.html.
     // The base URI is available as %BASE_URI% in index.html, e.g.:
