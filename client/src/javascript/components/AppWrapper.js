@@ -93,7 +93,7 @@ class AuthEnforcer extends React.Component {
     }
   }
 
-  handleVerifyError(error) {
+  handleVerifyError() {
     this.setState({authStatusDetermined: true, isAuthenticated: false, isInitialUser: false});
     browserHistory.replace('login');
   }
