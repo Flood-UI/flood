@@ -164,7 +164,7 @@ class AuthEnforcer extends React.Component {
     }
 
     if (this.state.isAuthenticated && !this.state.isClientConnected) {
-      const isInitialUser = this.state.isInitialUser;
+      const {isInitialUser} = this.state;
       return (
         <div className="application__loading-overlay">
           <div className="application__entry-barrier">

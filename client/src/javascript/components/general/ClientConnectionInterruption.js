@@ -102,7 +102,7 @@ export default class ClientConnectionInterruption extends React.Component {
 
   render() {
     const isAdmin = AuthStore.isAdmin();
-    const isInitialUser = this.props.isInitialUser;
+    const {isInitialUser} = this.props;
     const {isConnectionVerified, isTestingConnection} = this.state;
 
     if (!isAdmin && !isInitialUser) {
