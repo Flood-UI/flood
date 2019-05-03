@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import * as i18n from './i18n/languages';
+import connectStores from './util/connectStores';
 import AppWrapper from './components/AppWrapper';
 import EventTypes from './constants/EventTypes';
 import FloodActions from './actions/FloodActions';
@@ -25,40 +26,14 @@ const appRoutes = (
     </Route>
   </Router>
 );
-const METHODS_TO_BIND = ['handleSettingsChange'];
 
 class FloodApp extends React.Component {
-  constructor() {
-    super();
-
-    this.state = {
-      locale: SettingsStore.getFloodSettings('language'),
-    };
-
-    METHODS_TO_BIND.forEach(method => {
-      this[method] = this[method].bind(this);
-    });
-
+  componentDidMount() {
     FloodActions.startActivityStream();
   }
 
-  componentDidMount() {
-    SettingsStore.listen(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
-  }
-
-  componentWillUnmount() {
-    SettingsStore.unlisten(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
-  }
-
-  handleSettingsChange() {
-    const nextLocale = SettingsStore.getFloodSettings('language');
-    if (nextLocale !== this.state.language) {
-      this.setState({locale: nextLocale});
-    }
-  }
-
   render() {
-    const {locale} = this.state;
+    const {locale} = this.props;
 
     return (
       // eslint-disable-next-line import/namespace
@@ -69,4 +44,14 @@ class FloodApp extends React.Component {
   }
 }
 
-ReactDOM.render(<FloodApp />, document.getElementById('app'));
+const ConnectedFloodApp = connectStores(FloodApp, () => {
+  return {
+    locale: {
+      store: SettingsStore,
+      event: EventTypes.SETTINGS_CHANGE,
+      getValue: store => store.getFloodSettings('language'),
+    },
+  };
+});
+
+ReactDOM.render(<ConnectedFloodApp />, document.getElementById('app'));
