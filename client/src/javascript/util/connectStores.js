@@ -34,30 +34,31 @@ import React from 'react';
 //   };
 // });
 
-const connectStores = (Component, getPropDescriptors) => {
+const connectStores = (Component, getEventListenerDescriptors) => {
   class ConnectedComponent extends React.Component {
     constructor(props) {
       super(props);
-      const propDescriptors = getPropDescriptors(props);
-      const initialState = {};
+      const eventListenerDescriptors = getEventListenerDescriptors(props);
+      let initialState = {};
 
-      Object.keys(propDescriptors).forEach(propKey => {
-        const {store, getValue} = propDescriptors[propKey];
-        initialState[propKey] = getValue(store, props);
+      eventListenerDescriptors.forEach(eventListenerDescriptor => {
+        const {store, getValue} = eventListenerDescriptor;
+        initialState = {
+          ...initialState,
+          ...getValue(store, props),
+        };
       });
 
       this.state = initialState;
     }
 
     componentDidMount() {
-      const propDescriptors = getPropDescriptors(this.props);
+      const eventListenerDescriptors = getEventListenerDescriptors(this.props);
 
-      Object.keys(propDescriptors).forEach(propKey => {
-        const {store, event, getValue} = propDescriptors[propKey];
+      eventListenerDescriptors.forEach(eventListenerDescriptor => {
+        const {store, event, getValue} = eventListenerDescriptor;
         const eventHandler = () => {
-          this.setState((state, props) => {
-            return {[propKey]: getValue(store, props, state)};
-          });
+          this.setState((state, props) => getValue(store, props, state));
         };
 
         store.listen(event, eventHandler);

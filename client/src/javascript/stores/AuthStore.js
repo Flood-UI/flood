@@ -1,6 +1,9 @@
 import ActionTypes from '../constants/ActionTypes';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import AuthActions from '../actions/AuthActions';
+import ClientActions from '../actions/ClientActions';
+import FloodActions from '../actions/FloodActions';
+import SettingsActions from '../actions/SettingsActions';
 import BaseStore from './BaseStore';
 import EventTypes from '../constants/EventTypes';
 
@@ -99,6 +102,9 @@ class AuthStoreClass extends BaseStore {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
     this.token = data.token;
+    ClientActions.fetchSettings();
+    SettingsActions.fetchSettings();
+    FloodActions.restartActivityStream();
   }
 
   handleLoginError(error) {
@@ -110,6 +116,7 @@ class AuthStoreClass extends BaseStore {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
     this.emit(EventTypes.AUTH_REGISTER_SUCCESS, data);
+    FloodActions.restartActivityStream();
   }
 
   handleRegisterError(error) {
@@ -120,6 +127,8 @@ class AuthStoreClass extends BaseStore {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
     this.emit(EventTypes.AUTH_VERIFY_SUCCESS, data);
+    ClientActions.fetchSettings();
+    SettingsActions.fetchSettings();
   }
 
   handleAuthVerificationError(action) {

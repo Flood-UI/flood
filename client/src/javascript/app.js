@@ -45,13 +45,17 @@ class FloodApp extends React.Component {
 }
 
 const ConnectedFloodApp = connectStores(FloodApp, () => {
-  return {
-    locale: {
+  return [
+    {
       store: SettingsStore,
       event: EventTypes.SETTINGS_CHANGE,
-      getValue: store => store.getFloodSettings('language'),
+      getValue: store => {
+        return {
+          locale: store.getFloodSettings('language'),
+        };
+      },
     },
-  };
+  ];
 });
 
 ReactDOM.render(<ConnectedFloodApp />, document.getElementById('app'));
