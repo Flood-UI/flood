@@ -1,15 +1,15 @@
 import ActionTypes from '../constants/ActionTypes';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import AuthActions from '../actions/AuthActions';
-import ClientActions from '../actions/ClientActions';
 import FloodActions from '../actions/FloodActions';
-import SettingsActions from '../actions/SettingsActions';
 import BaseStore from './BaseStore';
 import EventTypes from '../constants/EventTypes';
 
 class AuthStoreClass extends BaseStore {
   constructor() {
     super();
+    this.isAuthenticationStatusDetermined = false;
+    this.isAuthenticated = false;
     this.token = null;
     this.users = [];
     this.optimisticUsers = [];
@@ -43,10 +43,6 @@ class AuthStoreClass extends BaseStore {
     });
   }
 
-  verify() {
-    AuthActions.verify();
-  }
-
   addOptimisticUser(credentials) {
     this.optimisticUsers.push({username: credentials.username});
     this.emit(EventTypes.AUTH_LIST_USERS_SUCCESS);
@@ -58,6 +54,14 @@ class AuthStoreClass extends BaseStore {
 
   isAdmin() {
     return this.currentUser.isAdmin;
+  }
+
+  getIsAuthenticationStatusDetermined() {
+    return this.isAuthenticationStatusDetermined;
+  }
+
+  getIsAuthenticated() {
+    return this.isAuthenticated;
   }
 
   getToken() {
@@ -98,17 +102,19 @@ class AuthStoreClass extends BaseStore {
   }
 
   handleLoginSuccess(data) {
-    this.emit(EventTypes.AUTH_LOGIN_SUCCESS);
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
     this.token = data.token;
-    ClientActions.fetchSettings();
-    SettingsActions.fetchSettings();
-    FloodActions.restartActivityStream();
+    this.isAuthenticationStatusDetermined = true;
+    this.isAuthenticated = true;
+
+    this.emit(EventTypes.AUTH_LOGIN_SUCCESS);
   }
 
   handleLoginError(error) {
     this.token = null;
+    this.isAuthenticated = false;
+    this.isAuthenticationStatusDetermined = true;
     this.emit(EventTypes.AUTH_LOGIN_ERROR, error);
   }
 
@@ -126,12 +132,14 @@ class AuthStoreClass extends BaseStore {
   handleAuthVerificationSuccess(data) {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
+    this.isAuthenticationStatusDetermined = true;
+    this.isAuthenticated = !data.initialUser;
     this.emit(EventTypes.AUTH_VERIFY_SUCCESS, data);
-    ClientActions.fetchSettings();
-    SettingsActions.fetchSettings();
   }
 
   handleAuthVerificationError(action) {
+    this.isAuthenticated = false;
+    this.isAuthenticationStatusDetermined = true;
     this.emit(EventTypes.AUTH_VERIFY_ERROR, action.error);
   }
 }

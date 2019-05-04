@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import * as i18n from './i18n/languages';
 import connectStores from './util/connectStores';
 import AppWrapper from './components/AppWrapper';
+import AuthActions from './actions/AuthActions';
 import EventTypes from './constants/EventTypes';
 import FloodActions from './actions/FloodActions';
 import Login from './components/views/Login';
@@ -14,6 +15,11 @@ import SettingsStore from './stores/SettingsStore';
 import TorrentClientOverview from './components/views/TorrentClientOverview';
 
 import '../sass/style.scss';
+
+const initialize = () => {
+  AuthActions.verify();
+  FloodActions.startActivityStream();
+};
 
 const appRoutes = (
   <Router history={browserHistory}>
@@ -29,7 +35,7 @@ const appRoutes = (
 
 class FloodApp extends React.Component {
   componentDidMount() {
-    FloodActions.startActivityStream();
+    initialize();
   }
 
   render() {
@@ -49,7 +55,7 @@ const ConnectedFloodApp = connectStores(FloodApp, () => {
     {
       store: SettingsStore,
       event: EventTypes.SETTINGS_CHANGE,
-      getValue: store => {
+      getValue: ({store}) => {
         return {
           locale: store.getFloodSettings('language'),
         };

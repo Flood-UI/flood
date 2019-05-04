@@ -15,6 +15,7 @@ class UIStoreClass extends BaseStore {
     this.activeModal = null;
     this.dependencies = {};
     this.globalStyles = [];
+    this.haveUIDependenciesResolved = false;
     this.latestTorrentLocation = null;
     this.torrentDetailsHash = null;
     this.createStyleElement();
@@ -171,6 +172,7 @@ class UIStoreClass extends BaseStore {
     const isDependencyLoading = Object.keys(this.dependencies).some(id => this.dependencies[id].satisfied === false);
 
     if (!isDependencyLoading) {
+      this.haveUIDependenciesResolved = true;
       this.emit(EventTypes.UI_DEPENDENCIES_LOADED);
     }
   }

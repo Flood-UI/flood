@@ -45,7 +45,7 @@ const connectStores = (Component, getEventListenerDescriptors) => {
         const {store, getValue} = eventListenerDescriptor;
         initialState = {
           ...initialState,
-          ...getValue(store, props),
+          ...getValue({store, props}),
         };
       });
 
@@ -57,23 +57,32 @@ const connectStores = (Component, getEventListenerDescriptors) => {
 
       eventListenerDescriptors.forEach(eventListenerDescriptor => {
         const {store, event, getValue} = eventListenerDescriptor;
-        const eventHandler = () => {
-          this.setState((state, props) => getValue(store, props, state));
+        const eventHandler = payload => {
+          this.setState((state, props) => getValue({store, state, props, payload}));
         };
+        const events = Array.isArray(event) ? event : [event];
 
-        store.listen(event, eventHandler);
+        events.forEach(storeEvent => {
+          store.listen(storeEvent, eventHandler);
+        });
 
         if (this.eventHandlersByStore.get(store) == null) {
           this.eventHandlersByStore.set(store, new Set());
         }
 
-        this.eventHandlersByStore.get(store).add(eventHandler);
+        this.eventHandlersByStore.get(store).add({
+          events,
+          eventHandler,
+        });
       });
     }
 
     componentWillUnmount() {
-      this.eventHandlersByStore.forEach((listener, store) => {
-        store.unlisten(listener);
+      this.eventHandlersByStore.forEach((listenerDescriptor, store) => {
+        const {events, eventHandler} = listenerDescriptor;
+        events.forEach(event => {
+          store.unlisten(event, eventHandler);
+        });
       });
 
       this.eventHandlersByStore.clear();

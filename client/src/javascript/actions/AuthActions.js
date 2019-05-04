@@ -1,8 +1,12 @@
+import {browserHistory} from 'react-router';
 import axios from 'axios';
 
 import ActionTypes from '../constants/ActionTypes';
 import AppDispatcher from '../dispatcher/AppDispatcher';
+import ClientActions from './ClientActions';
 import ConfigStore from '../stores/ConfigStore';
+import FloodActions from './FloodActions';
+import SettingsActions from './SettingsActions';
 
 const baseURI = ConfigStore.getBaseURI();
 
@@ -17,6 +21,8 @@ const AuthActions = {
             type: ActionTypes.AUTH_LOGIN_SUCCESS,
             data,
           });
+
+          browserHistory.replace('overview');
         },
         error => {
           let errorMessage;
@@ -33,8 +39,17 @@ const AuthActions = {
             type: ActionTypes.AUTH_LOGIN_ERROR,
             error: errorMessage,
           });
+
+          browserHistory.replace('login');
         },
-      ),
+      )
+      .then(() => {
+        return Promise.all([
+          ClientActions.fetchSettings(),
+          SettingsActions.fetchSettings(),
+          FloodActions.restartActivityStream(),
+        ]);
+      }),
 
   createUser: credentials =>
     axios
@@ -139,6 +154,8 @@ const AuthActions = {
             type: ActionTypes.AUTH_REGISTER_SUCCESS,
             data,
           });
+
+          browserHistory.replace('overview');
         },
         error => {
           AppDispatcher.dispatchServerAction({
@@ -158,12 +175,22 @@ const AuthActions = {
             type: ActionTypes.AUTH_VERIFY_SUCCESS,
             data,
           });
+
+          return Promise.all([ClientActions.fetchSettings(), SettingsActions.fetchSettings()]).then(() => {
+            if (data.initialUser) {
+              browserHistory.replace('register');
+            } else {
+              browserHistory.replace('overview');
+            }
+          });
         },
         error => {
           AppDispatcher.dispatchServerAction({
             type: ActionTypes.AUTH_VERIFY_ERROR,
             error,
           });
+
+          browserHistory.replace('login');
         },
       ),
 };

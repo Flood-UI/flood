@@ -1,4 +1,3 @@
-import {browserHistory} from 'react-router';
 import classnames from 'classnames';
 import CSSTransitionGroup from 'react-addons-css-transition-group';
 import PropTypes from 'prop-types';
@@ -6,14 +5,11 @@ import React from 'react';
 
 import AuthStore from '../stores/AuthStore';
 import Checkmark from './icons/Checkmark';
-import ClientActions from '../actions/ClientActions';
 import ClientConnectionInterruption from './general/ClientConnectionInterruption';
 import ClientStatusStore from '../stores/ClientStatusStore';
 import connectStores from '../util/connectStores';
 import EventTypes from '../constants/EventTypes';
-import FloodActions from '../actions/FloodActions';
 import LoadingIndicator from './general/LoadingIndicator';
-import SettingsActions from '../actions/SettingsActions';
 import UIStore from '../stores/UIStore';
 import WindowTitle from './general/WindowTitle';
 
@@ -21,129 +17,24 @@ const ICONS = {
   satisfied: <Checkmark />,
 };
 
-const METHODS_TO_BIND = [
-  'handleVerifyError',
-  'handleVerifySuccess',
-  'handleLoginError',
-  'handleLoginSuccess',
-  'handleRegisterSuccess',
-  'handleUIDependenciesChange',
-  'handleUIDependenciesLoaded',
-];
-
 class AuthEnforcer extends React.Component {
   static propTypes = {
     children: PropTypes.node,
   };
 
-  constructor() {
-    super();
-
-    this.state = {
-      authStatusDetermined: false,
-      dependencies: {},
-      isAuthenticated: false,
-      isInitialUser: false,
-      isClientConnected: ClientStatusStore.getIsConnected(),
-      dependenciesLoaded: false,
-    };
-
-    METHODS_TO_BIND.forEach(method => {
-      this[method] = this[method].bind(this);
-    });
-  }
-
-  componentDidMount() {
-    AuthStore.listen(EventTypes.AUTH_REGISTER_SUCCESS, this.handleRegisterSuccess);
-    AuthStore.listen(EventTypes.AUTH_LOGIN_ERROR, this.handleLoginError);
-    AuthStore.listen(EventTypes.AUTH_LOGIN_SUCCESS, this.handleLoginSuccess);
-    AuthStore.listen(EventTypes.AUTH_VERIFY_ERROR, this.handleVerifyError);
-    AuthStore.listen(EventTypes.AUTH_VERIFY_SUCCESS, this.handleVerifySuccess);
-    ClientStatusStore.listen(EventTypes.CLIENT_CONNECTION_STATUS_CHANGE, this.handleClientStatusChange);
-    UIStore.listen(EventTypes.UI_DEPENDENCIES_LOADED, this.handleUIDependenciesLoaded);
-    UIStore.listen(EventTypes.UI_DEPENDENCIES_CHANGE, this.handleUIDependenciesChange);
-    AuthStore.verify();
-  }
-
-  componentWillUnmount() {
-    AuthStore.unlisten(EventTypes.AUTH_REGISTER_SUCCESS, this.handleRegisterSuccess);
-    AuthStore.unlisten(EventTypes.AUTH_LOGIN_ERROR, this.handleLoginError);
-    AuthStore.unlisten(EventTypes.AUTH_LOGIN_SUCCESS, this.handleLoginSuccess);
-    AuthStore.unlisten(EventTypes.AUTH_VERIFY_ERROR, this.handleVerifyError);
-    AuthStore.unlisten(EventTypes.AUTH_VERIFY_SUCCESS, this.handleVerifySuccess);
-    ClientStatusStore.unlisten(EventTypes.CLIENT_CONNECTION_STATUS_CHANGE, this.handleClientStatusChange);
-    UIStore.unlisten(EventTypes.UI_DEPENDENCIES_LOADED, this.handleUIDependenciesLoaded);
-    UIStore.unlisten(EventTypes.UI_DEPENDENCIES_CHANGE, this.handleUIDependenciesChange);
-  }
-
-  handleClientStatusChange = () => {
-    this.setState({
-      isClientConnected: ClientStatusStore.getIsConnected(),
-    });
-  };
-
-  handleVerifySuccess(data) {
-    if (data.initialUser) {
-      this.setState({authStatusDetermined: true, isAuthenticated: false, isInitialUser: true});
-      browserHistory.replace('register');
-    } else {
-      this.setState({authStatusDetermined: true, isAuthenticated: true, isInitialUser: false});
-      browserHistory.replace('overview');
-    }
-  }
-
-  handleVerifyError() {
-    this.setState({authStatusDetermined: true, isAuthenticated: false, isInitialUser: false});
-    browserHistory.replace('login');
-  }
-
-  handleLoginError() {
-    this.setState({authStatusDetermined: true, isAuthenticated: false, isInitialUser: false});
-    browserHistory.replace('login');
-  }
-
-  handleLoginSuccess() {
-    browserHistory.replace('overview');
-  }
-
-  handleRegisterSuccess() {
-    browserHistory.replace('overview');
-  }
-
-  handleUIDependenciesChange() {
-    this.setState({
-      dependencies: UIStore.getDependencies(),
-    });
-  }
-
-  handleUIDependenciesLoaded() {
-    this.setState({dependenciesLoaded: true});
-  }
-
   isLoading() {
+    const {authStatusDetermined, dependencies, dependenciesLoaded, isAuthenticated} = this.props;
     // If the auth status is undetermined, show the loading indicator.
-    if (!this.state.authStatusDetermined) {
-      return true;
-    }
-
+    if (!authStatusDetermined) return true;
     // Allow the UI to load if the user is not authenticated.
-    if (!this.state.isAuthenticated) {
-      return false;
-    }
-
+    if (!isAuthenticated) return false;
     // Iterate over current dependencies looking for unsatisified dependencies.
-    const isDependencyActive = Object.keys(this.state.dependencies).some(
-      dependencyKey => !this.state.dependencies[dependencyKey].satisfied,
-    );
-
+    const isDependencyActive = Object.keys(dependencies).some(dependencyKey => !dependencies[dependencyKey].satisfied);
     // If any dependency is unsatisfied, show the loading indicator.
-    if (isDependencyActive) {
-      return true;
-    }
-
+    if (isDependencyActive) return true;
     // Dismiss the loading indicator if the UI store thinks all dependencies
     // are loaded.
-    return !this.state.dependenciesLoaded;
+    return !dependenciesLoaded;
   }
 
   renderOverlay() {
@@ -156,7 +47,7 @@ class AuthEnforcer extends React.Component {
       );
     }
 
-    if (this.state.isAuthenticated && !this.state.isClientConnected) {
+    if (this.props.isAuthenticated && !this.props.isClientConnected) {
       const {isInitialUser} = this.state;
       return (
         <div className="application__loading-overlay">
@@ -171,7 +62,7 @@ class AuthEnforcer extends React.Component {
   }
 
   renderDependencyList() {
-    const {dependencies} = this.state;
+    const {dependencies} = this.props;
     const listItems = Object.keys(dependencies).map(id => {
       const {message, satisfied} = dependencies[id];
       const statusIcon = ICONS.satisfied;
@@ -210,9 +101,44 @@ const ConnectedAuthEnforcer = connectStores(AuthEnforcer, () => {
   return [
     {
       store: AuthStore,
-      event: [EventTypes.AUTH_LOGIN_SUCCESS, EventTypes.AUTH_REGISTER_SUCCESS],
-      getValue: () => {
-        return {authStatusDetermined: true, isAuthenticated: true};
+      event: [
+        EventTypes.AUTH_LOGIN_SUCCESS,
+        EventTypes.AUTH_REGISTER_SUCCESS,
+        EventTypes.AUTH_VERIFY_SUCCESS,
+        EventTypes.AUTH_VERIFY_ERROR,
+      ],
+      getValue: ({store}) => {
+        return {
+          authStatusDetermined: store.getIsAuthenticationStatusDetermined(),
+          isAuthenticated: store.getIsAuthenticated(),
+        };
+      },
+    },
+    {
+      store: UIStore,
+      event: EventTypes.UI_DEPENDENCIES_CHANGE,
+      getValue: ({store}) => {
+        return {
+          dependencies: store.getDependencies(),
+        };
+      },
+    },
+    {
+      store: UIStore,
+      event: EventTypes.UI_DEPENDENCIES_LOADED,
+      getValue: ({store}) => {
+        return {
+          dependenciesLoaded: store.haveUIDependenciesResolved,
+        };
+      },
+    },
+    {
+      store: ClientStatusStore,
+      event: EventTypes.CLIENT_CONNECTION_STATUS_CHANGE,
+      getValue: ({store}) => {
+        return {
+          isClientConnected: store.getIsConnected(),
+        };
       },
     },
   ];
