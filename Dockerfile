@@ -17,9 +17,16 @@ RUN apk add --no-cache --virtual=build-dependencies \
 
 # Build static assets and remove devDependencies.
 COPY client ./client
+COPY scripts ./scripts
+COPY server ./server
 COPY shared ./shared
-COPY config.docker.js ./config.js
+COPY .babelrc ./.babelrc
+COPY .eslintignore ./.eslintignore
+COPY .eslintrc.js ./.eslintrc.js
+COPY .prettierrc ./.prettierrc
 COPY ABOUT.md ./ABOUT.md
+COPY config.docker.js ./config.js
+COPY flood.png ./flood.png
 RUN npm run build && \
     npm prune --production
 COPY server ./server
