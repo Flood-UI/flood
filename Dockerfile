@@ -39,7 +39,7 @@ RUN apk --no-cache add \
 COPY --from=nodebuild $WORKDIR $WORKDIR
 
 # Hints for consumers of the container.
-EXPOSE 3500
+EXPOSE 3000
 VOLUME ["/data"]
 
 # Start application.
