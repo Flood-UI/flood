@@ -142,7 +142,10 @@ router.get('/logout', (req, res) => {
 router.use('/users', (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
+    return;
   }
+
+  res.status(401).send('Not authorized');
 });
 
 router.get('/users', (req, res) => {
