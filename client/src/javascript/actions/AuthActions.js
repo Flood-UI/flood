@@ -1,4 +1,3 @@
-import {browserHistory} from 'react-router';
 import axios from 'axios';
 
 import ActionTypes from '../constants/ActionTypes';
@@ -21,8 +20,6 @@ const AuthActions = {
             type: ActionTypes.AUTH_LOGIN_SUCCESS,
             data,
           });
-
-          browserHistory.replace('overview');
         },
         error => {
           let errorMessage;
@@ -40,7 +37,7 @@ const AuthActions = {
             error: errorMessage,
           });
 
-          browserHistory.replace('login');
+          throw new Error(errorMessage);
         },
       )
       .then(() => {
@@ -154,8 +151,6 @@ const AuthActions = {
             type: ActionTypes.AUTH_REGISTER_SUCCESS,
             data,
           });
-
-          browserHistory.replace('overview');
         },
         error => {
           AppDispatcher.dispatchServerAction({
@@ -177,11 +172,7 @@ const AuthActions = {
           });
 
           return Promise.all([ClientActions.fetchSettings(), SettingsActions.fetchSettings()]).then(() => {
-            if (data.initialUser) {
-              browserHistory.replace('register');
-            } else {
-              browserHistory.replace('overview');
-            }
+            return data;
           });
         },
         error => {
@@ -190,7 +181,7 @@ const AuthActions = {
             error,
           });
 
-          browserHistory.replace('login');
+          throw error;
         },
       ),
 };
