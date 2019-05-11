@@ -27,7 +27,7 @@ const closeTag = (elementName) => {
   let stackMark
   const tagValue = tmpData.join('')
   // types that rTorrent uses:
-  // array, boolean, data, i8, param, params, string, value, name, member, struct
+  // array, boolean, data, i4, i8, param, params, string, value, name, member, struct
   switch(elementName) {
     case 'boolean':
       dataStack.push(tagValue === '1')
@@ -38,6 +38,7 @@ const closeTag = (elementName) => {
         dataStack.push(tagValue)
       }
     break;
+    case 'i4':
     case 'i8':
     case 'string':
     case 'name':
