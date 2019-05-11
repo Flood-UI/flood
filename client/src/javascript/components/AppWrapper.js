@@ -23,9 +23,9 @@ class AuthEnforcer extends React.Component {
   };
 
   isLoading() {
-    const {authStatusDetermined, dependencies, dependenciesLoaded, isAuthenticated} = this.props;
+    const {dependencies, dependenciesLoaded, isAuthenticated, isAuthenticating} = this.props;
     // If the auth status is undetermined, show the loading indicator.
-    if (!authStatusDetermined) return true;
+    if (!isAuthenticating) return true;
     // Allow the UI to load if the user is not authenticated.
     if (!isAuthenticated) return false;
     // Iterate over current dependencies looking for unsatisified dependencies.
@@ -110,7 +110,7 @@ const ConnectedAuthEnforcer = connectStores(AuthEnforcer, () => {
       ],
       getValue: ({store}) => {
         return {
-          authStatusDetermined: store.getIsAuthenticationStatusDetermined(),
+          isAuthenticating: store.getIsAuthenticating(),
           isAuthenticated: store.getIsAuthenticated(),
         };
       },

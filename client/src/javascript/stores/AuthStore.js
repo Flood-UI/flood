@@ -8,7 +8,7 @@ import EventTypes from '../constants/EventTypes';
 class AuthStoreClass extends BaseStore {
   constructor() {
     super();
-    this.isAuthenticationStatusDetermined = false;
+    this.isAuthenticating = false;
     this.isAuthenticated = false;
     this.token = null;
     this.users = [];
@@ -56,8 +56,8 @@ class AuthStoreClass extends BaseStore {
     return this.currentUser.isAdmin;
   }
 
-  getIsAuthenticationStatusDetermined() {
-    return this.isAuthenticationStatusDetermined;
+  getIsAuthenticating() {
+    return this.isAuthenticating;
   }
 
   getIsAuthenticated() {
@@ -105,7 +105,7 @@ class AuthStoreClass extends BaseStore {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
     this.token = data.token;
-    this.isAuthenticationStatusDetermined = true;
+    this.isAuthenticating = true;
     this.isAuthenticated = true;
 
     this.emit(EventTypes.AUTH_LOGIN_SUCCESS);
@@ -114,7 +114,7 @@ class AuthStoreClass extends BaseStore {
   handleLoginError(error) {
     this.token = null;
     this.isAuthenticated = false;
-    this.isAuthenticationStatusDetermined = true;
+    this.isAuthenticating = true;
     this.emit(EventTypes.AUTH_LOGIN_ERROR, error);
   }
 
@@ -132,14 +132,14 @@ class AuthStoreClass extends BaseStore {
   handleAuthVerificationSuccess(data) {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
-    this.isAuthenticationStatusDetermined = true;
+    this.isAuthenticating = true;
     this.isAuthenticated = !data.initialUser;
     this.emit(EventTypes.AUTH_VERIFY_SUCCESS, data);
   }
 
   handleAuthVerificationError(action) {
     this.isAuthenticated = false;
-    this.isAuthenticationStatusDetermined = true;
+    this.isAuthenticating = true;
     this.emit(EventTypes.AUTH_VERIFY_ERROR, action.error);
   }
 }
