@@ -17,7 +17,18 @@ import TorrentClientOverview from './components/views/TorrentClientOverview';
 import '../sass/style.scss';
 
 const initialize = () => {
-  AuthActions.verify();
+  AuthActions.verify()
+    .then(({isInitialUser}) => {
+      if (isInitialUser) {
+        browserHistory.replace('register');
+      } else {
+        browserHistory.replace('overview');
+      }
+    })
+    .catch(() => {
+      browserHistory.replace('login');
+    });
+
   FloodActions.startActivityStream();
 };
 

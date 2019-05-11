@@ -1,8 +1,8 @@
 import ActionTypes from '../constants/ActionTypes';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import AuthActions from '../actions/AuthActions';
-import FloodActions from '../actions/FloodActions';
 import BaseStore from './BaseStore';
+import FloodActions from '../actions/FloodActions';
 import EventTypes from '../constants/EventTypes';
 
 class AuthStoreClass extends BaseStore {
@@ -16,10 +16,6 @@ class AuthStoreClass extends BaseStore {
     this.currentUser = {};
   }
 
-  authenticate(credentials) {
-    AuthActions.authenticate(credentials);
-  }
-
   createUser(credentials) {
     AuthActions.createUser(credentials);
   }
@@ -30,17 +26,6 @@ class AuthStoreClass extends BaseStore {
 
   fetchUserList() {
     AuthActions.fetchUsers();
-  }
-
-  register(credentials) {
-    AuthActions.register({
-      username: credentials.username,
-      password: credentials.password,
-      host: credentials.host,
-      port: credentials.port,
-      socketPath: credentials.socketPath,
-      isAdmin: true,
-    });
   }
 
   addOptimisticUser(credentials) {
