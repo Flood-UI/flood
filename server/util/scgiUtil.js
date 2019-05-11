@@ -1,17 +1,17 @@
 const net = require('net');
 const Serializer = require('xmlrpc/lib/serializer');
-const rTorrentDeserializer = require('./rTorrentDeserializer')
+const rTorrentDeserializer = require('./rTorrentDeserializer');
 
 const NULL_CHAR = String.fromCharCode(0);
 
-const bufferStream = (stream) => {
-  const chunks = []
+const bufferStream = stream => {
+  const chunks = [];
   return new Promise((resolve, reject) => {
-    stream.on('data', chunk => chunks.push(Buffer.from(chunk)))
-    stream.on('error', reject)
-    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
-  })
-}
+    stream.on('data', chunk => chunks.push(Buffer.from(chunk)));
+    stream.on('error', reject);
+    stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+  });
+};
 
 const methodCall = (connectionMethod, methodName, parameters) =>
   new Promise((resolve, reject) => {
@@ -32,7 +32,9 @@ const methodCall = (connectionMethod, methodName, parameters) =>
 
     stream.write(`${headerLength}:${headerItems.join('')},${xml}`);
 
-    bufferStream(stream).then((data) => { rTorrentDeserializer.deserialize(data, resolve, reject)});
+    bufferStream(stream).then(data => {
+      rTorrentDeserializer.deserialize(data, resolve, reject);
+    });
   });
 
 module.exports = {methodCall};
