@@ -78,10 +78,11 @@ const connectStores = (Component, getEventListenerDescriptors) => {
     }
 
     componentWillUnmount() {
-      this.eventHandlersByStore.forEach((listenerDescriptor, store) => {
-        const {events, eventHandler} = listenerDescriptor;
-        events.forEach(event => {
-          store.unlisten(event, eventHandler);
+      this.eventHandlersByStore.forEach((listenerDescriptors, store) => {
+        listenerDescriptors.forEach(({events, eventHandler}) => {
+          events.forEach(event => {
+            store.unlisten(event, eventHandler);
+          });
         });
       });
 
