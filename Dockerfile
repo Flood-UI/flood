@@ -11,6 +11,9 @@ COPY package.json \
      package-lock.json \
      .babelrc \
      .eslintrc.js \
+     .eslintignore \
+     .prettierrc \
+     flood.png \
      ABOUT.md \
      $WORKDIR
 RUN apk add --no-cache --virtual=build-dependencies \
