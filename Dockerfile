@@ -13,7 +13,6 @@ COPY package.json \
      .eslintrc.js \
      .eslintignore \
      .prettierrc \
-     flood.png \
      ABOUT.md \
      $WORKDIR
 RUN apk add --no-cache --virtual=build-dependencies \
