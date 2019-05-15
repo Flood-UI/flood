@@ -15,23 +15,19 @@ import React from 'react';
 // }
 
 // const MyConnectedComponent = connectStores(MyComponent, props => {
-//   return {
-//     count: {
-//       store: SettingsStore,
-//       event: EventTypes.CLIENT_TORRENT_STATUS_COUNT_CHANGE,
-//       getValue: store => store.getCount(),
+//   return [
+//     {
+//       store: CountStore,
+//       event: [EventTypes.NAME_CHANGE, EventTypes.COUNT_CHANGE, EventTypes.TIME_CHANGE],
+//       getValue: ({store}) => {
+//         return {
+//           count: store.getCount(),
+//           name: store.getName(),
+//           time: store.getTime()
+//         };
+//       },
 //     },
-//     name: {
-//       store: SettingsStore,
-//       event: EventTypes.CLIENT_TORRENT_STATUS_COUNT_CHANGE,
-//       getValue: store => store.getCount(),
-//     },
-//     time: {
-//       store: SettingsStore,
-//       event: EventTypes.CLIENT_TORRENT_STATUS_COUNT_CHANGE,
-//       getValue: store => store.getCount(),
-//     },
-//   };
+//   ];
 // });
 
 const connectStores = (Component, getEventListenerDescriptors) => {
