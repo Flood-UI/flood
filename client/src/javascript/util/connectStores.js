@@ -38,18 +38,13 @@ const connectStores = (Component, getEventListenerDescriptors) => {
   class ConnectedComponent extends React.Component {
     constructor(props) {
       super(props);
-      const eventListenerDescriptors = getEventListenerDescriptors(props);
-      let initialState = {};
-
-      eventListenerDescriptors.forEach(eventListenerDescriptor => {
+      this.state = getEventListenerDescriptors(props).reduce((state, eventListenerDescriptor) => {
         const {store, getValue} = eventListenerDescriptor;
-        initialState = {
-          ...initialState,
-          ...getValue({store, props}),
+        return {
+          ...state,
+          ...getValue({state, props, store, payload: null}),
         };
-      });
-
-      this.state = initialState;
+      }, {});
     }
 
     componentDidMount() {
@@ -57,9 +52,7 @@ const connectStores = (Component, getEventListenerDescriptors) => {
 
       eventListenerDescriptors.forEach(eventListenerDescriptor => {
         const {store, event, getValue} = eventListenerDescriptor;
-        const eventHandler = payload => {
-          this.setState((state, props) => getValue({store, state, props, payload}));
-        };
+        const eventHandler = payload => this.setState((state, props) => getValue({state, props, store, payload}));
         const events = Array.isArray(event) ? event : [event];
 
         events.forEach(storeEvent => {
