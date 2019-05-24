@@ -1,10 +1,7 @@
-import _ from 'lodash';
-
 import ActionTypes from '../constants/ActionTypes';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import BaseStore from './BaseStore';
 import EventTypes from '../constants/EventTypes';
-import FloodActions from '../actions/FloodActions';
 
 class UIStoreClass extends BaseStore {
   constructor(...storeConfig) {
@@ -20,14 +17,6 @@ class UIStoreClass extends BaseStore {
     this.torrentDetailsHash = null;
     this.createStyleElement();
   }
-
-  fetchDirectoryList = _.debounce(
-    options => {
-      FloodActions.fetchDirectoryList(options);
-    },
-    100,
-    {leading: true},
-  );
 
   addGlobalStyle(cssString) {
     this.globalStyles.push(cssString);
@@ -94,14 +83,6 @@ class UIStoreClass extends BaseStore {
 
   getTorrentDetailsHash() {
     return this.torrentDetailsHash;
-  }
-
-  handleFetchDirectoryListError(error) {
-    this.emit(EventTypes.FLOOD_FETCH_DIRECTORY_LIST_ERROR, error);
-  }
-
-  handleFetchDirectoryListSuccess(response) {
-    this.emit(EventTypes.FLOOD_FETCH_DIRECTORY_LIST_SUCCESS, response);
   }
 
   handleSetTaxonomySuccess() {
@@ -184,12 +165,6 @@ UIStore.dispatcherID = AppDispatcher.register(payload => {
   const {action} = payload;
 
   switch (action.type) {
-    case ActionTypes.FLOOD_FETCH_DIRECTORY_LIST_ERROR:
-      UIStore.handleFetchDirectoryListError(action.error);
-      break;
-    case ActionTypes.FLOOD_FETCH_DIRECTORY_LIST_SUCCESS:
-      UIStore.handleFetchDirectoryListSuccess(action.data);
-      break;
     case ActionTypes.UI_CLICK_TORRENT:
       UIStore.handleTorrentClick(action.data.hash);
       break;
