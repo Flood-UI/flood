@@ -38,7 +38,7 @@ class AuthEnforcer extends React.Component {
   }
 
   renderOverlay() {
-    const {isAuthenticated, isInitialUser, isClientConnected} = this.props;
+    const {isAuthenticated, isClientConnected} = this.props;
 
     if (this.isLoading()) {
       return (
@@ -53,7 +53,7 @@ class AuthEnforcer extends React.Component {
       return (
         <div className="application__loading-overlay">
           <div className="application__entry-barrier">
-            <ClientConnectionInterruption isInitialUser={isInitialUser} />
+            <ClientConnectionInterruption />
           </div>
         </div>
       );

@@ -13,7 +13,11 @@ class AuthStoreClass extends BaseStore {
     this.token = null;
     this.users = [];
     this.optimisticUsers = [];
-    this.currentUser = {};
+    this.currentUser = {
+      isAdmin: false,
+      isInitialUser: false,
+      username: null,
+    };
   }
 
   createUser(credentials) {
@@ -47,6 +51,10 @@ class AuthStoreClass extends BaseStore {
 
   getIsAuthenticated() {
     return this.isAuthenticated;
+  }
+
+  getIsInitialUser() {
+    return this.currentUser.isInitialUser;
   }
 
   getToken() {
@@ -89,6 +97,7 @@ class AuthStoreClass extends BaseStore {
   handleLoginSuccess(data) {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
+    this.currentUser.isInitialUser = false;
     this.token = data.token;
     this.isAuthenticating = true;
     this.isAuthenticated = true;
@@ -106,6 +115,7 @@ class AuthStoreClass extends BaseStore {
   handleRegisterSuccess(data) {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
+    this.currentUser.isInitialUser = false;
     this.emit(EventTypes.AUTH_REGISTER_SUCCESS, data);
     FloodActions.restartActivityStream();
   }
@@ -117,6 +127,7 @@ class AuthStoreClass extends BaseStore {
   handleAuthVerificationSuccess(data) {
     this.currentUser.username = data.username;
     this.currentUser.isAdmin = data.isAdmin;
+    this.currentUser.isInitialUser = data.initialUser;
     this.isAuthenticating = true;
     this.isAuthenticated = !data.initialUser;
     this.emit(EventTypes.AUTH_VERIFY_SUCCESS, data);
@@ -125,6 +136,7 @@ class AuthStoreClass extends BaseStore {
   handleAuthVerificationError(action) {
     this.isAuthenticated = false;
     this.isAuthenticating = true;
+    this.currentUser.isInitialUser = false;
     this.emit(EventTypes.AUTH_VERIFY_ERROR, action.error);
   }
 }
