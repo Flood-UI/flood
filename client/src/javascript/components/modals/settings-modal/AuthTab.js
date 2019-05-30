@@ -75,7 +75,7 @@ class AuthTab extends SettingsTab {
   }
 
   handleDeleteUserClick(username) {
-    AuthActions.deleteUser(username).then(AuthStore.fetchUsers);
+    AuthActions.deleteUser(username).then(AuthActions.fetchUsers);
   }
 
   handleFormChange = ({formData}) => {
