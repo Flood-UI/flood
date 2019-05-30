@@ -24,14 +24,6 @@ class AuthStoreClass extends BaseStore {
     AuthActions.createUser(credentials);
   }
 
-  deleteUser(username) {
-    AuthActions.deleteUser(username);
-  }
-
-  fetchUserList() {
-    AuthActions.fetchUsers();
-  }
-
   addOptimisticUser(credentials) {
     this.optimisticUsers.push({username: credentials.username});
     this.emit(EventTypes.AUTH_LIST_USERS_SUCCESS);
@@ -65,10 +57,6 @@ class AuthStoreClass extends BaseStore {
     return this.users;
   }
 
-  handleCreateUserError(error) {
-    this.emit(EventTypes.AUTH_CREATE_USER_ERROR, error);
-  }
-
   handleCreateUserSuccess(data) {
     this.addOptimisticUser(data);
     this.emit(EventTypes.AUTH_CREATE_USER_SUCCESS);
@@ -80,10 +68,6 @@ class AuthStoreClass extends BaseStore {
 
   handleDeleteUserSuccess(data) {
     this.emit(EventTypes.AUTH_DELETE_USER_SUCCESS, data.username);
-  }
-
-  handleListUsersError() {
-    this.emit(EventTypes.AUTH_LIST_USERS_ERROR);
   }
 
   handleListUsersSuccess(nextUserList) {
@@ -156,14 +140,8 @@ AuthStore.dispatcherID = AppDispatcher.register(payload => {
     case ActionTypes.AUTH_LIST_USERS_SUCCESS:
       AuthStore.handleListUsersSuccess(action.data);
       break;
-    case ActionTypes.AUTH_LIST_USERS_ERROR:
-      AuthStore.handleListUsersError(action.error);
-      break;
     case ActionTypes.AUTH_CREATE_USER_SUCCESS:
       AuthStore.handleCreateUserSuccess(action.data);
-      break;
-    case ActionTypes.AUTH_CREATE_USER_ERROR:
-      AuthStore.handleCreateUserError(action.error);
       break;
     case ActionTypes.AUTH_DELETE_USER_SUCCESS:
       AuthStore.handleDeleteUserSuccess(action.data);

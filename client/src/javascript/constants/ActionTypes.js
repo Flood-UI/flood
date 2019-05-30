@@ -1,11 +1,9 @@
 import objectUtil from 'universally-shared-code/util/objectUtil';
 
 const actionTypes = [
-  'AUTH_CREATE_USER_ERROR',
   'AUTH_CREATE_USER_SUCCESS',
   'AUTH_DELETE_USER_ERROR',
   'AUTH_DELETE_USER_SUCCESS',
-  'AUTH_LIST_USERS_ERROR',
   'AUTH_LIST_USERS_SUCCESS',
   'AUTH_LOGIN_ERROR',
   'AUTH_LOGIN_SUCCESS',

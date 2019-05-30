@@ -22,6 +22,8 @@ const AuthActions = {
           });
         },
         error => {
+          // TODO: Handle errors consistently in API, then create a client-side class to get meaningful messages from
+          // server's response.
           let errorMessage;
 
           if (error.response) {
@@ -52,20 +54,12 @@ const AuthActions = {
     axios
       .put(`${baseURI}auth/users`, credentials)
       .then((json = {}) => json.data)
-      .then(
-        data => {
-          AppDispatcher.dispatchServerAction({
-            type: ActionTypes.AUTH_CREATE_USER_SUCCESS,
-            data,
-          });
-        },
-        error => {
-          AppDispatcher.dispatchServerAction({
-            type: ActionTypes.AUTH_CREATE_USER_ERROR,
-            error: error.response.data.message,
-          });
-        },
-      ),
+      .then(data => {
+        AppDispatcher.dispatchServerAction({
+          type: ActionTypes.AUTH_CREATE_USER_SUCCESS,
+          data,
+        });
+      }),
 
   updateUser: (username, connectionSettings) => {
     const requestPayload = {};
@@ -111,20 +105,12 @@ const AuthActions = {
     axios
       .get(`${baseURI}auth/users`)
       .then((json = {}) => json.data)
-      .then(
-        data => {
-          AppDispatcher.dispatchServerAction({
-            type: ActionTypes.AUTH_LIST_USERS_SUCCESS,
-            data,
-          });
-        },
-        error => {
-          AppDispatcher.dispatchServerAction({
-            type: ActionTypes.AUTH_LIST_USERS_ERROR,
-            error,
-          });
-        },
-      ),
+      .then(data => {
+        AppDispatcher.dispatchServerAction({
+          type: ActionTypes.AUTH_LIST_USERS_SUCCESS,
+          data,
+        });
+      }),
 
   logout: () =>
     axios.get(`${baseURI}auth/logout`).then(
