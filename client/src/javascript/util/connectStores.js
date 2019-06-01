@@ -32,6 +32,8 @@ import React from 'react';
 
 const connectStores = (Component, getEventListenerDescriptors) => {
   class ConnectedComponent extends React.Component {
+    eventHandlersByStore = new Map();
+
     constructor(props) {
       super(props);
       this.state = getEventListenerDescriptors(props).reduce((state, eventListenerDescriptor) => {
@@ -77,8 +79,6 @@ const connectStores = (Component, getEventListenerDescriptors) => {
 
       this.eventHandlersByStore.clear();
     }
-
-    eventHandlersByStore = new Map();
 
     render() {
       return <Component {...this.props} {...this.state} />;

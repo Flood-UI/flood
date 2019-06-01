@@ -10,6 +10,12 @@ import SettingsStore from '../../../stores/SettingsStore';
 import UIStore from '../../../stores/UIStore';
 
 class NewTorrentDestination extends React.Component {
+  contextMenuInstanceRef = null;
+
+  contextMenuNodeRef = null;
+
+  textboxRef = null;
+
   constructor(props) {
     super(props);
 
@@ -50,18 +56,13 @@ class NewTorrentDestination extends React.Component {
     global.addEventListener('resize', this.handleWindowResize);
   }
 
-  contextMenuInstanceRef = null;
-
-  contextMenuNodeRef = null;
-
-  textboxRef = null;
-
   closeDirectoryList = () => {
     if (this.state.isDirectoryListOpen) {
       this.setState({isDirectoryListOpen: false});
     }
   };
 
+  /* eslint-disable react/sort-comp */
   handleDestinationInputChange = _.debounce(
     () => {
       const destination = this.textboxRef.value;
@@ -75,6 +76,7 @@ class NewTorrentDestination extends React.Component {
     100,
     {leading: true},
   );
+  /* eslint-enable react/sort-comp */
 
   handleDirectoryListButtonClick = () => {
     this.setState(state => {

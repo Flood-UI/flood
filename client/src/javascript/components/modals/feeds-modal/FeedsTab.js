@@ -78,6 +78,25 @@ const defaultFeed = {
 };
 
 class FeedsTab extends React.Component {
+  formRef = null;
+
+  manualAddingFormRef = null;
+
+  validatedFields = {
+    url: {
+      isValid: validators.isURLValid,
+      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyURL),
+    },
+    label: {
+      isValid: validators.isNotEmpty,
+      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel),
+    },
+    interval: {
+      isValid: validators.isPositiveInteger,
+      error: this.props.intl.formatMessage(MESSAGES.intervalNotPositive),
+    },
+  };
+
   state = {
     errors: {},
     intervalmultipliers: [
@@ -96,25 +115,6 @@ class FeedsTab extends React.Component {
     ],
     currentlyEditingFeed: null,
     selectedFeed: null,
-  };
-
-  formRef;
-
-  manualAddingFormRef;
-
-  validatedFields = {
-    url: {
-      isValid: validators.isURLValid,
-      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyURL),
-    },
-    label: {
-      isValid: validators.isNotEmpty,
-      error: this.props.intl.formatMessage(MESSAGES.mustSpecifyLabel),
-    },
-    interval: {
-      isValid: validators.isPositiveInteger,
-      error: this.props.intl.formatMessage(MESSAGES.intervalNotPositive),
-    },
   };
 
   checkFieldValidity = _.throttle((fieldName, fieldValue) => {
