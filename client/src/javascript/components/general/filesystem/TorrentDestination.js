@@ -30,6 +30,9 @@ class NewTorrentDestination extends React.Component {
 
   componentDidMount() {
     UIStore.listen(EventTypes.UI_MODAL_DISMISSED, this.handleModalDismiss);
+    // TODO: Fix ContextMenu in flood-ui-kit and remove the forced double render
+    // https://github.com/jfurrow/flood-ui-kit/issues/6
+    this.forceUpdate();
   }
 
   componentWillUpdate(_nextProps, nextState) {
@@ -153,7 +156,7 @@ class NewTorrentDestination extends React.Component {
                   this.contextMenuNodeRef = ref;
                 }}
                 scrolling={false}
-                triggerRef={this.state.textboxRef}>
+                triggerRef={this.textboxRef}>
                 <FilesystemBrowser
                   directory={this.state.destination}
                   intl={this.props.intl}
