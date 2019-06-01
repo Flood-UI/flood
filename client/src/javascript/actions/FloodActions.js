@@ -103,23 +103,15 @@ const FloodActions = {
         },
       })
       .then((json = {}) => json.data)
-      .then(
-        response => {
-          AppDispatcher.dispatchServerAction({
-            type: ActionTypes.FLOOD_FETCH_MEDIAINFO_SUCCESS,
-            data: {
-              ...response,
-              ...options,
-            },
-          });
-        },
-        error => {
-          AppDispatcher.dispatchServerAction({
-            type: ActionTypes.FLOOD_FETCH_MEDIAINFO_ERROR,
-            error,
-          });
-        },
-      ),
+      .then(response => {
+        AppDispatcher.dispatchServerAction({
+          type: ActionTypes.FLOOD_FETCH_MEDIAINFO_SUCCESS,
+          data: {
+            ...response,
+            ...options,
+          },
+        });
+      }),
 
   fetchNotifications: options =>
     axios
