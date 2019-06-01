@@ -54,33 +54,27 @@ class NewTorrentDestination extends React.Component {
 
   contextMenuNodeRef = null;
 
+  textboxRef = null;
+
   closeDirectoryList = () => {
     if (this.state.isDirectoryListOpen) {
       this.setState({isDirectoryListOpen: false});
     }
   };
 
-  getValue() {
-    return this.getDestination();
-  }
-
-  getDestination() {
-    return this.state.destination;
-  }
-
   handleBasePathCheckBoxCheck = value => {
     this.setState({isBasePath: value});
   };
 
-  handleDestinationChange = event => {
-    const destination = event.target.value;
+  handleDestinationChange = _.debounce(() => {
+    const destination = this.textboxRef.value;
 
     if (this.props.onChange) {
       this.props.onChange(destination);
     }
 
     this.setState({destination});
-  };
+  });
 
   handleDirectoryListButtonClick = () => {
     this.setState(state => {
@@ -93,8 +87,7 @@ class NewTorrentDestination extends React.Component {
   };
 
   handleDirectorySelection = destination => {
-    // eslint-disable-next-line react/no-direct-mutation-state
-    this.state.textboxRef.value = destination;
+    this.textboxRef.value = destination;
     this.setState({destination});
   };
 
@@ -119,12 +112,6 @@ class NewTorrentDestination extends React.Component {
     global.removeEventListener('resize', this.handleWindowResize);
   }
 
-  setTextboxRef = ref => {
-    if (this.state.textboxRef !== ref) {
-      this.setState({textboxRef: ref});
-    }
-  };
-
   toggleOpenState = () => {
     this.setState(state => {
       return {
@@ -141,14 +128,15 @@ class NewTorrentDestination extends React.Component {
             addonPlacement="after"
             defaultValue={this.state.destination}
             id={this.props.id}
-            label={this.props.label}
             onChange={this.handleDestinationChange}
             onClick={event => event.nativeEvent.stopImmediatePropagation()}
             placeholder={this.props.intl.formatMessage({
               id: 'torrents.add.destination.placeholder',
               defaultMessage: 'Destination',
             })}
-            setRef={this.setTextboxRef}>
+            setRef={ref => {
+              this.textboxRef = ref;
+            }}>
             <FormElementAddon onClick={this.handleDirectoryListButtonClick}>
               <Search />
             </FormElementAddon>
