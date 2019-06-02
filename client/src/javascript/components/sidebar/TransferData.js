@@ -1,4 +1,3 @@
-import {FormattedMessage} from 'react-intl';
 import React from 'react';
 
 import ClientStatusStore from '../../stores/ClientStatusStore';
@@ -7,7 +6,6 @@ import LoadingIndicator from '../general/LoadingIndicator';
 import TransferDataStore from '../../stores/TransferDataStore';
 import TransferRateDetails from './TransferRateDetails';
 import TransferRateGraph from './TransferRateGraph';
-import UIStore from '../../stores/UIStore';
 
 const METHODS_TO_BIND = [
   'handleGraphHover',
@@ -35,19 +33,6 @@ class TransferData extends React.Component {
     METHODS_TO_BIND.forEach(method => {
       this[method] = this[method].bind(this);
     });
-
-    UIStore.registerDependency([
-      {
-        id: 'transfer-data',
-        message: (
-          <FormattedMessage id="dependency.loading.transfer.rate.details" defaultMessage="Data Transfer Rate Details" />
-        ),
-      },
-      {
-        id: 'transfer-history',
-        message: <FormattedMessage id="dependency.loading.transfer.history" defaultMessage="Data Transfer History" />,
-      },
-    ]);
   }
 
   componentDidMount() {
@@ -123,8 +108,6 @@ class TransferData extends React.Component {
     this.setState({
       transferDataRequestSuccess: true,
     });
-
-    UIStore.satisfyDependency('transfer-data');
   }
 
   onTransferHistoryRequestSuccess() {
@@ -133,8 +116,6 @@ class TransferData extends React.Component {
         transferHistoryRequestSuccess: true,
       });
     }
-
-    UIStore.satisfyDependency('transfer-history');
   }
 
   renderTransferRateGraph() {

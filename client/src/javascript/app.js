@@ -1,4 +1,4 @@
-import {IntlProvider} from 'react-intl';
+import {FormattedMessage, IntlProvider} from 'react-intl';
 import {IndexRoute, Router, Route, browserHistory} from 'react-router';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -13,10 +13,39 @@ import Login from './components/views/Login';
 import Register from './components/views/Register';
 import SettingsStore from './stores/SettingsStore';
 import TorrentClientOverview from './components/views/TorrentClientOverview';
+import UIStore from './stores/UIStore';
 
 import '../sass/style.scss';
 
 const initialize = () => {
+  UIStore.registerDependency({
+    id: 'notifications',
+    message: <FormattedMessage id="dependency.loading.notifications" defaultMessage="Notifications" />,
+  });
+
+  UIStore.registerDependency({
+    id: 'torrent-taxonomy',
+    message: <FormattedMessage id="dependency.loading.torrent.taxonomy" defaultMessage="Torrent Taxonomy" />,
+  });
+
+  UIStore.registerDependency([
+    {
+      id: 'transfer-data',
+      message: (
+        <FormattedMessage id="dependency.loading.transfer.rate.details" defaultMessage="Data Transfer Rate Details" />
+      ),
+    },
+    {
+      id: 'transfer-history',
+      message: <FormattedMessage id="dependency.loading.transfer.history" defaultMessage="Data Transfer History" />,
+    },
+  ]);
+
+  UIStore.registerDependency({
+    id: 'torrent-list',
+    message: <FormattedMessage id="dependency.loading.torrent.list" defaultMessage="Torrent List" />,
+  });
+
   AuthActions.verify().then(
     ({initialUser}) => {
       if (initialUser) {

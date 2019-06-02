@@ -187,10 +187,20 @@ UIStore.dispatcherID = AppDispatcher.register(payload => {
     case ActionTypes.UI_DISPLAY_CONTEXT_MENU:
       UIStore.setActiveContextMenu(action.data);
       break;
-    case ActionTypes.FLOOD_FETCH_NOTIFICATIONS_SUCCESS:
-    case ActionTypes.FLOOD_FETCH_NOTIFICATIONS_ERROR:
     case ActionTypes.NOTIFICATION_COUNT_CHANGE:
       UIStore.satisfyDependency('notifications');
+      break;
+    case ActionTypes.TAXONOMY_FULL_UPDATE:
+      UIStore.satisfyDependency('torrent-taxonomy');
+      break;
+    case ActionTypes.TORRENT_LIST_FULL_UPDATE:
+      UIStore.satisfyDependency('torrent-list');
+      break;
+    case ActionTypes.TRANSFER_SUMMARY_FULL_UPDATE:
+      UIStore.satisfyDependency('transfer-data');
+      break;
+    case ActionTypes.TRANSFER_HISTORY_FULL_UPDATE:
+      UIStore.satisfyDependency('transfer-history');
       break;
     default:
       break;

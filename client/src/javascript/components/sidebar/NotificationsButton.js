@@ -12,7 +12,6 @@ import LoadingIndicatorDots from '../icons/LoadingIndicatorDots';
 import NotificationIcon from '../icons/NotificationIcon';
 import NotificationStore from '../../stores/NotificationStore';
 import Tooltip from '../general/Tooltip';
-import UIStore from '../../stores/UIStore';
 
 const loadingIndicatorIcon = <LoadingIndicatorDots viewBox="0 0 32 32" />;
 
@@ -74,12 +73,6 @@ class NotificationsButton extends React.Component {
   };
 
   componentDidMount() {
-    // TODO: Move all of these dependency registrations closer to app's initialization
-    UIStore.registerDependency({
-      id: 'notifications',
-      message: <FormattedMessage id="dependency.loading.notifications" defaultMessage="Notifications" />,
-    });
-
     NotificationStore.listen(EventTypes.NOTIFICATIONS_COUNT_CHANGE, this.handleNotificationCountChange);
   }
 

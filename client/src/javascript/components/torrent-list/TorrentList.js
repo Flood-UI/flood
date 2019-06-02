@@ -1,5 +1,5 @@
 import {Button} from 'flood-ui-kit';
-import {defineMessages, FormattedMessage, injectIntl} from 'react-intl';
+import {FormattedMessage, injectIntl} from 'react-intl';
 import _ from 'lodash';
 import Dropzone from 'react-dropzone';
 import React from 'react';
@@ -20,14 +20,6 @@ import TorrentActions from '../../actions/TorrentActions';
 import TorrentFilterStore from '../../stores/TorrentFilterStore';
 import TorrentStore from '../../stores/TorrentStore';
 import UIActions from '../../actions/UIActions';
-import UIStore from '../../stores/UIStore';
-
-const MESSAGES = defineMessages({
-  torrentListDependency: {
-    id: 'dependency.loading.torrent.list',
-    defaultMessage: 'Torrent List',
-  },
-});
 
 const METHODS_TO_BIND = [
   'bindExternalPriorityChangeHandler',
@@ -43,7 +35,6 @@ const METHODS_TO_BIND = [
   'handleSettingsChange',
   'handleTorrentClick',
   'onReceiveTorrentsError',
-  'onReceiveTorrentsSuccess',
   'onTorrentFilterChange',
   'onTorrentListChange',
   'onTorrentSelectionChange',
@@ -59,7 +50,7 @@ const defaultPropWidths = {
 };
 
 class TorrentListContainer extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
 
     this.lastScrollLeft = 0;
@@ -82,11 +73,6 @@ class TorrentListContainer extends React.Component {
       this[method] = this[method].bind(this);
     });
 
-    UIStore.registerDependency({
-      id: 'torrent-list',
-      message: props.intl.formatMessage(MESSAGES.torrentListDependency),
-    });
-
     this.updateTorrentListViewWidth = _.debounce(this.updateTorrentListViewWidth, 100, {trailing: true});
   }
 
@@ -94,7 +80,7 @@ class TorrentListContainer extends React.Component {
     ClientStatusStore.listen(EventTypes.CLIENT_CONNECTION_STATUS_CHANGE, this.handleClientStatusChange);
     SettingsStore.listen(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
     TorrentStore.listen(EventTypes.UI_TORRENT_SELECTION_CHANGE, this.onTorrentSelectionChange);
-    TorrentStore.listen(EventTypes.CLIENT_TORRENTS_REQUEST_SUCCESS, this.onReceiveTorrentsSuccess);
+    TorrentStore.listen(EventTypes.CLIENT_TORRENTS_REQUEST_SUCCESS, this.onTorrentListChange);
     TorrentStore.listen(EventTypes.UI_TORRENTS_LIST_FILTERED, this.onTorrentListChange);
     TorrentStore.listen(EventTypes.CLIENT_TORRENTS_REQUEST_ERROR, this.onReceiveTorrentsError);
     TorrentFilterStore.listen(EventTypes.UI_TORRENTS_FILTER_CHANGE, this.onTorrentFilterChange);
@@ -131,7 +117,7 @@ class TorrentListContainer extends React.Component {
     ClientStatusStore.unlisten(EventTypes.CLIENT_CONNECTION_STATUS_CHANGE, this.handleClientStatusChange);
     SettingsStore.unlisten(EventTypes.SETTINGS_CHANGE, this.handleSettingsChange);
     TorrentStore.unlisten(EventTypes.UI_TORRENT_SELECTION_CHANGE, this.onTorrentSelectionChange);
-    TorrentStore.unlisten(EventTypes.CLIENT_TORRENTS_REQUEST_SUCCESS, this.onReceiveTorrentsSuccess);
+    TorrentStore.unlisten(EventTypes.CLIENT_TORRENTS_REQUEST_SUCCESS, this.onTorrentListChange);
     TorrentStore.unlisten(EventTypes.UI_TORRENTS_LIST_FILTERED, this.onTorrentListChange);
     TorrentStore.unlisten(EventTypes.CLIENT_TORRENTS_REQUEST_ERROR, this.onReceiveTorrentsError);
     TorrentFilterStore.unlisten(EventTypes.UI_TORRENTS_FILTER_CHANGE, this.onTorrentFilterChange);
@@ -351,10 +337,6 @@ class TorrentListContainer extends React.Component {
 
   onReceiveTorrentsError() {
     this.setState({torrentRequestError: true, torrentRequestSuccess: false});
-  }
-
-  onReceiveTorrentsSuccess() {
-    this.onTorrentListChange(() => UIStore.satisfyDependency('torrent-list'));
   }
 
   onTorrentListChange(setStateCallback) {

@@ -69,16 +69,6 @@ class TorrentFilterStoreClass extends BaseStore {
     this.setTorrentsSort(SettingsStore.getFloodSettings('sortTorrents'));
   }
 
-  handleTorrentTaxonomyRequestSuccess(taxonomy) {
-    this.taxonomy = taxonomy;
-
-    if (this.tagFilter !== 'all' && !Object.keys(taxonomy.tags).includes(this.tagFilter)) {
-      this.setTagFilter('all');
-    }
-
-    this.emit(EventTypes.CLIENT_FETCH_TORRENT_TAXONOMY_SUCCESS);
-  }
-
   handleTorrentTaxonomyDiffChange(diff) {
     Object.keys(diff).forEach(taxonomyKey => {
       const changes = diff[taxonomyKey];
