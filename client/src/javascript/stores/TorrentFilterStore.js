@@ -27,6 +27,7 @@ class TorrentFilterStoreClass extends BaseStore {
     this.tagFilter = 'all';
     this.trackerFilter = 'all';
     TorrentStore.triggerTorrentsFilter();
+    this.emit(EventTypes.UI_TORRENTS_FILTER_CLEAR);
     this.emit(EventTypes.UI_TORRENTS_FILTER_SEARCH_CHANGE);
     this.emit(EventTypes.UI_TORRENTS_FILTER_STATUS_CHANGE);
     this.emit(EventTypes.UI_TORRENTS_FILTER_TRACKER_CHANGE);
