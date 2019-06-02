@@ -187,6 +187,11 @@ UIStore.dispatcherID = AppDispatcher.register(payload => {
     case ActionTypes.UI_DISPLAY_CONTEXT_MENU:
       UIStore.setActiveContextMenu(action.data);
       break;
+    case ActionTypes.FLOOD_FETCH_NOTIFICATIONS_SUCCESS:
+    case ActionTypes.FLOOD_FETCH_NOTIFICATIONS_ERROR:
+    case ActionTypes.NOTIFICATION_COUNT_CHANGE:
+      UIStore.satisfyDependency('notifications');
+      break;
     default:
       break;
   }
