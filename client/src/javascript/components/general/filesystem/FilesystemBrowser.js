@@ -32,27 +32,36 @@ class FilesystemBrowser extends React.PureComponent {
 
     this.state = {
       errorResponse: null,
-      directory: props.defaultDirectory,
       separator: '/',
     };
   }
 
   componentDidMount() {
-    FloodActions.fetchDirectoryList({path: this.state.directory})
+    this.fetchDirectoryListForCurrentDirectory();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.directory !== this.props.directory) {
+      this.fetchDirectoryListForCurrentDirectory();
+    }
+  }
+
+  fetchDirectoryListForCurrentDirectory = () => {
+    FloodActions.fetchDirectoryList({path: this.props.directory})
       .then(response => {
         this.setState({
           ...response,
-          directory: response.path,
           errorResponse: null,
         });
       })
       .catch(error => {
         this.setState({errorResponse: error.response});
       });
-  }
+  };
 
   getNewDestination(nextDirectorySegment) {
-    const {directory, separator} = this.state;
+    const {separator} = this.state;
+    const {directory} = this.props;
 
     if (directory.endsWith(separator)) {
       return `${directory}${nextDirectorySegment}`;
@@ -64,10 +73,6 @@ class FilesystemBrowser extends React.PureComponent {
   handleDirectoryClick = directory => {
     const nextDirectory = this.getNewDestination(directory);
 
-    this.setState({
-      directory: nextDirectory,
-    });
-
     if (this.props.onDirectorySelection) {
       this.props.onDirectorySelection(nextDirectory);
     }
@@ -75,7 +80,7 @@ class FilesystemBrowser extends React.PureComponent {
 
   handleParentDirectoryClick = () => {
     const {separator} = this.state;
-    let {directory} = this.state;
+    let {directory} = this.props;
 
     if (directory.endsWith(separator)) {
       directory = directory.substring(0, directory.length - 1);
@@ -85,10 +90,6 @@ class FilesystemBrowser extends React.PureComponent {
     directoryArr.pop();
 
     directory = directoryArr.join(separator);
-
-    this.setState({
-      directory,
-    });
 
     if (this.props.onDirectorySelection) {
       this.props.onDirectorySelection(directory);

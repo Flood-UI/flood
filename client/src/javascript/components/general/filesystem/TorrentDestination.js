@@ -156,8 +156,7 @@ class NewTorrentDestination extends React.Component {
                 scrolling={false}
                 triggerRef={this.textboxRef}>
                 <FilesystemBrowser
-                  defaultDirectory={destination}
-                  key={destination}
+                  directory={destination}
                   intl={this.props.intl}
                   maxHeight={
                     this.contextMenuInstanceRef &&
