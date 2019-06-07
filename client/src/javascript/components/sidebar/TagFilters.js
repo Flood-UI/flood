@@ -8,7 +8,7 @@ import TorrentFilterStore from '../../stores/TorrentFilterStore';
 import UIActions from '../../actions/UIActions';
 
 class TagFilters extends React.Component {
-  getFilters = () => {
+  getFilters() {
     const filterItems = Object.keys(this.props.tagCount).sort((a, b) => {
       if (a === 'all' || a === 'untagged') {
         return -1;
@@ -32,7 +32,7 @@ class TagFilters extends React.Component {
     ));
 
     return filterElements;
-  };
+  }
 
   handleClick(filter) {
     UIActions.setTorrentTagFilter(filter);
@@ -67,7 +67,7 @@ const ConnectedTagFilters = connectStores(TagFilters, () => {
       event: EventTypes.CLIENT_FETCH_TORRENT_TAXONOMY_SUCCESS,
       getValue: ({store}) => {
         return {
-          tagCount: store.getTorrentTagCount() || {},
+          tagCount: store.getTorrentTagCount(),
         };
       },
     },

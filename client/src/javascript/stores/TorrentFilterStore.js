@@ -55,15 +55,15 @@ class TorrentFilterStoreClass extends BaseStore {
   }
 
   getTorrentStatusCount() {
-    return this.taxonomy.statusCounts;
+    return this.taxonomy.statusCounts || {};
   }
 
   getTorrentTagCount() {
-    return this.taxonomy.tagCounts;
+    return this.taxonomy.tagCounts || {};
   }
 
   getTorrentTrackerCount() {
-    return this.taxonomy.trackerCounts;
+    return this.taxonomy.trackerCounts || {};
   }
 
   handleFetchSettingsRequest() {

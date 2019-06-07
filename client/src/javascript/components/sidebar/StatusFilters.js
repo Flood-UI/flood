@@ -19,7 +19,7 @@ class StatusFilters extends React.Component {
     UIActions.setTorrentStatusFilter(filter);
   }
 
-  getFilters = () => {
+  getFilters() {
     const filters = [
       {
         label: this.props.intl.formatMessage({
@@ -92,7 +92,7 @@ class StatusFilters extends React.Component {
     ));
 
     return filterElements;
-  };
+  }
 
   render() {
     const filters = this.getFilters();
@@ -115,7 +115,7 @@ const ConnectedStatusFilters = connectStores(injectIntl(StatusFilters), () => {
       event: EventTypes.CLIENT_FETCH_TORRENT_TAXONOMY_SUCCESS,
       getValue: ({store}) => {
         return {
-          statusCount: store.getTorrentStatusCount() || {},
+          statusCount: store.getTorrentStatusCount(),
         };
       },
     },
