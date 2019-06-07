@@ -37,7 +37,7 @@ class SearchBox extends React.Component {
   resetSearch = () => {
     this.setState(state => {
       return {
-        inputFieldKey: ++state.inputFieldKey,
+        inputFieldKey: state.inputFieldKey + 1,
         isSearchActive: false,
       };
     });
