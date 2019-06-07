@@ -1,35 +1,5 @@
 import React from 'react';
 
-// A utility for connecting to listening & unlistening to Flux stores
-
-// Example usage:
-// class MyComponent extends React.Component {
-//   render() {
-//     const {name, count, time} = this.props;
-//     return (
-//       <div>
-//         {name}, {count}, {time}
-//       </div>
-//     );
-//   }
-// }
-
-// const MyConnectedComponent = connectStores(MyComponent, props => {
-//   return [
-//     {
-//       store: CountStore,
-//       event: [EventTypes.NAME_CHANGE, EventTypes.COUNT_CHANGE, EventTypes.TIME_CHANGE],
-//       getValue: ({store}) => {
-//         return {
-//           count: store.getCount(),
-//           name: store.getName(),
-//           time: store.getTime()
-//         };
-//       },
-//     },
-//   ];
-// });
-
 const connectStores = (Component, getEventListenerDescriptors) => {
   class ConnectedComponent extends React.Component {
     eventHandlersByStore = new Map();
