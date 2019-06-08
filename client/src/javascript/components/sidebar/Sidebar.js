@@ -15,6 +15,7 @@ import StatusFilters from './StatusFilters';
 import TagFilters from './TagFilters';
 import TorrentFilterStore from '../../stores/TorrentFilterStore';
 import TrackerFilters from './TrackerFilters';
+import DiskUsage from './DiskUsage';
 import UIStore from '../../stores/UIStore';
 
 class Sidebar extends React.Component {
@@ -54,6 +55,7 @@ class Sidebar extends React.Component {
         <StatusFilters />
         <TagFilters />
         <TrackerFilters />
+        <DiskUsage />
       </CustomScrollbars>
     );
   }

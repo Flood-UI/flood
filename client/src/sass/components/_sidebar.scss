@@ -72,6 +72,18 @@ $sidebar--icon-button--foreground--hover: $blue;
     padding: $spacing-unit * 1/5;
     justify-content: flex-start;
   }
+
+  &__diskusage {
+    .progress-bar__icon {
+      display: none;
+    }
+    .progress-bar__fill__wrapper {
+      background: rgba($sidebar-filter--foreground, 0.5);
+    }
+    .progress-bar__fill {
+      background: $sidebar-filter--foreground;
+    }
+  }
 }
 
 .dropdown {

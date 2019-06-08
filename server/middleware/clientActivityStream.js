@@ -7,6 +7,9 @@ const serverEventTypes = require('../../shared/constants/serverEventTypes');
 const services = require('../services');
 const taxonomyServiceEvents = require('../constants/taxonomyServiceEvents');
 const torrentServiceEvents = require('../constants/torrentServiceEvents');
+const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
+const DiskUsageService = require('../services/diskUsageService');
+
 
 module.exports = (req, res) => {
   const {
@@ -31,6 +34,26 @@ module.exports = (req, res) => {
   serverEvent.setType(serverEventTypes.CLIENT_CONNECTIVITY_STATUS_CHANGE);
   serverEvent.addData({isConnected: !serviceInstances.clientGatewayService.hasError});
   serverEvent.emit();
+
+  const diskUsageServ = new DiskUsageService();
+  diskUsageServ.updateDisks().then(() => {
+    const diskUsage = diskUsageServ.getDiskUsage();
+    serverEvent.setID(diskUsage.id);
+    serverEvent.setType(serverEventTypes.DISK_USAGE_CHANGE);
+    serverEvent.addData(diskUsage.disks);
+    serverEvent.emit();
+
+    diskUsageServ.on(diskUsageServiceEvents.DISK_USAGE_CHANGE, diskUsage => {
+      serverEvent.setID(diskUsage.id);
+      serverEvent.setType(serverEventTypes.DISK_USAGE_CHANGE);
+      serverEvent.addData(diskUsage.disks);
+      serverEvent.emit();
+    });
+  });
+  req.on('close', () => {
+    diskUsageServ.destroy();
+    diskUsageServ.removeAllListeners();
+  });
 
   serverEvent.setID(torrentList.id);
   serverEvent.setType(serverEventTypes.TORRENT_LIST_FULL_UPDATE);
