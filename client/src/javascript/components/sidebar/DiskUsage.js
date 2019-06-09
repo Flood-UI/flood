@@ -2,9 +2,7 @@ import {FormattedMessage} from 'react-intl';
 import React from 'react';
 
 import EventTypes from '../../constants/EventTypes';
-import SidebarFilter from './SidebarFilter';
 import DiskUsageStore from '../../stores/DiskUsageStore';
-import UIActions from '../../actions/UIActions';
 import Size from '../general/Size';
 import Tooltip from '../general/Tooltip';
 import ProgressBar from '../general/ProgressBar';
@@ -36,7 +34,6 @@ export default class DiskUsage extends React.Component {
   }
 
   getDisks() {
-    console.log(this.state.disks)
     return this.state.disks.map(d => (
       <li
         key={d.target}
@@ -44,9 +41,9 @@ export default class DiskUsage extends React.Component {
       >
         <Tooltip
           content={(
-            <div>
-            <Size value={d.used} /> Used&nbsp;&nbsp;&nbsp;<Size value={d.avail} /> Free
-            </div>
+            <span>
+              <Size value={d.used} /> Used&nbsp;&nbsp;&nbsp;<Size value={d.avail} /> Free
+            </span>
           )}
           position="bottom"
           wrapperClassName=""
