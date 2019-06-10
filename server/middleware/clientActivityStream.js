@@ -52,7 +52,7 @@ module.exports = (req, res) => {
     DiskUsageService.on(diskUsageServiceEvents.DISK_USAGE_CHANGE, handleDiskUsageChange);
     if (!res.finished) {
       res.on('close', () => {
-        DiskUsageService.off(diskUsageServiceEvents.DISK_USAGE_CHANGE, handleDiskUsageChange);
+        DiskUsageService.removeListener(diskUsageServiceEvents.DISK_USAGE_CHANGE, handleDiskUsageChange);
       });
     }
   });
