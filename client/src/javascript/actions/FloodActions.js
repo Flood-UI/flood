@@ -45,10 +45,7 @@ const FloodActions = {
       this.handleClientConnectivityStatusChange,
     );
 
-    activityStreamEventSource.removeEventListener(
-      serverEventTypes.DISK_USAGE_CHANGE,
-      this.handleDiskUsageChange,
-    );
+    activityStreamEventSource.removeEventListener(serverEventTypes.DISK_USAGE_CHANGE, this.handleDiskUsageChange);
 
     activityStreamEventSource.removeEventListener(
       serverEventTypes.NOTIFICATION_COUNT_CHANGE,
@@ -177,7 +174,7 @@ const FloodActions = {
   handleDiskUsageChange(event) {
     AppDispatcher.dispatchServerAction({
       type: ActionTypes.DISK_USAGE_CHANGE,
-      data: JSON.parse(event.data)
+      data: JSON.parse(event.data),
     });
   },
   handleNotificationCountChange(event) {
@@ -264,10 +261,7 @@ const FloodActions = {
         this.handleClientConnectivityStatusChange,
       );
 
-      activityStreamEventSource.addEventListener(
-        serverEventTypes.DISK_USAGE_CHANGE,
-        this.handleDiskUsageChange,
-      );
+      activityStreamEventSource.addEventListener(serverEventTypes.DISK_USAGE_CHANGE, this.handleDiskUsageChange);
 
       activityStreamEventSource.addEventListener(
         serverEventTypes.NOTIFICATION_COUNT_CHANGE,

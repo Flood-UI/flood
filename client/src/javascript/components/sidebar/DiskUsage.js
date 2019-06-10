@@ -30,28 +30,25 @@ export default class DiskUsage extends React.Component {
   }
 
   onDiskUsageChange() {
-    this.setState({disks: DiskUsageStore.getDiskUsage()})
+    this.setState({disks: DiskUsageStore.getDiskUsage()});
   }
 
   getDisks() {
     return this.state.disks.map(d => (
-      <li
-        key={d.target}
-        className="sidebar-filter__item sidebar__diskusage"
-      >
+      <li key={d.target} className="sidebar-filter__item sidebar__diskusage">
         <Tooltip
-          content={(
+          content={
             <span>
-              <Size value={d.used} /> Used&nbsp;&nbsp;&nbsp;<Size value={d.avail} /> Free
+              <Size value={d.used} /> Used&nbsp;&nbsp;&nbsp;
+              <Size value={d.avail} /> Free
             </span>
-          )}
+          }
           position="bottom"
-          wrapperClassName=""
-        >
+          wrapperClassName="">
           <div>
             {d.target}
-            <span style={{float: 'right'}}>{Math.round(100 * d.used / d.size)}%</span>
-            <ProgressBar percent={100 * d.used / d.size} />
+            <span style={{float: 'right'}}>{Math.round((100 * d.used) / d.size)}%</span>
+            <ProgressBar percent={(100 * d.used) / d.size} />
           </div>
         </Tooltip>
       </li>
@@ -72,6 +69,6 @@ export default class DiskUsage extends React.Component {
         </li>
         {disks}
       </ul>
-    )
+    );
   }
 }

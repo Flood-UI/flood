@@ -10,7 +10,6 @@ const torrentServiceEvents = require('../constants/torrentServiceEvents');
 const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 const DiskUsageService = require('../services/diskUsageService');
 
-
 module.exports = (req, res) => {
   const {
     query: {historySnapshot = historySnapshotTypes.FIVE_MINUTE},

@@ -3,26 +3,31 @@
  * `BaseService` nor have any use of the per user API ie. `getSerivce()`
  */
 const EventEmitter = require('events');
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 
 const diskUsage = {
-  linux: () => exec('df --block-size=1 --type=ext4 --portability | tail -n+2').then(
-    ({stdout}) => stdout.trim().split('\n').map(disk => {
-      const [/* fs */, size, used, avail, /* pcent */, target] = disk.split(/\s+/);
-      return {
-        size: Number.parseInt(size, 10),
-        used: Number.parseInt(used, 10),
-        avail: Number.parseInt(avail, 10),
-        target
-      };
-    })),
+  linux: () =>
+    exec('df --block-size=1 --type=ext4 --portability | tail -n+2').then(({stdout}) =>
+      stdout
+        .trim()
+        .split('\n')
+        .map(disk => {
+          const [, /* fs */ size, used, avail /* pcent */, , target] = disk.split(/\s+/);
+          return {
+            size: Number.parseInt(size, 10),
+            used: Number.parseInt(used, 10),
+            avail: Number.parseInt(avail, 10),
+            target,
+          };
+        }),
+    ),
   // win32
   // darwin
-}
+};
 
-const INTERVAL_UPDATE = 10000
+const INTERVAL_UPDATE = 10000;
 
 class DiskUsageService extends EventEmitter {
   constructor() {
@@ -38,16 +43,20 @@ class DiskUsageService extends EventEmitter {
 
     // start polling disk usage when the first listener is added
     this.on('newListener', event => {
-      if (this.listenerCount(diskUsageServiceEvents.DISK_USAGE_CHANGE) === 0 &&
-          event === diskUsageServiceEvents.DISK_USAGE_CHANGE) {
+      if (
+        this.listenerCount(diskUsageServiceEvents.DISK_USAGE_CHANGE) === 0 &&
+        event === diskUsageServiceEvents.DISK_USAGE_CHANGE
+      ) {
         this.updateInterval = setInterval(this.updateDisks.bind(this), INTERVAL_UPDATE);
       }
     });
 
     // stop polling disk usage when the last listener is removed
     this.on('removeListener', event => {
-      if (this.listenerCount(diskUsageServiceEvents.DISK_USAGE_CHANGE) === 0 &&
-          event === diskUsageServiceEvents.DISK_USAGE_CHANGE) {
+      if (
+        this.listenerCount(diskUsageServiceEvents.DISK_USAGE_CHANGE) === 0 &&
+        event === diskUsageServiceEvents.DISK_USAGE_CHANGE
+      ) {
         clearInterval(this.updateInterval);
       }
     });
@@ -55,11 +64,10 @@ class DiskUsageService extends EventEmitter {
 
   updateDisks() {
     return diskUsage[process.platform]().then(disks => {
-      if (disks.length !== this.disks.length ||
-          disks.some((d, i) => d.used !== this.disks[i].used)) {
+      if (disks.length !== this.disks.length || disks.some((d, i) => d.used !== this.disks[i].used)) {
         this.tLastChange = Date.now();
         this.disks = disks;
-        this.emit(diskUsageServiceEvents.DISK_USAGE_CHANGE, this.getDiskUsage())
+        this.emit(diskUsageServiceEvents.DISK_USAGE_CHANGE, this.getDiskUsage());
       }
     });
   }
@@ -67,7 +75,7 @@ class DiskUsageService extends EventEmitter {
   getDiskUsage() {
     return {
       id: this.tLastChange,
-      disks: this.disks
+      disks: this.disks,
     };
   }
 }
