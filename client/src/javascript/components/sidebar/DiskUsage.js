@@ -43,7 +43,7 @@ export default class DiskUsage extends React.Component {
               <Size value={d.avail} /> Free
             </span>
           }
-          position="bottom"
+          position="top"
           wrapperClassName="">
           <div>
             {d.target}
