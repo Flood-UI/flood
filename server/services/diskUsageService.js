@@ -40,7 +40,7 @@ class DiskUsageService extends EventEmitter {
     this.on('newListener', event => {
       if (this.listenerCount(diskUsageServiceEvents.DISK_USAGE_CHANGE) === 0 &&
           event === diskUsageServiceEvents.DISK_USAGE_CHANGE) {
-        this.updateInterval = setInterval(this.updateDisks, INTERVAL_UPDATE);
+        this.updateInterval = setInterval(this.updateDisks.bind(this), INTERVAL_UPDATE);
       }
     });
 
