@@ -3,18 +3,18 @@
  * `BaseService` nor have any use of the per user API ie. `getSerivce()`
  */
 const EventEmitter = require('events');
-const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
+const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 
 const diskUsage = {
   linux: () => exec('df --block-size=1 --type=ext4 --portability | tail -n+2').then(
     ({stdout}) => stdout.trim().split('\n').map(disk => {
-      const [fs, size, used, avail, pcent, target] = disk.split(/\s+/);
+      const [/* fs */, size, used, avail, /* pcent */, target] = disk.split(/\s+/);
       return {
-        size: Number.parseInt(size),
-        used: Number.parseInt(used),
-        avail: Number.parseInt(avail),
+        size: Number.parseInt(size, 10),
+        used: Number.parseInt(used, 10),
+        avail: Number.parseInt(avail, 10),
         target
       };
     })),
@@ -36,7 +36,21 @@ class DiskUsageService extends EventEmitter {
       return;
     }
 
-    this.interval = setInterval(this.updateDisks.bind(this), INTERVAL_UPDATE);
+    // start polling disk usage when the first listener is added
+    this.on('newListener', event => {
+      if (this.listenerCount(diskUsageServiceEvents.DISK_USAGE_CHANGE) === 0 &&
+          event === diskUsageServiceEvents.DISK_USAGE_CHANGE) {
+        this.updateInterval = setInterval(this.updateDisks, INTERVAL_UPDATE);
+      }
+    });
+
+    // stop polling disk usage when the last listener is removed
+    this.on('removeListener', event => {
+      if (this.listenerCount(diskUsageServiceEvents.DISK_USAGE_CHANGE) === 0 &&
+          event === diskUsageServiceEvents.DISK_USAGE_CHANGE) {
+        clearInterval(this.updateInterval);
+      }
+    });
   }
 
   updateDisks() {
@@ -56,10 +70,6 @@ class DiskUsageService extends EventEmitter {
       disks: this.disks
     };
   }
-
-  destroy() {
-    clearInterval(this.interval);
-  }
 }
 
-module.exports = DiskUsageService
+module.exports = new DiskUsageService();

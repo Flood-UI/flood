@@ -35,24 +35,26 @@ module.exports = (req, res) => {
   serverEvent.addData({isConnected: !serviceInstances.clientGatewayService.hasError});
   serverEvent.emit();
 
-  const diskUsageServ = new DiskUsageService();
-  diskUsageServ.updateDisks().then(() => {
-    const diskUsage = diskUsageServ.getDiskUsage();
+  const handleDiskUsageChange = diskUsageChange => {
+    serverEvent.setID(diskUsageChange.id);
+    serverEvent.setType(serverEventTypes.DISK_USAGE_CHANGE);
+    serverEvent.addData(diskUsageChange.disks);
+    serverEvent.emit();
+  };
+
+  DiskUsageService.updateDisks().then(() => {
+    const diskUsage = DiskUsageService.getDiskUsage();
     serverEvent.setID(diskUsage.id);
     serverEvent.setType(serverEventTypes.DISK_USAGE_CHANGE);
     serverEvent.addData(diskUsage.disks);
     serverEvent.emit();
 
-    diskUsageServ.on(diskUsageServiceEvents.DISK_USAGE_CHANGE, diskUsage => {
-      serverEvent.setID(diskUsage.id);
-      serverEvent.setType(serverEventTypes.DISK_USAGE_CHANGE);
-      serverEvent.addData(diskUsage.disks);
-      serverEvent.emit();
-    });
-  });
-  req.on('close', () => {
-    diskUsageServ.destroy();
-    diskUsageServ.removeAllListeners();
+    DiskUsageService.on(diskUsageServiceEvents.DISK_USAGE_CHANGE, handleDiskUsageChange);
+    if (!res.finished) {
+      res.on('close', () => {
+        DiskUsageService.off(diskUsageServiceEvents.DISK_USAGE_CHANGE, handleDiskUsageChange);
+      });
+    }
   });
 
   serverEvent.setID(torrentList.id);
