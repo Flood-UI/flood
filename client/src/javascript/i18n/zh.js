@@ -28,17 +28,17 @@ export default {
         =1 {torrent}
         other {torrents}
       }.`,
-    'alert.settings.saved': 'Successfully saved settings.',
+    'alert.settings.saved': '设置保存成功！',
   
     'auth.add.user': '增加用户',
-    'auth.connectionType': 'rTorrent Connection Type',
+    'auth.connectionType': 'rTorrent连接类型',
     'auth.connectionType.tcp': 'TCP',
     'auth.connectionType.socket': 'Unix Socket',
     'auth.create.account': '创建账号',
     'auth.create.an.account': 'Create an account',
     'auth.create.an.account.intro': 'Welcome to Flood!',
-    'auth.current.user': 'Current User',
-    'auth.error.username.empty': 'Username cannot be empty.',
+    'auth.current.user': '当前用户',
+    'auth.error.username.empty': '用户名不能为空',
     'auth.log.in': 'Log In',
     'auth.login': 'Login',
     'auth.password': '密码',
@@ -119,13 +119,14 @@ export default {
     'general.to': 'to',
     'general.of': 'of',
   
-    'general.clipboard.copy': 'Copy',
-    'general.clipboard.copied': 'Copied',
+    'general.clipboard.copy': '复制',
+    'general.clipboard.copied': '复制成功',
   
     'locale.language.en': 'English',
     'locale.language.fr': 'French',
     'locale.language.ko': 'Korean',
     'locale.language.nl': 'Nederlands',
+    'locale.language.zh': 'Chinese',
   
     'mediainfo.execError':
       'An error occurred while running mediainfo on the server. Check that mediainfo is installed and available in the PATH to Flood.',
@@ -140,9 +141,9 @@ export default {
     'notification.showing': 'Showing',
   
     'priority.dont.download': "Don't Download",
-    'priority.high': 'High',
-    'priority.low': 'Low',
-    'priority.normal': 'Normal',
+    'priority.high': '高',
+    'priority.low': '低',
+    'priority.normal': '正常',
   
     'settings.bandwidth.slots.download.divider.label': 'Download Slots Divider',
     'settings.bandwidth.slots.download.global.label': 'Download Slots Global',
@@ -337,11 +338,11 @@ export default {
     'torrents.remove.error.no.torrents.selected': "You haven't selected any torrents.",
     'torrents.remove': 'Remove Torrents',
   
-    'torrents.set.tags.button.set': 'Set Tags',
+    'torrents.set.tags.button.set': '设置 Tags',
     'torrents.set.tags.heading': 'Set Tags',
     'torrents.set.tags.enter.tags': 'Enter tags',
   
-    'torrents.sort.title': 'Sort By',
+    'torrents.sort.title': '排序',
   
     'connection-interruption.heading': 'Cannot connect to rTorrent',
     'connection-interruption.verify-settings-prompt': "Let's verify your connection settings.",
