@@ -207,7 +207,7 @@ export default {
     'sidebar.button.speedlimits': '速度限制',
     'sidebar.button.log.out': '登出',
   
-    'sidebar.search.placeholder': '搜索torrents',
+    'sidebar.search.placeholder': '搜索 torrents',
   
     'sidebar.transferdata.downloaded': '已下载',
     'sidebar.transferdata.uploaded': '已上传',
