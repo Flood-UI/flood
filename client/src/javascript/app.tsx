@@ -1,5 +1,6 @@
+import { Router } from 'react-router-dom'
 import {FormattedMessage, IntlProvider} from 'react-intl';
-import {IndexRoute, Router, Route, browserHistory} from 'react-router';
+import {Route} from 'react-router';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -9,6 +10,7 @@ import AppWrapper from './components/AppWrapper';
 import AuthActions from './actions/AuthActions';
 import EventTypes from './constants/EventTypes';
 import FloodActions from './actions/FloodActions';
+import history from './util/history';
 import Login from './components/views/Login';
 import Register from './components/views/Register';
 import SettingsStore from './stores/SettingsStore';
@@ -49,13 +51,13 @@ const initialize = () => {
   AuthActions.verify().then(
     ({initialUser}) => {
       if (initialUser) {
-        browserHistory.replace('register');
+        history.replace('register');
       } else {
-        browserHistory.replace('overview');
+        history.replace('overview');
       }
     },
     () => {
-      browserHistory.replace('login');
+      history.replace('login');
     },
   );
 
@@ -63,14 +65,12 @@ const initialize = () => {
 };
 
 const appRoutes = (
-  <Router history={browserHistory}>
-    <Route path="/" component={AppWrapper}>
-      <IndexRoute component={Login} />
-      <Route path="login" component={Login} />
-      <Route path="register" component={Register} />
-      <Route path="overview" component={TorrentClientOverview} />
-      <Route path="*" component={Login} />
-    </Route>
+  <Router history={history}>
+    <AppWrapper>
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
+      <Route path="/overview" component={TorrentClientOverview} />
+    </AppWrapper>
   </Router>
 );
 
