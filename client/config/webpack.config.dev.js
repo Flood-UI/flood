@@ -29,6 +29,7 @@ module.exports = {
             loader: 'eslint-loader',
             options: {
               formatter: eslintFormatter,
+              emitWarning: true,
             },
           },
         ],
