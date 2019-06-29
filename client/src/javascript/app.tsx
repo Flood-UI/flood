@@ -74,7 +74,13 @@ const appRoutes = (
   </Router>
 );
 
-class FloodApp extends React.Component {
+type i18nType = typeof i18n;
+
+interface FloodAppProps {
+  locale: keyof i18nType,
+};
+
+class FloodApp extends React.Component<FloodAppProps> {
   componentDidMount() {
     initialize();
   }
@@ -96,7 +102,7 @@ const ConnectedFloodApp = connectStores(FloodApp, () => {
     {
       store: SettingsStore,
       event: EventTypes.SETTINGS_CHANGE,
-      getValue: ({store}) => {
+      getValue: ({store}: {store: SettingsStore}) => {
         return {
           locale: store.getFloodSettings('language'),
         };

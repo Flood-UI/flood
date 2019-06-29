@@ -16,6 +16,20 @@ module.exports = {
   module: {
     rules: [
       {
+        enforce: 'pre',
+        test: /\.(ts|js)x?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'eslint-loader',
+            options: {
+              formatter: eslintFormatter,
+              emitWarning: true,
+            },
+          },
+        ],
+      },
+      {
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: [
@@ -23,13 +37,6 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               babelrc: true,
-            },
-          },
-          {
-            loader: 'eslint-loader',
-            options: {
-              formatter: eslintFormatter,
-              emitWarning: true,
             },
           },
         ],
