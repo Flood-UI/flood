@@ -25,7 +25,7 @@ module.exports = {
     'react/destructuring-assignment': 0,
     'react/forbid-prop-types': 0,
     'react/jsx-closing-bracket-location': 0,
-    'react/jsx-filename-extension': [1, {extensions: ['.js']}],
+    'react/jsx-filename-extension': [1, {extensions: ['.js', '.tsx']}],
     'react/jsx-one-expression-per-line': 0,
     'react/jsx-wrap-multilines': 0,
     'react/no-unescaped-entities': ['error', {forbid: ['>', '}']}],
