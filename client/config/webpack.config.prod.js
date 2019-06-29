@@ -181,4 +181,8 @@ module.exports = {
       fileName: 'asset-manifest.json',
     }),
   ],
+  performance: {
+    // TODO: Add code-splitting and re-enable this when the bundle is smaller
+    hints: false,
+  },
 };
