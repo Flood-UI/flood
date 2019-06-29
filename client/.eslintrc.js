@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  parser: 'babel-eslint',
   env: {
     browser: 1,
     node: 0,
@@ -50,4 +51,11 @@ module.exports = {
       },
     },
   },
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx', '**/*.ts', '**/*.tsx'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint/eslint-plugin', 'import'],
+    },
+  ],
 };
