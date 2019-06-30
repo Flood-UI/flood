@@ -16,7 +16,7 @@ if (env.stringified['process.env'].NODE_ENV !== '"production"') {
 }
 
 module.exports = {
-  mode: 'production',
+  mode: process.env.NODE_ENV,
   module: {
     rules: [
       {
