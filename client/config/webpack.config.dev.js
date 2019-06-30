@@ -59,7 +59,7 @@ module.exports = {
             },
           },
           {
-            loader: require.resolve('./typed-css-modules-loader'),
+            loader: require.resolve('../scripts/typed-css-modules-loader'),
           },
           {
             loader: 'postcss-loader',
@@ -83,27 +83,27 @@ module.exports = {
           },
         ],
       },
-      // TODO: Enable this
-      // {
-      //   test: /\.svg$/,
-      //   use: [
-      //     {
-      //       loader: 'babel-loader',
-      //       options: {
-      //         presets: ['@babel/env', '@babel/react'],
-      //       },
-      //     },
-      //     {
-      //       loader: 'svg-sprite-loader',
-      //       options: {
-      //         runtimeGenerator: require.resolve('../scripts/svg-to-react-component'),
-      //         runtimeOptions: {
-      //           iconModule: require.resolve('../library/src/components/Icon.tsx'),
-      //         },
-      //       },
-      //     },
-      //   ],
-      // },
+      {
+        test: /\.svg$/,
+        issuer: /\.(ts|js)x?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/env', '@babel/react'],
+            },
+          },
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              runtimeGenerator: require.resolve('../scripts/svg-react-component-generator'),
+              runtimeOptions: {
+                iconModule: require.resolve('../src/javascript/components/general/Icon.tsx'),
+              },
+            },
+          },
+        ],
+      },
       {
         test: /\.(ts|js)x?$/,
         use: ['source-map-loader'],
