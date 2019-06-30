@@ -10,7 +10,7 @@
   "scripts": {
     "build": "node client/scripts/build.js",
     "build-assets": "UPDATED_SCRIPT=build npm run deprecated-warning && npm run build",
-    "build-docs": "./node_modules/.bin/jsdoc -c ./.jsdoc.json",
+    "build-docs": "jsdoc -c ./.jsdoc.json",
     "deprecated-warning": "node client/scripts/deprecated-warning.js && sleep 10",
     "format-source": "node scripts/prettier.js format",
     "check-source-formatting": "node scripts/prettier.js check",
