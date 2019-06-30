@@ -7,7 +7,7 @@ interface GenericStore {
   unlisten: (event: keyof typeof EventTypes, eventHandler: (payload: any) => void) => void;
 }
 
-const connectStores = <DerivedState extends object, WrappedComponentProps extends object>(
+const connectStores = <DerivedState extends object, WrappedComponentProps extends object = {}>(
   InputComponent: React.JSXElementConstructor<WrappedComponentProps & DerivedState>,
   getEventListenerDescriptors: (
     props: WrappedComponentProps,
