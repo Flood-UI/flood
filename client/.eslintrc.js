@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
   parser: 'babel-eslint',
+  extends: ['plugin:@typescript-eslint/recommended', 'prettier', 'prettier/@typescript-eslint'],
   env: {
     browser: 1,
     node: 0,
@@ -13,6 +14,12 @@ module.exports = {
   },
   plugins: ['import'],
   rules: {
+    '@typescript-eslint/no-var-requires': 0,
+    // This is enabled to allow BEM-style classnames to be referenced JS
+    // Remvoe when BEM-style classnames are converted to locally-scoped
+    // class names
+    '@typescript-eslint/camelcase': ['error', {allow: [/[^\s]__[^\s]{1,}$/]}],
+    camelcase: 0,
     // TODO: Enable a11y features
     'jsx-a11y/click-events-have-key-events': 0,
     'jsx-a11y/label-has-associated-control': 0,
@@ -55,7 +62,11 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx', '**/*.ts', '**/*.tsx'],
       parser: '@typescript-eslint/parser',
-      plugins: ['@typescript-eslint/eslint-plugin', 'import'],
+      plugins: ['import', '@typescript-eslint/eslint-plugin'],
+      rules: {
+        'no-unused-vars': 0,
+        '@typescript-eslint/no-unused-vars': 1,
+      },
     },
   ],
 };
