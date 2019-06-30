@@ -1,18 +1,47 @@
 import React from 'react';
 
-const connectStores = (Component, getEventListenerDescriptors) => {
-  class ConnectedComponent extends React.Component {
-    eventHandlersByStore = new Map();
+import EventTypes from '../constants/EventTypes';
 
-    constructor(props) {
+interface GenericStore {
+  listen: (event: keyof typeof EventTypes, eventHandler: (payload: any) => void) => void;
+  unlisten: (event: keyof typeof EventTypes, eventHandler: (payload: any) => void) => void;
+}
+
+const connectStores = <DerivedState extends object, WrappedComponentProps extends object>(
+  InputComponent: React.JSXElementConstructor<WrappedComponentProps & DerivedState>,
+  getEventListenerDescriptors: (
+    props: WrappedComponentProps,
+  ) => Array<{
+    store: GenericStore;
+    event: (keyof typeof EventTypes) | Array<keyof typeof EventTypes>;
+    getValue: (
+      props: {
+        payload: any;
+        props: WrappedComponentProps;
+        state: DerivedState;
+        store: GenericStore;
+      },
+    ) => Partial<DerivedState>;
+  }>,
+) => {
+  class ConnectedComponent extends React.Component<WrappedComponentProps, DerivedState> {
+    eventHandlersByStore: Map<
+      GenericStore,
+      Set<{events: Array<keyof typeof EventTypes>; eventHandler: (payload: any) => void}>
+    > = new Map();
+
+    constructor(props: WrappedComponentProps) {
       super(props);
-      this.state = getEventListenerDescriptors(props).reduce((state, eventListenerDescriptor) => {
-        const {store, getValue} = eventListenerDescriptor;
-        return {
-          ...state,
-          ...getValue({state, props, store, payload: null}),
-        };
-      }, {});
+      this.state = getEventListenerDescriptors(props).reduce(
+        (state, eventListenerDescriptor) => {
+          const {store, getValue} = eventListenerDescriptor;
+          return {
+            ...state,
+            ...getValue({state, props, store, payload: null}),
+          };
+        },
+        {} as DerivedState,
+      );
     }
 
     componentDidMount() {
@@ -20,7 +49,11 @@ const connectStores = (Component, getEventListenerDescriptors) => {
 
       eventListenerDescriptors.forEach(eventListenerDescriptor => {
         const {store, event, getValue} = eventListenerDescriptor;
-        const eventHandler = payload => this.setState((state, props) => getValue({state, props, store, payload}));
+        const eventHandler = (payload: any) =>
+          this.setState(
+            (state: DerivedState, props: WrappedComponentProps) =>
+              getValue({state, props, store, payload}) as DerivedState,
+          );
         const events = Array.isArray(event) ? event : [event];
 
         events.forEach(storeEvent => {
@@ -28,13 +61,17 @@ const connectStores = (Component, getEventListenerDescriptors) => {
         });
 
         if (this.eventHandlersByStore.get(store) == null) {
-          this.eventHandlersByStore.set(store, new Set());
+          const newSet: Set<{
+            events: Array<keyof typeof EventTypes>;
+            eventHandler: (payload: any) => void;
+          }> = new Set();
+          this.eventHandlersByStore.set(store, newSet);
         }
 
-        this.eventHandlersByStore.get(store).add({
-          events,
-          eventHandler,
-        });
+        const eventHandlersForStore = this.eventHandlersByStore.get(store);
+        if (eventHandlersForStore != null) {
+          eventHandlersForStore.add({events, eventHandler});
+        }
       });
     }
 
@@ -51,11 +88,11 @@ const connectStores = (Component, getEventListenerDescriptors) => {
     }
 
     render() {
-      return <Component {...this.props} {...this.state} />;
+      return <InputComponent {...this.props as WrappedComponentProps} {...this.state as DerivedState} />;
     }
   }
 
-  return props => <ConnectedComponent {...props} />;
+  return (props: WrappedComponentProps) => <ConnectedComponent {...props} />;
 };
 
 export default connectStores;
