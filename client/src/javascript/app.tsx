@@ -1,4 +1,4 @@
-import { Router } from 'react-router-dom'
+import {Router} from 'react-router-dom';
 import {FormattedMessage, IntlProvider} from 'react-intl';
 import {Route} from 'react-router';
 import React from 'react';
@@ -74,13 +74,13 @@ const appRoutes = (
   </Router>
 );
 
-type i18nType = typeof i18n;
+interface FloodAppProps {}
 
-interface FloodAppProps {
-  locale: keyof i18nType,
-};
+interface InjectedFloodAppProps {
+  locale: keyof typeof i18n;
+}
 
-class FloodApp extends React.Component<FloodAppProps> {
+class FloodApp extends React.Component<FloodAppProps & InjectedFloodAppProps> {
   componentDidMount() {
     initialize();
   }
@@ -89,7 +89,6 @@ class FloodApp extends React.Component<FloodAppProps> {
     const {locale} = this.props;
 
     return (
-      // eslint-disable-next-line import/namespace
       <IntlProvider locale={locale} messages={i18n[locale]}>
         {appRoutes}
       </IntlProvider>
@@ -97,14 +96,14 @@ class FloodApp extends React.Component<FloodAppProps> {
   }
 }
 
-const ConnectedFloodApp = connectStores(FloodApp, () => {
+const ConnectedFloodApp = connectStores<InjectedFloodAppProps, FloodAppProps>(FloodApp, () => {
   return [
     {
       store: SettingsStore,
       event: EventTypes.SETTINGS_CHANGE,
-      getValue: ({store}: {store: SettingsStore}) => {
+      getValue: () => {
         return {
-          locale: store.getFloodSettings('language'),
+          locale: SettingsStore.getFloodSettings('language'),
         };
       },
     },
