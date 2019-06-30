@@ -74,13 +74,11 @@ const appRoutes = (
   </Router>
 );
 
-interface FloodAppProps {}
-
 interface InjectedFloodAppProps {
   locale: keyof typeof i18n;
 }
 
-class FloodApp extends React.Component<FloodAppProps & InjectedFloodAppProps> {
+class FloodApp extends React.Component<InjectedFloodAppProps> {
   componentDidMount() {
     initialize();
   }
@@ -96,7 +94,7 @@ class FloodApp extends React.Component<FloodAppProps & InjectedFloodAppProps> {
   }
 }
 
-const ConnectedFloodApp = connectStores<InjectedFloodAppProps, FloodAppProps>(FloodApp, () => {
+const ConnectedFloodApp = connectStores<InjectedFloodAppProps>(FloodApp, () => {
   return [
     {
       store: SettingsStore,
