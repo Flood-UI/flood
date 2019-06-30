@@ -4,7 +4,9 @@ const glob = require('glob');
 const path = require('path');
 const prettier = require('prettier');
 
-const filePattern = `{client,scripts,server,shared}${path.sep}!(assets){${path.sep},}{**${path.sep}*,*}.{js,jsx,ts,tsx,json,md}`;
+const filePattern = `{client,scripts,server,shared}${path.sep}!(assets){${path.sep},}{**${
+  path.sep
+}*,*}.{js,jsx,ts,tsx,json,md}`;
 
 const iterateOverFiles = ({onFileRead}) =>
   new Promise((resolve, reject) => {
