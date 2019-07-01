@@ -17,6 +17,28 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
+        test: /\.svg$/,
+        issuer: /\.(ts|js)x?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/env', '@babel/react'],
+            },
+          },
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              runtimeGenerator: require.resolve('../scripts/svg-react-component-generator'),
+              runtimeOptions: {
+                iconModule: require.resolve('../src/javascript/components/general/Icon.tsx'),
+              },
+            },
+          },
+        ],
+      },
+      {
+        enforce: 'pre',
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: [
@@ -84,27 +106,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.svg$/,
-        issuer: /\.(ts|js)x?$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/env', '@babel/react'],
-            },
-          },
-          {
-            loader: 'svg-sprite-loader',
-            options: {
-              runtimeGenerator: require.resolve('../scripts/svg-react-component-generator'),
-              runtimeOptions: {
-                iconModule: require.resolve('../src/javascript/components/general/Icon.tsx'),
-              },
-            },
-          },
-        ],
-      },
-      {
         test: /\.(ts|js)x?$/,
         use: ['source-map-loader'],
         enforce: 'pre',
@@ -120,6 +121,7 @@ module.exports = {
           /\.gif$/,
           /\.jpe?g$/,
           /\.png$/,
+          /\.svg$/,
         ],
         loader: require.resolve('file-loader'),
         options: {
