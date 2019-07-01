@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import * as i18n from './i18n/languages';
-import connectStores from './util/connectStores';
+import connectStores, {EventListenerDescriptor} from './util/connectStores';
 import AppWrapper from './components/AppWrapper';
 import AuthActions from './actions/AuthActions';
 import EventTypes from './constants/EventTypes';
@@ -13,13 +13,14 @@ import FloodActions from './actions/FloodActions';
 import history from './util/history';
 import Login from './components/views/Login';
 import Register from './components/views/Register';
+import SomeIcon from '../images/flood.svg';
 import SettingsStore from './stores/SettingsStore';
 import TorrentClientOverview from './components/views/TorrentClientOverview';
 import UIStore from './stores/UIStore';
 
 import '../sass/style.scss';
 
-const initialize = () => {
+const initialize = (): void => {
   UIStore.registerDependency({
     id: 'notifications',
     message: <FormattedMessage id="dependency.loading.notifications" defaultMessage="Notifications" />,
@@ -49,14 +50,14 @@ const initialize = () => {
   });
 
   AuthActions.verify().then(
-    ({initialUser}) => {
+    ({initialUser}): void => {
       if (initialUser) {
         history.replace('register');
       } else {
         history.replace('overview');
       }
     },
-    () => {
+    (): void => {
       history.replace('login');
     },
   );
@@ -79,27 +80,30 @@ interface InjectedFloodAppProps {
 }
 
 class FloodApp extends React.Component<InjectedFloodAppProps> {
-  componentDidMount() {
+  public componentDidMount(): void {
     initialize();
   }
 
-  render() {
+  public render(): React.ReactNode {
     const {locale} = this.props;
 
     return (
-      <IntlProvider locale={locale} messages={i18n[locale]}>
-        {appRoutes}
-      </IntlProvider>
+      <div>
+        <SomeIcon />
+        <IntlProvider locale={locale} messages={i18n[locale]}>
+          {appRoutes}
+        </IntlProvider>
+      </div>
     );
   }
 }
 
-const ConnectedFloodApp = connectStores<InjectedFloodAppProps>(FloodApp, () => {
+const ConnectedFloodApp = connectStores<InjectedFloodAppProps>(FloodApp, (): EventListenerDescriptor<InjectedFloodAppProps>[] => {
   return [
     {
       store: SettingsStore,
       event: EventTypes.SETTINGS_CHANGE,
-      getValue: () => {
+      getValue: (): InjectedFloodAppProps => {
         return {
           locale: SettingsStore.getFloodSettings('language'),
         };

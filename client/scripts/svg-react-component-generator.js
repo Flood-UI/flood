@@ -32,6 +32,8 @@ const runtimeGenerator = ({symbol, config, context, loaderContext}) => {
   const parentComponentDisplayName = 'SpriteSymbolComponent';
   const displayName = `${pascalCase(symbol.id)}_${parentComponentDisplayName}`;
 
+  console.log(parentComponentDisplayName);
+
   return `
       import * as React from 'react';
       import SpriteSymbol from ${symbolRequest};

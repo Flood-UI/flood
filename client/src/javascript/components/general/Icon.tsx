@@ -20,16 +20,16 @@ interface Props {
 }
 
 export default class Icon extends React.PureComponent<Props> {
-  static Fills = Fills;
+  public static Fills = Fills;
 
-  static Sizes = Sizes;
+  public static Sizes = Sizes;
 
-  static defaultProps = {
+  public static defaultProps = {
     fill: Fills.CURRENT_COLOR,
     size: Sizes.MEDIUM,
   };
 
-  render() {
+  public render(): React.ReactNode {
     const {className, fill, glyph, size, ...restProps} = this.props;
 
     return (
