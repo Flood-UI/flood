@@ -17,28 +17,6 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.svg$/,
-        issuer: /\.(ts|js)x?$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/env', '@babel/react'],
-            },
-          },
-          {
-            loader: 'svg-sprite-loader',
-            options: {
-              runtimeGenerator: require.resolve('../scripts/svg-react-component-generator'),
-              runtimeOptions: {
-                iconModule: require.resolve('../src/javascript/components/general/Icon.tsx'),
-              },
-            },
-          },
-        ],
-      },
-      {
-        enforce: 'pre',
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: [
@@ -111,6 +89,28 @@ module.exports = {
         enforce: 'pre',
       },
       {
+        enforce: 'pre',
+        test: /\.svg$/,
+        issuer: /\.(ts|js)x?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/env', '@babel/react'],
+            },
+          },
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              runtimeGenerator: require.resolve('../scripts/svg-react-component-generator'),
+              runtimeOptions: {
+                iconModule: require.resolve('../src/javascript/components/general/Icon.tsx'),
+              },
+            },
+          },
+        ],
+      },
+      {
         exclude: [
           /\.html$/,
           /\.(js|jsx|ts|tsx)$/,
@@ -123,6 +123,14 @@ module.exports = {
           /\.png$/,
           /\.svg$/,
         ],
+        loader: require.resolve('file-loader'),
+        options: {
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
+      },
+      {
+        include: [/\.svg$/],
+        issuer: /\.s?css$/,
         loader: require.resolve('file-loader'),
         options: {
           name: 'static/media/[name].[hash:8].[ext]',
