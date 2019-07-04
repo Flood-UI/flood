@@ -19,7 +19,7 @@ const stringifySymbol = symbol =>
     content: symbol.render(),
   });
 
-const runtimeGenerator = ({symbol, config, context, loaderContext}) => {
+const runtimeGenerator = ({symbol, config, loaderContext}) => {
   const {spriteModule, symbolModule, runtimeOptions} = config;
   // eslint-disable-next-line no-underscore-dangle
   const compilerContext = loaderContext._compiler.context;
@@ -27,12 +27,16 @@ const runtimeGenerator = ({symbol, config, context, loaderContext}) => {
   const iconModulePath = path.resolve(compilerContext, runtimeOptions.iconModule);
   const iconModuleRequest = stringify(path.relative(path.dirname(symbol.request.file), iconModulePath));
 
-  const spriteRequest = stringifyRequest({context}, spriteModule);
-  const symbolRequest = stringifyRequest({context}, symbolModule);
+  const spriteRequest = stringifyRequest(
+    {context: loaderContext.context},
+    path.resolve(loaderContext.context, spriteModule),
+  );
+  const symbolRequest = stringifyRequest(
+    {context: loaderContext.context},
+    path.resolve(loaderContext.context, symbolModule),
+  );
   const parentComponentDisplayName = 'SpriteSymbolComponent';
   const displayName = `${pascalCase(symbol.id)}_${parentComponentDisplayName}`;
-
-  console.log(parentComponentDisplayName);
 
   return `
       import * as React from 'react';
@@ -42,10 +46,8 @@ const runtimeGenerator = ({symbol, config, context, loaderContext}) => {
 
       const symbol = new SpriteSymbol(${stringifySymbol(symbol)});
       sprite.add(symbol);
-      export default class ${displayName} extends React.Component {
-        render() {
-          return <${parentComponentDisplayName} glyph="${symbol.id}" {...this.props} />;
-        }
+      export default const ${displayName} = props => {
+        return <${parentComponentDisplayName} glyph="${symbol.id}" {...props} />;
       }
     `;
 };

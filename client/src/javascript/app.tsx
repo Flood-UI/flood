@@ -13,7 +13,6 @@ import FloodActions from './actions/FloodActions';
 import history from './util/history';
 import Login from './components/views/Login';
 import Register from './components/views/Register';
-import SomeIcon from '../images/flood.svg';
 import SettingsStore from './stores/SettingsStore';
 import TorrentClientOverview from './components/views/TorrentClientOverview';
 import UIStore from './stores/UIStore';
@@ -89,7 +88,6 @@ class FloodApp extends React.Component<InjectedFloodAppProps> {
 
     return (
       <div>
-        <SomeIcon />
         <IntlProvider locale={locale} messages={i18n[locale]}>
           {appRoutes}
         </IntlProvider>

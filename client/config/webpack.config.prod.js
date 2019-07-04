@@ -74,13 +74,18 @@ module.exports = {
         ],
       },
       {
+        test: /\.(ts|js)x?$/,
+        use: ['source-map-loader'],
+        enforce: 'pre',
+      },
+      {
         test: /\.svg$/,
         issuer: /\.(ts|js)x?$/,
         use: [
           {
             loader: 'babel-loader',
             options: {
-              babelrc: true,
+              presets: ['@babel/env', '@babel/react'],
             },
           },
           {
@@ -95,11 +100,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.(ts|js)x?$/,
-        use: ['source-map-loader'],
-        enforce: 'pre',
-      },
-      {
         exclude: [
           /\.html$/,
           /\.(js|jsx|ts|tsx)$/,
@@ -110,7 +110,16 @@ module.exports = {
           /\.gif$/,
           /\.jpe?g$/,
           /\.png$/,
+          /\.svg$/,
         ],
+        loader: require.resolve('file-loader'),
+        options: {
+          name: 'static/media/[name].[hash:8].[ext]',
+        },
+      },
+      {
+        include: [/\.svg$/],
+        issuer: /\.s?css$/,
         loader: require.resolve('file-loader'),
         options: {
           name: 'static/media/[name].[hash:8].[ext]',
