@@ -25,7 +25,7 @@ const connectStores = <DerivedState extends object, WrappedComponentProps extend
   getEventListenerDescriptors: (
     props: WrappedComponentProps,
   ) => EventListenerDescriptor<DerivedState, WrappedComponentProps>[],
-): (props: WrappedComponentProps) => React.ReactElement<WrappedComponentProps> => {
+): ((props: WrappedComponentProps) => React.ReactElement<WrappedComponentProps>) => {
   class ConnectedComponent extends React.Component<WrappedComponentProps, DerivedState> {
     private eventHandlersByStore: Map<
       GenericStore,
@@ -42,49 +42,59 @@ const connectStores = <DerivedState extends object, WrappedComponentProps extend
             ...getValue({state, props, store, payload: null}),
           };
         },
-        {} as unknown as DerivedState,
+        ({} as unknown) as DerivedState,
       );
     }
 
     public componentDidMount(): void {
       const eventListenerDescriptors = getEventListenerDescriptors(this.props);
 
-      eventListenerDescriptors.forEach((eventListenerDescriptor): void => {
-        const {store, event, getValue} = eventListenerDescriptor;
-        const eventHandler = (payload: unknown): void =>
-          this.setState(
-            (state: DerivedState, props: WrappedComponentProps): DerivedState =>
-              getValue({state, props, store, payload}) as DerivedState,
+      eventListenerDescriptors.forEach(
+        (eventListenerDescriptor): void => {
+          const {store, event, getValue} = eventListenerDescriptor;
+          const eventHandler = (payload: unknown): void =>
+            this.setState(
+              (state: DerivedState, props: WrappedComponentProps): DerivedState =>
+                getValue({state, props, store, payload}) as DerivedState,
+            );
+          const events = Array.isArray(event) ? event : [event];
+
+          events.forEach(
+            (storeEvent): void => {
+              store.listen(storeEvent, eventHandler);
+            },
           );
-        const events = Array.isArray(event) ? event : [event];
 
-        events.forEach((storeEvent): void => {
-          store.listen(storeEvent, eventHandler);
-        });
+          if (this.eventHandlersByStore.get(store) == null) {
+            const newSet: Set<{
+              events: (keyof typeof EventTypes)[];
+              eventHandler: (payload: unknown) => void;
+            }> = new Set();
+            this.eventHandlersByStore.set(store, newSet);
+          }
 
-        if (this.eventHandlersByStore.get(store) == null) {
-          const newSet: Set<{
-            events: (keyof typeof EventTypes)[];
-            eventHandler: (payload: unknown) => void;
-          }> = new Set();
-          this.eventHandlersByStore.set(store, newSet);
-        }
-
-        const eventHandlersForStore = this.eventHandlersByStore.get(store);
-        if (eventHandlersForStore != null) {
-          eventHandlersForStore.add({events, eventHandler});
-        }
-      });
+          const eventHandlersForStore = this.eventHandlersByStore.get(store);
+          if (eventHandlersForStore != null) {
+            eventHandlersForStore.add({events, eventHandler});
+          }
+        },
+      );
     }
 
     public componentWillUnmount(): void {
-      this.eventHandlersByStore.forEach((listenerDescriptors, store): void => {
-        listenerDescriptors.forEach(({events, eventHandler}): void => {
-          events.forEach((event): void => {
-            store.unlisten(event, eventHandler);
-          });
-        });
-      });
+      this.eventHandlersByStore.forEach(
+        (listenerDescriptors, store): void => {
+          listenerDescriptors.forEach(
+            ({events, eventHandler}): void => {
+              events.forEach(
+                (event): void => {
+                  store.unlisten(event, eventHandler);
+                },
+              );
+            },
+          );
+        },
+      );
 
       this.eventHandlersByStore.clear();
     }
@@ -95,7 +105,7 @@ const connectStores = <DerivedState extends object, WrappedComponentProps extend
   }
 
   return (props: WrappedComponentProps): React.ReactElement<WrappedComponentProps> => {
-    return <ConnectedComponent {...props} />
+    return <ConnectedComponent {...props} />;
   };
 };
 

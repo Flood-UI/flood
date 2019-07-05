@@ -39,8 +39,7 @@ export default class Icon extends React.PureComponent<Props> {
           [styles.sizeMedium]: size === Sizes.MEDIUM,
           [styles.sizeSmall]: size === Sizes.SMALL,
         })}
-        {...restProps}
-      >
+        {...restProps}>
         <use xlinkHref={`#${glyph}`} />
       </svg>
     );
