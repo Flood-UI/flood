@@ -39,17 +39,18 @@ const runtimeGenerator = ({symbol, config, loaderContext}) => {
   const displayName = `${pascalCase(symbol.id)}_${parentComponentDisplayName}`;
 
   return `
-      import * as React from 'react';
-      import SpriteSymbol from ${symbolRequest};
-      import sprite from ${spriteRequest};
-      import ${parentComponentDisplayName} from ${iconModuleRequest};
+    import * as React from 'react';
+    import SpriteSymbol from ${symbolRequest};
+    import sprite from ${spriteRequest};
+    import ${parentComponentDisplayName} from ${iconModuleRequest};
 
-      const symbol = new SpriteSymbol(${stringifySymbol(symbol)});
-      sprite.add(symbol);
-      export default const ${displayName} = props => {
-        return <${parentComponentDisplayName} glyph="${symbol.id}" {...props} />;
-      }
-    `;
+    const symbol = new SpriteSymbol(${stringifySymbol(symbol)});
+    sprite.add(symbol);
+    const ${displayName} = props => {
+      return <${parentComponentDisplayName} glyph="${symbol.id}" {...props} />;
+    };
+    export default ${displayName};
+  `;
 };
 
 module.exports = runtimeGenerator;
