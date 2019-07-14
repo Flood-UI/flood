@@ -5,36 +5,12 @@ import EventTypes from '../../constants/EventTypes';
 import DiskUsageStore from '../../stores/DiskUsageStore';
 import Size from '../general/Size';
 import Tooltip from '../general/Tooltip';
+import connectStores from '../../util/connectStores';
 import ProgressBar from '../general/ProgressBar';
 
-const METHODS_TO_BIND = ['onDiskUsageChange', 'getDisks'];
-
-export default class DiskUsage extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      disks: DiskUsageStore.getDiskUsage(),
-    };
-
-    METHODS_TO_BIND.forEach(method => {
-      this[method] = this[method].bind(this);
-    });
-  }
-
-  componentDidMount() {
-    DiskUsageStore.listen(EventTypes.DISK_USAGE_CHANGE, this.onDiskUsageChange);
-  }
-
-  componentWillUnmount() {
-    DiskUsageStore.unlisten(EventTypes.DISK_USAGE_CHANGE, this.onDiskUsageChange);
-  }
-
-  onDiskUsageChange() {
-    this.setState({disks: DiskUsageStore.getDiskUsage()});
-  }
-
+class DiskUsage extends React.Component {
   getDisks() {
-    return this.state.disks.map(d => (
+    return this.props.disks.map(d => (
       <li key={d.target} className="sidebar-filter__item sidebar__diskusage">
         <Tooltip
           content={
@@ -72,3 +48,11 @@ export default class DiskUsage extends React.Component {
     );
   }
 }
+
+export default connectStores(DiskUsage, () => [{
+  store: DiskUsageStore,
+  event: EventTypes.DISK_USAGE_CHANGE,
+  getValue: ({ store }) => ({
+    disks: store.getDiskUsage()
+  })
+}])
