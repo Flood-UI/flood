@@ -4,12 +4,16 @@
  */
 const EventEmitter = require('events');
 const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+const execFile = util.promisify(require('child_process').execFile);
 const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 
 const diskUsage = {
+//  linux: () => Promise.resolve([]),
   linux: () =>
-    exec('df --block-size=1 --type=ext4 --portability | tail -n+2').then(({stdout}) =>
+    execFile('df --block-size=1 --type=ext4 --portability | tail -n+2', {
+	    shell: true,
+	    maxBuffer: 4096,
+    }).then(({stdout}) =>
       stdout
         .trim()
         .split('\n')
