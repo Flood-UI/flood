@@ -44,12 +44,12 @@ export default class DiskUsage extends React.Component {
             </span>
           }
           position="top"
-          wrapperClassName="">
-          <div>
+          wrapperClassName="diskusage__item">
+          <div className="diskusage__text-row">
             {d.target}
-            <span style={{float: 'right'}}>{Math.round((100 * d.used) / d.size)}%</span>
-            <ProgressBar percent={(100 * d.used) / d.size} />
+            <span>{Math.round((100 * d.used) / d.size)}%</span>
           </div>
+          <ProgressBar percent={(100 * d.used) / d.size} />
         </Tooltip>
       </li>
     ));

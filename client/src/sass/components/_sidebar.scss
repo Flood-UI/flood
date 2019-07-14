@@ -86,6 +86,11 @@ $sidebar--icon-button--foreground--hover: $blue;
   }
 }
 
+.diskusage__text-row {
+  display: flex;
+  justify-content: space-between;
+}
+
 .dropdown {
 
   &--speed-limits {
