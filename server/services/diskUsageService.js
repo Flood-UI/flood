@@ -15,9 +15,10 @@ const filterMountPoint =
       fs => config.diskUsageService.watchMountPoints.includes(fs)
     : () => true; // include all mounted file systems by default
 
+const PLATFORMS_SUPPORTED = ['darwin', 'linux']
 const diskUsage = {
   linux: () =>
-    execFile('df --block-size=1 --portability | tail -n+2', {
+    execFile('df --block-size=1024 --portability | tail -n+2', {
       shell: true,
       maxBuffer: 4096,
     }).then(({stdout}) =>
@@ -26,18 +27,36 @@ const diskUsage = {
         .split('\n')
         .map(disk => disk.split(/\s+/))
         .filter(disk => filterMountPoint(disk[5]))
-        .map(([, /* fs */ size, used, avail /* _pcent */, , target]) => {
+        .map(([_fs, size, used, avail, _pcent, target]) => {
           return {
-            size: Number.parseInt(size, 10),
-            used: Number.parseInt(used, 10),
-            avail: Number.parseInt(avail, 10),
+            size: Number.parseInt(size, 10) * 1024,
+            used: Number.parseInt(used, 10) * 1024,
+            avail: Number.parseInt(avail, 10) * 1024,
             target,
           };
         }),
     ),
-  // TODO: get array of disks on window, and macos
+  darwin: () =>
+    execFile('df -k | tail -n+2', {
+      shell: true,
+      maxBuffer: 4096,
+    }).then(({ stdout }) =>
+      stdout
+        .trim()
+        .split('\n')
+        .map(disk => disk.split(/\s+/))
+        .filter(disk => filterMountPoint(disk[8]))
+        .map(([_fs, size, used, avail, _pcent, _iused, _ifree, _piused, target]) => {
+          return {
+            size: Number.parseInt(size, 10) * 1024,
+            used: Number.parseInt(used, 10) * 1024,
+            avail: Number.parseInt(avail, 10) * 1024,
+            target,
+          };
+        })
+    ),
+  // TODO:
   win32: () => Promise.resolve([]),
-  darwin: () => Promise.resolve([]),
 };
 
 const INTERVAL_UPDATE = 10000;
@@ -49,8 +68,8 @@ class DiskUsageService extends EventEmitter {
     this.tLastChange = 0;
     this.interval = 0;
 
-    if (process.platform !== 'linux') {
-      console.log('warning: DiskUsageService is only supported in Linux');
+    if (!PLATFORMS_SUPPORTED.includes(process.platform)) {
+      console.log(`warning: DiskUsageService is only supported in ${PLATFORMS_SUPPORTED.join()}`);
       return;
     }
 
