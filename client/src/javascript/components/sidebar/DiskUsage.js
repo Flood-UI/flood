@@ -15,8 +15,8 @@ class DiskUsage extends React.Component {
         <Tooltip
           content={
             <span>
-              <Size value={d.used} /> Used&nbsp;&nbsp;&nbsp;
-              <Size value={d.avail} /> Free
+              <Size className="diskuage__size-used" value={d.used} /> Used
+              <Size className="diskuage__size-avail" value={d.avail} /> Free
             </span>
           }
           position="top"
