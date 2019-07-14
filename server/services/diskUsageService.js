@@ -12,7 +12,7 @@ const filterMountPoint =
   config.diskUsageService && config.diskUsageService.watchMountPoints
     ? // if user has configured watchPartitions filter each line output for given
       // array
-      fs => config.diskUsageService.watchMountPoints.includes(fs)
+      mountpoint => config.diskUsageService.watchMountPoints.includes(mountpoint)
     : () => true; // include all mounted file systems by default
 
 const PLATFORMS_SUPPORTED = ['darwin', 'linux'];
