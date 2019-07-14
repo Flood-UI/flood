@@ -15,7 +15,7 @@ const filterMountPoint =
       fs => config.diskUsageService.watchMountPoints.includes(fs)
     : () => true; // include all mounted file systems by default
 
-const PLATFORMS_SUPPORTED = ['darwin', 'linux']
+const PLATFORMS_SUPPORTED = ['darwin', 'linux'];
 const diskUsage = {
   linux: () =>
     execFile('df --block-size=1024 --portability | tail -n+2', {
@@ -40,7 +40,7 @@ const diskUsage = {
     execFile('df -k | tail -n+2', {
       shell: true,
       maxBuffer: 4096,
-    }).then(({ stdout }) =>
+    }).then(({stdout}) =>
       stdout
         .trim()
         .split('\n')
@@ -53,7 +53,7 @@ const diskUsage = {
             avail: Number.parseInt(avail, 10) * 1024,
             target,
           };
-        })
+        }),
     ),
   // TODO:
   win32: () => Promise.resolve([]),
