@@ -35,8 +35,9 @@ const diskUsage = {
           };
         }),
     ),
-  // win32
-  // darwin
+  // TODO: get array of disks on window, and macos
+  win32: () => Promise.resolve([]),
+  darwin: () => Promise.resolve([]),
 };
 
 const INTERVAL_UPDATE = 10000;
