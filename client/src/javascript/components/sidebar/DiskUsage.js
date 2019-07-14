@@ -49,10 +49,12 @@ class DiskUsage extends React.Component {
   }
 }
 
-export default connectStores(DiskUsage, () => [{
-  store: DiskUsageStore,
-  event: EventTypes.DISK_USAGE_CHANGE,
-  getValue: ({ store }) => ({
-    disks: store.getDiskUsage()
-  })
-}])
+export default connectStores(DiskUsage, () => [
+  {
+    store: DiskUsageStore,
+    event: EventTypes.DISK_USAGE_CHANGE,
+    getValue: ({store}) => ({
+      disks: store.getDiskUsage(),
+    }),
+  },
+]);

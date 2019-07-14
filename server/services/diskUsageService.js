@@ -8,24 +8,25 @@ const execFile = util.promisify(require('child_process').execFile);
 const config = require('../../config');
 const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 
-const filterMountPoint = (config.diskUsageService && config.diskUsageService.watchMountPoints)
-  // if user has configured watchPartitions filter each line output for given
-  // array
-  ?  fs => config.diskUsageService.watchMountPoints.includes(fs)
-  : () => true // include all mounted file systems by default
+const filterMountPoint =
+  config.diskUsageService && config.diskUsageService.watchMountPoints
+    ? // if user has configured watchPartitions filter each line output for given
+      // array
+      fs => config.diskUsageService.watchMountPoints.includes(fs)
+    : () => true; // include all mounted file systems by default
 
 const diskUsage = {
   linux: () =>
     execFile('df --block-size=1 --portability | tail -n+2', {
-	    shell: true,
-	    maxBuffer: 4096,
+      shell: true,
+      maxBuffer: 4096,
     }).then(({stdout}) =>
       stdout
         .trim()
         .split('\n')
         .map(disk => disk.split(/\s+/))
-        .filter((disk) => filterMountPoint(disk[5]))
-        .map(([/* fs */, size, used, avail, /* _pcent */, target]) => {
+        .filter(disk => filterMountPoint(disk[5]))
+        .map(([, /* fs */ size, used, avail /* _pcent */, , target]) => {
           return {
             size: Number.parseInt(size, 10),
             used: Number.parseInt(used, 10),

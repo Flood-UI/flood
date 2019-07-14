@@ -42,7 +42,7 @@ class Size extends React.Component {
 Size.defaultProps = {
   isSpeed: false,
   precision: 2,
-  className: ''
+  className: '',
 };
 
 export default injectIntl(Size);

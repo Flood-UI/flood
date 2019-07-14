@@ -28,7 +28,7 @@ module.exports = (req, res) => {
     res.on('close', () => {
       emitter.removeListener(event, handler);
     });
-  }
+  };
 
   // Emit current state immediately on connection.
   serverEvent.setID(Date.now());
@@ -49,7 +49,7 @@ module.exports = (req, res) => {
     serverEvent.setType(serverEventTypes.DISK_USAGE_CHANGE);
     serverEvent.addData(diskUsage.disks);
     serverEvent.emit();
-    handleEvents(DiskUsageService, diskUsageServiceEvents.DISK_USAGE_CHANGE, handleDiskUsageChange)
+    handleEvents(DiskUsageService, diskUsageServiceEvents.DISK_USAGE_CHANGE, handleDiskUsageChange);
   });
 
   serverEvent.setID(torrentList.id);
@@ -98,14 +98,18 @@ module.exports = (req, res) => {
   });
 
   // Add user's specified history snapshot change event listener.
-  handleEvents(serviceInstances.historyService, historyServiceEvents[`${historySnapshotTypes[historySnapshot]}_SNAPSHOT_FULL_UPDATE`], payload => {
-    const {data, id} = payload;
+  handleEvents(
+    serviceInstances.historyService,
+    historyServiceEvents[`${historySnapshotTypes[historySnapshot]}_SNAPSHOT_FULL_UPDATE`],
+    payload => {
+      const {data, id} = payload;
 
-    serverEvent.setID(id);
-    serverEvent.setType(serverEventTypes.TRANSFER_HISTORY_FULL_UPDATE);
-    serverEvent.addData(data);
-    serverEvent.emit();
-  });
+      serverEvent.setID(id);
+      serverEvent.setType(serverEventTypes.TRANSFER_HISTORY_FULL_UPDATE);
+      serverEvent.addData(data);
+      serverEvent.emit();
+    },
+  );
 
   handleEvents(serviceInstances.notificationService, notificationServiceEvents.NOTIFICATION_COUNT_CHANGE, payload => {
     const {data, id} = payload;
