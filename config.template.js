@@ -43,7 +43,7 @@ const CONFIG = {
   sslCert: '/absolute/path/to/certificate/',
   // disk space service checks disk space of mounted partitions
   diskUsageService: {
-    // assign desired mounts to include. Refer to Filesystem column of `df -P`
+    // assign desired mounts to include. Refer to "Mounted on" column of `df -P`
     // watchMountPoints: [
     //   "/mnt/disk"
     // ]
