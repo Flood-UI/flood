@@ -17,19 +17,6 @@ const filterMountPoint =
       mountpoint => config.diskUsageService.watchMountPoints.includes(mountpoint)
     : () => true; // include all mounted file systems by default
 
-const assertFields = fields => disk =>
-  Object.keys(fields).some(field => {
-    const check = fields[field];
-    return check(disk[field]);
-  });
-
-const filterValidDisk = assertFields({
-  size: Number.isInteger,
-  used: Number.isInteger,
-  avail: Number.isInteger,
-  target: str => str.constructor === String,
-});
-
 const diskUsage = {
   linux: () =>
     execFile('df --block-size=1024 --portability | tail -n+2', {
@@ -48,8 +35,7 @@ const diskUsage = {
             avail: Number.parseInt(avail, 10) * 1024,
             target,
           };
-        })
-        .filter(filterValidDisk),
+        }),
     ),
   darwin: () =>
     execFile('df -kl | tail -n+2', {
@@ -68,8 +54,7 @@ const diskUsage = {
             avail: Number.parseInt(avail, 10) * 1024,
             target,
           };
-        })
-        .filter(filterValidDisk),
+        }),
     ),
   // TODO:
   win32: () => Promise.resolve([]),
