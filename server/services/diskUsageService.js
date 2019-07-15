@@ -8,6 +8,8 @@ const execFile = util.promisify(require('child_process').execFile);
 const config = require('../../config');
 const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 
+const PLATFORMS_SUPPORTED = ['darwin', 'linux'];
+
 const filterMountPoint =
   config.diskUsageService && config.diskUsageService.watchMountPoints
     ? // if user has configured watchPartitions filter each line output for given
@@ -15,7 +17,19 @@ const filterMountPoint =
       mountpoint => config.diskUsageService.watchMountPoints.includes(mountpoint)
     : () => true; // include all mounted file systems by default
 
-const PLATFORMS_SUPPORTED = ['darwin', 'linux'];
+const assertFields = fields => disk =>
+  Object.keys(fields).some(field => {
+    const check = fields[field];
+    return check(disk[field]);
+  });
+
+const filterValidDisk = assertFields({
+  size: Number.isInteger,
+  used: Number.isInteger,
+  avail: Number.isInteger,
+  target: str => str.constructor === String,
+});
+
 const diskUsage = {
   linux: () =>
     execFile('df --block-size=1024 --portability | tail -n+2', {
@@ -34,10 +48,11 @@ const diskUsage = {
             avail: Number.parseInt(avail, 10) * 1024,
             target,
           };
-        }),
+        })
+        .filter(filterValidDisk),
     ),
   darwin: () =>
-    execFile('df -k | tail -n+2', {
+    execFile('df -kl | tail -n+2', {
       shell: true,
       maxBuffer: 4096,
     }).then(({stdout}) =>
@@ -53,7 +68,8 @@ const diskUsage = {
             avail: Number.parseInt(avail, 10) * 1024,
             target,
           };
-        }),
+        })
+        .filter(filterValidDisk),
     ),
   // TODO:
   win32: () => Promise.resolve([]),
