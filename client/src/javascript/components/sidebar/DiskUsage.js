@@ -8,27 +8,39 @@ import Tooltip from '../general/Tooltip';
 import connectStores from '../../util/connectStores';
 import ProgressBar from '../general/ProgressBar';
 
+const DiskUsageTooltipItem = ({label, value}) => {
+  return (
+    <li className="diskusage__details-list__item">
+      <label className="diskusage__details-list__label">{label}</label>
+      <Size className="diskuage__size-used" value={value} />
+    </li>
+  );
+};
+
 class DiskUsage extends React.Component {
   getDisks() {
-    return this.props.disks.map(d => (
-      <li key={d.target} className="sidebar-filter__item sidebar__diskusage">
-        <Tooltip
-          content={
-            <span>
-              <Size className="diskuage__size-used" value={d.used} /> Used
-              <Size className="diskuage__size-avail" value={d.avail} /> Free
-            </span>
-          }
-          position="top"
-          wrapperClassName="diskusage__item">
-          <div className="diskusage__text-row">
-            {d.target}
-            <span>{Math.round((100 * d.used) / d.size)}%</span>
-          </div>
-          <ProgressBar percent={(100 * d.used) / d.size} />
-        </Tooltip>
-      </li>
-    ));
+    return this.props.disks.map(d => {
+      return (
+        <li key={d.target} className="sidebar-filter__item sidebar__diskusage">
+          <Tooltip
+            content={
+              <ul className="diskusage__details-list">
+                <DiskUsageTooltipItem value={d.used} label="Used" />
+                <DiskUsageTooltipItem value={d.avail} label="Free" />
+                <DiskUsageTooltipItem value={d.size} label="Total" />
+              </ul>
+            }
+            position="top"
+            wrapperClassName="diskusage__item">
+            <div className="diskusage__text-row">
+              {d.target}
+              <span>{Math.round((100 * d.used) / d.size)}%</span>
+            </div>
+            <ProgressBar percent={(100 * d.used) / d.size} />
+          </Tooltip>
+        </li>
+      );
+    });
   }
 
   render() {
