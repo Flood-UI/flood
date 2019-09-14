@@ -56,8 +56,6 @@ const diskUsage = {
           };
         }),
     ),
-  // TODO:
-  win32: () => Promise.resolve([]),
 };
 
 const INTERVAL_UPDATE = 10000;
@@ -96,6 +94,9 @@ class DiskUsageService extends EventEmitter {
   }
 
   updateDisks() {
+    if (!PLATFORMS_SUPPORTED.includes(process.platform)) {
+      return Promise.resolve([]);
+    }
     return diskUsage[process.platform]().then(disks => {
       if (disks.length !== this.disks.length || disks.some((d, i) => d.used !== this.disks[i].used)) {
         this.tLastChange = Date.now();
