@@ -8,7 +8,8 @@ const execFile = util.promisify(require('child_process').execFile);
 const config = require('../../config');
 const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 
-const PLATFORMS_SUPPORTED = ['darwin', 'linux'];
+const PLATFORMS_SUPPORTED = ['darwin', 'linux', 'freebsd'];
+const MAX_BUFFER_SIZE = 65536;
 
 const filterMountPoint =
   config.diskUsageService && config.diskUsageService.watchMountPoints
@@ -17,30 +18,33 @@ const filterMountPoint =
       mountpoint => config.diskUsageService.watchMountPoints.includes(mountpoint)
     : () => true; // include all mounted file systems by default
 
+const linuxDfParsing = () =>
+  execFile('df | tail -n+2', {
+    shell: true,
+    maxBuffer: MAX_BUFFER_SIZE,
+  }).then(({stdout}) =>
+    stdout
+      .trim()
+      .split('\n')
+      .map(disk => disk.split(/\s+/))
+      .filter(disk => filterMountPoint(disk[5]))
+      .map(([_fs, size, used, avail, _pcent, target]) => {
+        return {
+          size: Number.parseInt(size, 10) * 1024,
+          used: Number.parseInt(used, 10) * 1024,
+          avail: Number.parseInt(avail, 10) * 1024,
+          target,
+        };
+      }),
+  );
+
 const diskUsage = {
-  linux: () =>
-    execFile('df | tail -n+2', {
-      shell: true,
-      maxBuffer: 4096,
-    }).then(({stdout}) =>
-      stdout
-        .trim()
-        .split('\n')
-        .map(disk => disk.split(/\s+/))
-        .filter(disk => filterMountPoint(disk[5]))
-        .map(([_fs, size, used, avail, _pcent, target]) => {
-          return {
-            size: Number.parseInt(size, 10) * 1024,
-            used: Number.parseInt(used, 10) * 1024,
-            avail: Number.parseInt(avail, 10) * 1024,
-            target,
-          };
-        }),
-    ),
+  linux: linuxDfParsing,
+  freebsd: linuxDfParsing,
   darwin: () =>
     execFile('df -kl | tail -n+2', {
       shell: true,
-      maxBuffer: 4096,
+      maxBuffer: MAX_BUFFER_SIZE,
     }).then(({stdout}) =>
       stdout
         .trim()
