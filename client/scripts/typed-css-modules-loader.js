@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 const DtsCreator = require('typed-css-modules');
+const prettier = require('../../scripts/prettier');
 
 const creator = new DtsCreator();
 
@@ -12,14 +13,16 @@ module.exports = function moduleLoader(source, map) {
 
   creator
     .create(this.resourcePath, source)
-    .then(content =>
-      content.writeFile().then(() => {
-        callback(null, source, map);
-      }),
-    )
+    .then(content => {
+      return content
+        .writeFile()
+        .then(() => prettier.formatFile(content.outputFilePath, content.outputFilePath))
+        .then(() => {
+          callback(null, source, map);
+        });
+    })
     .catch(error => {
-      console.log('\n');
-      console.log(chalk.bold(chalk.red('CSS module type generation failed.')));
+      console.log(chalk.red(chalk.red('CSS module type generation failed.')));
       console.log(error.message);
 
       if (error.stack != null) {
