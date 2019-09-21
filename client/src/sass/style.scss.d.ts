@@ -381,6 +381,12 @@ declare const styles: {
   readonly 'sidebar__icon-button--interactive': string;
   readonly 'sidebar__action--last': string;
   readonly sidebar__actions: string;
+  readonly sidebar__diskusage: string;
+  readonly 'diskuage__size-avail': string;
+  readonly 'diskusage__text-row': string;
+  readonly 'diskusage__details-list': string;
+  readonly 'diskusage__details-list__item': string;
+  readonly 'diskusage__details-list__label': string;
   readonly 'dropdown--speed-limits': string;
   readonly 'sidebar-filter': string;
   readonly 'sidebar-filter__item': string;
