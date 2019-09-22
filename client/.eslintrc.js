@@ -30,6 +30,7 @@ module.exports = {
     'react/jsx-wrap-multilines': 0,
     'react/no-unescaped-entities': ['error', {forbid: ['>', '}']}],
     'react/no-unused-prop-types': 0,
+    'react/no-unused-state': 0,
     'react/prefer-stateless-function': 0,
     'react/prop-types': 0,
     'react/require-default-props': 0,
