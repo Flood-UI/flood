@@ -87,11 +87,9 @@ class FloodApp extends React.Component<InjectedFloodAppProps> {
     const {locale} = this.props;
 
     return (
-      <div>
-        <IntlProvider locale={locale} messages={i18n[locale]}>
-          {appRoutes}
-        </IntlProvider>
-      </div>
+      <IntlProvider locale={locale} messages={i18n[locale]}>
+        {appRoutes}
+      </IntlProvider>
     );
   }
 }
