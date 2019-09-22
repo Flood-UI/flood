@@ -4,29 +4,25 @@ const prettier = require('../../scripts/prettier');
 
 const creator = new DtsCreator();
 
-module.exports = function moduleLoader(source, map) {
+module.exports = async function moduleLoader(source, map) {
   if (this.cacheable) {
     this.cacheable();
   }
 
-  const callback = this.async();
+  try {
+    const callback = this.async();
+    const dtsContent = await creator.create(this.resourcePath, source);
 
-  creator
-    .create(this.resourcePath, source)
-    .then(content => {
-      return content
-        .writeFile()
-        .then(() => prettier.formatFile(content.outputFilePath, content.outputFilePath))
-        .then(() => {
-          callback(null, source, map);
-        });
-    })
-    .catch(error => {
-      console.log(chalk.red(chalk.red('CSS module type generation failed.')));
-      console.log(error.message);
+    await dtsContent.writeFile();
+    await prettier.formatFile(dtsContent.outputFilePath, dtsContent.outputFilePath);
 
-      if (error.stack != null) {
-        console.log(chalk.gray(error.stack));
-      }
-    });
+    return callback(null, source, map);
+  } catch (error) {
+    console.log(chalk.red(chalk.red('CSS module type generation failed.')));
+    console.log(error.message);
+
+    if (error.stack != null) {
+      console.log(chalk.gray(error.stack));
+    }
+  }
 };
