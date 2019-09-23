@@ -11,20 +11,16 @@ const diskUsageServiceEvents = require('../constants/diskUsageServiceEvents');
 const PLATFORMS_SUPPORTED = ['darwin', 'linux', 'freebsd'];
 const MAX_BUFFER_SIZE = 65536;
 
-const filterMountPoint = mountpoint =>
-  {
-    // include all mounted file systems by default
-    if (!config.diskUsageService)
-      return true;
-    const {watchMountPoints, dontWatchMountPoints} = config.diskUsageService;
-    // whitelist
-    if (watchMountPoints)
-      return watchMountPoints.includes(mountpoint)
-    // blacklist
-    if (dontWatchMountPoints)
-      return !dontWatchMountPoints.includes(mountpoint)
-    return true;
-  }
+const filterMountPoint = mountpoint => {
+  // include all mounted file systems by default
+  if (!config.diskUsageService) return true;
+  const {watchMountPoints, dontWatchMountPoints} = config.diskUsageService;
+  // whitelist
+  if (watchMountPoints) return watchMountPoints.includes(mountpoint);
+  // blacklist
+  if (dontWatchMountPoints) return !dontWatchMountPoints.includes(mountpoint);
+  return true;
+};
 
 const linuxDfParsing = () =>
   execFile('df | tail -n+2', {
