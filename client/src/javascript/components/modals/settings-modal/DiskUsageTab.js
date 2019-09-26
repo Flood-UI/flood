@@ -16,7 +16,7 @@ class DiskUsageTab extends SettingsTab {
   };
 
   componentWillMount() {
-    // assemble disk items from saved "mountPoints" and list fo disks "disks"
+    // assemble disk items from saved "mountPoints" and list of disks "disks"
     const mountPoints = SettingsStore.getFloodSettings('mountPoints');
     const disks = DiskUsageStore.getDiskUsage().reduce((a, c) => {
       a[c.target] = c;
@@ -109,7 +109,6 @@ class DiskUsageTab extends SettingsTab {
   };
 
   render() {
-    // const torrentDetailItems = new Array(5);
     const {diskItems} = this.state;
 
     return (
