@@ -71,6 +71,7 @@ const closeTag = elementName => {
     case 'data':
     case 'params':
     case 'param':
+    case 'fault':
     case 'member':
       break;
 
