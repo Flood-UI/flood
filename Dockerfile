@@ -1,9 +1,10 @@
-ARG NODE_IMAGE=node:10.16-alpine
+ARG NODE_IMAGE=node:12.11-alpine
 ARG WORKDIR=/usr/src/app/
-ARG FLOOD_BASE_URI=/
 
 FROM ${NODE_IMAGE} as nodebuild
 ARG WORKDIR
+
+ARG FLOOD_BASE_URI=/
 ENV FLOOD_BASE_URI $FLOOD_BASE_URI
 
 WORKDIR $WORKDIR
@@ -47,11 +48,10 @@ RUN addgroup -S flood
 RUN adduser -S flood -G flood
 RUN mkdir /data
 RUN chown flood:flood /data
-RUN chown flood:flood ${WORKDIR}
 
 USER flood
 
-COPY --from=nodebuild $WORKDIR $WORKDIR
+COPY --from=nodebuild --chown=flood:flood $WORKDIR $WORKDIR
 
 # Hints for consumers of the container.
 EXPOSE 3000 
