@@ -188,7 +188,7 @@ export default {
   'settings.tabs.resources': 'Resources',
   'settings.tabs.authentication': 'Authentication',
   'settings.tabs.userinterface': 'User Interface',
-  'settings.tabs.diskuage': 'Disk Usage',
+  'settings.tabs.diskusage': 'Disk Usage',
   'settings.tabs.about': 'About',
 
   'settings.ui.locale': 'Locale',
