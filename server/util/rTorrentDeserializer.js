@@ -1,5 +1,13 @@
 const saxen = require('saxen');
 
+const unescapeXMLString = value =>
+  value
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&apos;/g, "'")
+    .replace(/&quot;/g, '"');
+
 let stackMarks;
 let dataStack;
 let tmpData;
@@ -16,7 +24,7 @@ const openTag = elementName => {
 };
 
 const onText = value => {
-  tmpData.push(value);
+  tmpData.push(unescapeXMLString(value));
 };
 
 const onError = err => {
