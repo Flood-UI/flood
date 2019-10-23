@@ -143,6 +143,11 @@ torrentListPropMap.set('dateCreated', {
   transformValue: dateTransformer,
 });
 
+torrentListPropMap.set('lastTransfer', {
+  methodCall: 'd.custom=last_xfer',
+  transformValue: dateTransformer,
+});
+
 torrentListPropMap.set('throttleName', {
   methodCall: 'd.throttle_name=',
   transformValue: defaultTransformer,

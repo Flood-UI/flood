@@ -31,6 +31,7 @@ const icons = {
   basePath: <FolderClosedSolid />,
   hash: <HashIcon />,
   dateAdded: <CalendarIcon />,
+  lastTransfer: <CalendarIcon />,
   dateCreated: <CalendarCreatedIcon />,
   isPrivate: <LockIcon />,
   message: <TrackerMessageIcon />,
@@ -44,7 +45,7 @@ const icons = {
 };
 
 const booleanRenderer = (value) => (value ? icons.checkmark : null);
-const dateRenderer = (date) => <FormattedDate value={date * 1000} />;
+const dateRenderer = (date) => (date ? <FormattedDate value={date * 1000} /> : null);
 const peersRenderer = (peersConnected, totalPeers) => (
   <FormattedMessage
     id="torrent.list.peers"
@@ -65,6 +66,7 @@ const sizeRenderer = (value) => <Size value={value} />;
 const transformers = {
   dateAdded: dateRenderer,
   dateCreated: dateRenderer,
+  lastTransfer: dateRenderer,
   downRate: speedRenderer,
   downTotal: sizeRenderer,
   ignoreScheduler: booleanRenderer,
