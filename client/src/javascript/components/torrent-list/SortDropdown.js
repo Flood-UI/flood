@@ -16,6 +16,7 @@ const SORT_PROPERTIES = [
   'upTotal',
   'sizeBytes',
   'dateAdded',
+  'lastTransfer',
 ];
 
 class SortDropdown extends React.Component {

@@ -25,6 +25,11 @@ class TorrentGeneralInfo extends React.Component {
       creation = new Date(torrent.creationDate * 1000);
     }
 
+    let lastTransfer = null;
+    if (torrent.lastTransfer) {
+      lastTransfer = new Date(torrent.lastTransfer * 1000);
+    }
+
     const VALUE_NOT_AVAILABLE = (
       <span className="not-available">
         <FormattedMessage id="torrents.details.general.none" defaultMessage="None" />
@@ -128,6 +133,20 @@ class TorrentGeneralInfo extends React.Component {
                     total: <FormattedNumber value={torrent.seedsTotal} />,
                   }}
                 />
+              </td>
+            </tr>
+            <tr className="torrent-details__detail torrent-details__detail--lastTransfer">
+              <td className="torrent-details__detail__label">
+                <FormattedMessage id="torrents.details.general.last_xfer" defaultMessage="Last Transfer" />
+              </td>
+              <td className="torrent-details__detail__value">
+                {lastTransfer
+                  ? `${this.props.intl.formatDate(lastTransfer, {
+                      year: 'numeric',
+                      month: 'long',
+                      day: '2-digit',
+                    })} ${this.props.intl.formatTime(lastTransfer)}`
+                  : VALUE_NOT_AVAILABLE}
               </td>
             </tr>
             <tr className="torrent-details__table__heading">

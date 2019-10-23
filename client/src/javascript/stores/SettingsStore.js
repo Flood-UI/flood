@@ -39,6 +39,7 @@ class SettingsStoreClass extends BaseStore {
         {id: 'seeds', visible: true},
         {id: 'dateAdded', visible: true},
         {id: 'dateCreated', visible: false},
+        {id: 'lastTransfer', visible: false},
         {id: 'basePath', visible: false},
         {id: 'comment', visible: false},
         {id: 'hash', visible: false},
