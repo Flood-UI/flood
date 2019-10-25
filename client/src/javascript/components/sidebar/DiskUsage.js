@@ -21,9 +21,9 @@ const DiskUsageTooltipItem = ({label, value}) => {
 class DiskUsage extends React.Component {
   getDisks() {
     const {disks, mountPoints} = this.props;
-    const diskMap = disks.reduce((a, c) => {
-      a[c.target] = c;
-      return a;
+    const diskMap = disks.reduce((disksByTarget, disk) => {
+      disksByTarget[disk.target] = disk;
+      return disksByTarget;
     }, {});
     return mountPoints
       .filter(target => target in diskMap)

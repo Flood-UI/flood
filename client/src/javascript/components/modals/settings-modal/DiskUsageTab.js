@@ -16,53 +16,51 @@ class DiskUsageTab extends SettingsTab {
   };
 
   componentWillMount() {
-    // assemble disk items from saved "mountPoints" and list of disks "disks"
     const mountPoints = SettingsStore.getFloodSettings('mountPoints');
-    const disks = DiskUsageStore.getDiskUsage().reduce((a, c) => {
-      a[c.target] = c;
-      return a;
+    const disks = DiskUsageStore.getDiskUsage().reduce((disksByTarget, disk) => {
+      disksByTarget[disk.target] = disk;
+      return disksByTarget;
     }, {});
-    const diskItems = [];
+
+    // assemble disk items from saved "mountPoints" and list of disks "disks"
     // first targets saved in mountPoints that exist in disks
-    diskItems.push(
-      ...mountPoints.filter(target => target in disks).map(target => ({
+    // then remaing targets from disks
+    const diskItems = mountPoints
+      .filter(target => target in disks)
+      .map(target => ({
         id: target,
         visible: true,
-      })),
-    );
-    // then remaing targets from disks
-    diskItems.push(
-      ...Object.keys(disks)
-        .filter(target => !mountPoints.includes(target))
-        .map(target => ({
-          id: target,
-          visible: false,
-        })),
-    );
+      }))
+      .concat(
+        Object.keys(disks)
+          .filter(target => !mountPoints.includes(target))
+          .map(target => ({
+            id: target,
+            visible: false,
+          })),
+      );
+
     this.setState({diskItems});
   }
 
-  updateSettings = () => {
-    const {diskItems} = this.state;
+  updateSettings = diskItems => {
     const mountPoints = diskItems.filter(item => item.visible).map(item => item.id);
     this.props.onSettingsChange({mountPoints});
   };
 
   handleDiskCheckboxValueChange = (id, value) => {
-    let {diskItems} = this.state;
+    const {diskItems} = this.state;
 
-    diskItems = diskItems.map(disk => {
+    const newItems = diskItems.map(disk => {
       if (disk.id === id) {
-        disk.visible = value;
+        return {...disk, visible: value};
       }
       return disk;
     });
 
-    this.setState({diskItems});
-    this.updateSettings();
+    this.setState({diskItems: newItems});
+    this.updateSettings(newItems);
   };
-
-  handleFormChange = ({event, formData}) => {};
 
   handleDiskMouseDown = () => {
     if (this.tooltipRef != null) {
@@ -72,7 +70,7 @@ class DiskUsageTab extends SettingsTab {
 
   handleDiskMove = items => {
     this.setState({diskItems: items});
-    this.updateSettings();
+    this.updateSettings(items);
   };
 
   renderDiskItem = (item, index) => {
@@ -112,7 +110,7 @@ class DiskUsageTab extends SettingsTab {
     const {diskItems} = this.state;
 
     return (
-      <Form onChange={this.handleFormChange}>
+      <Form>
         <ModalFormSectionHeader>
           <FormattedMessage defaultMessage="Disk Usage Mount Points" id="settings.diskusage.mount.points" />
         </ModalFormSectionHeader>
