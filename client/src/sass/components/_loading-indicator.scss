@@ -3,78 +3,80 @@ $loading-indicator--bar--background--inverse: rgba(#38586d, 0.7);
 $loading-indicator--tick--background: rgba($blue, 0.75);
 $loading-indicator--tick--background--inverse: rgba($blue, 0.75);
 
-@keyframes loading-indicator-swipe {
-  0% {
-    transform: translateX(-100%);
-  }
+:global {
+  @keyframes loading-indicator-swipe {
+    0% {
+      transform: translateX(-100%);
+    }
 
-  50% {
-    transform: translateX(400%);
-  }
+    50% {
+      transform: translateX(400%);
+    }
 
-  100% {
-    transform: translateX(400%);
+    100% {
+      transform: translateX(400%);
+    }
   }
 }
 
-.loading-indicator {
-  height: 18px;
-  position: relative;
-  width: 32px;
+:global {
+  .loading-indicator {
+    height: 18px;
+    position: relative;
+    width: 32px;
 
-  &.is-inverse {
+    &.is-inverse {
+      .loading-indicator {
+        &__bar {
+          background: $loading-indicator--bar--background--inverse;
 
-    .loading-indicator {
-
-      &__bar {
-        background: $loading-indicator--bar--background--inverse;
-
-        &:after {
-          background: $loading-indicator--tick--background--inverse;
+          &:after {
+            background: $loading-indicator--tick--background--inverse;
+          }
         }
       }
     }
-  }
 
-  &__bar {
-    background: $loading-indicator--bar--background;
-    border-radius: 10px;
-    height: 3px;
-    left: 0;
-    overflow: hidden;
-    position: absolute;
-    transform: translateY(0);
-    width: 100%;
-
-    &:after {
-      animation: loading-indicator-swipe 3s ease-in-out infinite;
-      background: $loading-indicator--tick--background;
+    &__bar {
+      background: $loading-indicator--bar--background;
       border-radius: 10px;
-      content: '';
-      display: block;
-      height: 100%;
-      transform: translateX(-100%);
-      width: 25%;
-    }
-
-    &--1 {
-      top: 0;
-    }
-
-    &--2 {
-      top: 50%;
-      transform: translateY(-50%);
+      height: 3px;
+      left: 0;
+      overflow: hidden;
+      position: absolute;
+      transform: translateY(0);
+      width: 100%;
 
       &:after {
-        animation-delay: 0.5s;
+        animation: loading-indicator-swipe 3s ease-in-out infinite;
+        background: $loading-indicator--tick--background;
+        border-radius: 10px;
+        content: '';
+        display: block;
+        height: 100%;
+        transform: translateX(-100%);
+        width: 25%;
       }
-    }
 
-    &--3 {
-      bottom: 0;
+      &--1 {
+        top: 0;
+      }
 
-      &:after {
-        animation-delay: 1s;
+      &--2 {
+        top: 50%;
+        transform: translateY(-50%);
+
+        &:after {
+          animation-delay: 0.5s;
+        }
+      }
+
+      &--3 {
+        bottom: 0;
+
+        &:after {
+          animation-delay: 1s;
+        }
       }
     }
   }

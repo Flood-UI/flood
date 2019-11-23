@@ -5,118 +5,118 @@ $sortable-list--item--background--preview: saturate(darken($sortable-list--item-
 $sortable-list--item--border: saturate(darken($sortable-list--item--background, 4%), 5%);
 $sortable-list--item--border--preview: darken($sortable-list--item--border, 3%);
 
-.sortable-list {
-  box-shadow: $form--element--inverse--box-shadow;
-  flex: 1 1 auto;
-  font-size: 0.9em;
-  position: relative;
+:global {
+  .sortable-list {
+    box-shadow: $form--element--inverse--box-shadow;
+    flex: 1 1 auto;
+    font-size: 0.9em;
+    position: relative;
 
-  &__item {
-    align-items: center;
-    background: $sortable-list--item--background;
-    border: 1px solid $sortable-list--item--border;
-    cursor: move;
-    display: flex;
-    height: 30px;
-    padding: 0 $spacing-unit * 1/5;
-
-    &:first-child {
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
-    }
-
-    &:last-child {
-      border-bottom-left-radius: 3px;
-      border-bottom-right-radius: 3px;
-    }
-
-    &--is-dragging {
-      background: $sortable-list--item--background--dragging;
-      opacity: 0.6;
-      position: relative;
-      z-index: 1;
-
-      label {
-        opacity: 0.25;
-      }
-    }
-
-    &--is-locked {
-      cursor: default;
-      opacity: 0.4;
-    }
-
-    &--is-preview {
-      background: $sortable-list--item--background--preview;
-      border: 1px solid $sortable-list--item--border--preview;
-      border-radius: 0;
-      color: $white;
-      font-weight: 500;
-      left: 0;
-      position: absolute;
-      top: 0;
-      width: 100%;
-    }
-
-    & + .sortable-list {
-
-      &__item {
-        margin-top: -1px;
-      }
-    }
-
-    .toggle-input {
-
-      &__indicator {
-        background: darken($input--inverse--background, 5%);
-        border-color:  darken($input--inverse--background, 8%);
-      }
-    }
-
-    .icon {
-      fill: currentColor;
-
-      &--error,
-      &--lock {
-        height: 12px;
-        width: 12px;
-      }
-
-      &--error {
-        fill: $red;
-      }
-    }
-  }
-
-  &__content {
-    flex: 0 0 auto;
-    margin-left: $spacing-unit * 1/5;
-
-    &:first-child {
-      margin-left: 0;
-    }
-
-    &__wrapper {
+    &__item {
       align-items: center;
+      background: $sortable-list--item--background;
+      border: 1px solid $sortable-list--item--border;
+      cursor: move;
       display: flex;
-      flex: 1 1 auto;
-    }
+      height: 30px;
+      padding: 0 $spacing-unit * 1/5;
 
-    &--primary {
-      flex: 1 1 auto;
-    }
-
-    &--secondary {
-      align-items: center;
-      font-size: 0.9em;
-
-      &,
-      &.tooltip__wrapper {
-        display: flex;
+      &:first-child {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
       }
 
-      &__copy {
-        opacity: 0.5;
+      &:last-child {
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+      }
+
+      &--is-dragging {
+        background: $sortable-list--item--background--dragging;
+        opacity: 0.6;
+        position: relative;
+        z-index: 1;
+
+        label {
+          opacity: 0.25;
+        }
+      }
+
+      &--is-locked {
+        cursor: default;
+        opacity: 0.4;
+      }
+
+      &--is-preview {
+        background: $sortable-list--item--background--preview;
+        border: 1px solid $sortable-list--item--border--preview;
+        border-radius: 0;
+        color: $white;
+        font-weight: 500;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+
+      & + .sortable-list {
+        &__item {
+          margin-top: -1px;
+        }
+      }
+
+      .toggle-input {
+        &__indicator {
+          background: darken($input--inverse--background, 5%);
+          border-color: darken($input--inverse--background, 8%);
+        }
+      }
+
+      .icon {
+        fill: currentColor;
+
+        &--error,
+        &--lock {
+          height: 12px;
+          width: 12px;
+        }
+
+        &--error {
+          fill: $red;
+        }
+      }
+    }
+
+    &__content {
+      flex: 0 0 auto;
+      margin-left: $spacing-unit * 1/5;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &__wrapper {
+        align-items: center;
+        display: flex;
+        flex: 1 1 auto;
+      }
+
+      &--primary {
+        flex: 1 1 auto;
+      }
+
+      &--secondary {
+        align-items: center;
+        font-size: 0.9em;
+
+        &,
+        &.tooltip__wrapper {
+          display: flex;
+        }
+
+        &__copy {
+          opacity: 0.5;
+        }
       }
     }
   }

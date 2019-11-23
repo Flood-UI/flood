@@ -23,143 +23,141 @@ $dropdown--item--background--hover: $menu--item--background--hover;
 $dropdown--item--foreground--hover: $menu--item--foreground--hover;
 $dropdown--item--foreground--active: $menu--item--foreground--active;
 
-.dropdown {
-  display: inline-block;
-  outline: none;
-  position: relative;
-  transition: z-index 0.25s;
-  z-index: 2;
-
-  &__button,
-  &__trigger {
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transition: background 0.25s, border 0.25s, color 0.25s;
-    white-space: nowrap;
-  }
-
-  &__button {
-    display: block;
-    padding: $dropdown--button--padding--top $dropdown--button--padding--right + $dropdown--arrow--width + $dropdown--arrow--margin $dropdown--button--padding--bottom $dropdown--button--padding--left;
-    text-align: left;
-    width: auto;
-
-    .dropdown--direction-up & {
-      padding-bottom: $dropdown--button--padding--bottom;
-      padding-top: $dropdown--button--padding--bottom;
-    }
-  }
-
-  &__content {
-    left: 0;
-    min-width: 100%;
-    position: absolute;
-    top: 0;
-    white-space: nowrap;
+:global {
+  .dropdown {
+    display: inline-block;
+    outline: none;
+    position: relative;
+    transition: z-index 0.25s;
     z-index: 2;
 
-    &__container {
-      padding: 25px 30px;
-    }
-
-    .dropdown--direction-up & {
-      bottom: 0;
-      top: auto;
-    }
-  }
-
-  &__label {
-    color: $dropdown--label;
-    display: block;
-    font-size: 0.65em;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    line-height: 0.9em;
-    text-transform: uppercase;
-
-    .dropdown__button & {
+    &__button,
+    &__trigger {
       cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background 0.25s, border 0.25s, color 0.25s;
+      white-space: nowrap;
     }
-  }
 
-  &__value {
-    color: $dropdown--value;
-    transition: color 0.25s;
-
-    &:after {
-      border-top: 5px solid $dropdown--value;
-      border-left: $dropdown--arrow--width / 2 solid transparent;
-      border-right: $dropdown--arrow--width / 2 solid transparent;
-      content: '';
-      right: $dropdown--button--padding--right;
-      position: absolute;
-      transform: translateY(-50%);
-      top: 50%;
-      vertical-align: middle;
-    }
-  }
-
-  &__header {
-    position: relative;
-
-    &:after {
-      background: $dropdown--header--border;
-      bottom: 0;
-      content: '';
+    &__button {
       display: block;
-      height: 1px;
-      left: 5%;
-      position: absolute;
-      width: 90%;
-    }
-  }
+      padding: $dropdown--button--padding--top $dropdown--button--padding--right + $dropdown--arrow--width +
+        $dropdown--arrow--margin $dropdown--button--padding--bottom $dropdown--button--padding--left;
+      text-align: left;
+      width: auto;
 
-  &__items {
-    display: flex;
-    padding: 10px 0;
-  }
-
-  &__item {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__list {
-    flex: 1;
-    max-width: 100%;
-  }
-
-  &--align-right & {
-    left: auto;
-    right: 0;
-  }
-
-  &--match-button-width {
-
-    .dropdown {
-
-      &__content {
-        max-width: 100%;
+      .dropdown--direction-up & {
+        padding-bottom: $dropdown--button--padding--bottom;
+        padding-top: $dropdown--button--padding--bottom;
       }
     }
-  }
 
-  &--width-small {
-    min-width: $spacing-unit * 5;
-  }
+    &__content {
+      left: 0;
+      min-width: 100%;
+      position: absolute;
+      top: 0;
+      white-space: nowrap;
+      z-index: 2;
 
-  &.is-expanded {
-    z-index: 10;
+      &__container {
+        padding: 25px 30px;
+      }
 
-    .dropdown {
+      .dropdown--direction-up & {
+        bottom: 0;
+        top: auto;
+      }
+    }
 
-      &__header {
+    &__label {
+      color: $dropdown--label;
+      display: block;
+      font-size: 0.65em;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      line-height: 0.9em;
+      text-transform: uppercase;
 
-        .dropdown {
+      .dropdown__button & {
+        cursor: pointer;
+      }
+    }
 
-          &__value {
-            color: $dropdown--value--active;
+    &__value {
+      color: $dropdown--value;
+      transition: color 0.25s;
+
+      &:after {
+        border-top: 5px solid $dropdown--value;
+        border-left: $dropdown--arrow--width / 2 solid transparent;
+        border-right: $dropdown--arrow--width / 2 solid transparent;
+        content: '';
+        right: $dropdown--button--padding--right;
+        position: absolute;
+        transform: translateY(-50%);
+        top: 50%;
+        vertical-align: middle;
+      }
+    }
+
+    &__header {
+      position: relative;
+
+      &:after {
+        background: $dropdown--header--border;
+        bottom: 0;
+        content: '';
+        display: block;
+        height: 1px;
+        left: 5%;
+        position: absolute;
+        width: 90%;
+      }
+    }
+
+    &__items {
+      display: flex;
+      padding: 10px 0;
+    }
+
+    &__item {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__list {
+      flex: 1;
+      max-width: 100%;
+    }
+
+    &--align-right & {
+      left: auto;
+      right: 0;
+    }
+
+    &--match-button-width {
+      .dropdown {
+        &__content {
+          max-width: 100%;
+        }
+      }
+    }
+
+    &--width-small {
+      min-width: $spacing-unit * 5;
+    }
+
+    &.is-expanded {
+      z-index: 10;
+
+      .dropdown {
+        &__header {
+          .dropdown {
+            &__value {
+              color: $dropdown--value--active;
+            }
           }
         }
       }

@@ -43,7 +43,7 @@ module.exports = {
               importLoaders: 1,
               sourceMap: true,
               modules: {
-                mode: 'global',
+                mode: 'local',
                 localIdentName: '[name]_[local]__[hash:base64:5]',
               },
             },

@@ -3,45 +3,45 @@ $scrollbar--thumb--background--hover: rgba(#1a2f3d, 0.6);
 $scrollbar--thumb--background--inverted--inactive: rgba(#e9eef2, 0.3);
 $scrollbar--thumb--background--inverted--hover: rgba(#e9eef2, 0.6);
 
-.scrollbars {
+:global {
+  .scrollbars {
+    &__thumb {
+      background: $scrollbar--thumb--background--inactive;
+      border-radius: 10px;
+      cursor: pointer;
+      opacity: 0;
+      transition: background 0.25s, opacity 0.5s;
+      z-index: 2;
 
-  &__thumb {
-    background: $scrollbar--thumb--background--inactive;
-    border-radius: 10px;
-    cursor: pointer;
-    opacity: 0;
-    transition: background 0.25s, opacity 0.5s;
-    z-index: 2;
-
-    &:active {
-      opacity: 1;
-    }
-
-    &:hover,
-    &:active {
-      background: $scrollbar--thumb--background--hover;
-    }
-
-    &--surrogate {
-      display: block;
-      height: 100%;
-      width: 100%;
-    }
-
-    .is-inverted & {
-      background: $scrollbar--thumb--background--inverted--inactive;
+      &:active {
+        opacity: 1;
+      }
 
       &:hover,
       &:active {
-        background: $scrollbar--thumb--background--inverted--hover;
+        background: $scrollbar--thumb--background--hover;
+      }
+
+      &--surrogate {
+        display: block;
+        height: 100%;
+        width: 100%;
+      }
+
+      .is-inverted & {
+        background: $scrollbar--thumb--background--inverted--inactive;
+
+        &:hover,
+        &:active {
+          background: $scrollbar--thumb--background--inverted--hover;
+        }
       }
     }
-  }
 
-  &:hover {
-
-    .scrollbars__thumb {
-      opacity: 1;
+    &:hover {
+      .scrollbars__thumb {
+        opacity: 1;
+      }
     }
   }
 }

@@ -1,90 +1,84 @@
-@keyframes loading-indicator-dots-pulse {
-  0% {
-    fill-opacity: 0.2;
+:global {
+  @keyframes loading-indicator-dots-pulse {
+    0% {
+      fill-opacity: 0.2;
+    }
+
+    100% {
+      fill-opacity: 0.8;
+    }
   }
 
-  100% {
-    fill-opacity: 0.8;
+  @keyframes spinner-spin {
+    0% {
+      transform: rotate(0);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }
 
-@keyframes spinner-spin {
-  0% {
-    transform: rotate(0);
-  }
+:global {
+  .icon {
+    &--eta {
+      .icon {
+        &__ring {
+          fill-opacity: 1;
+        }
+      }
+    }
 
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.icon {
-
-  &--eta {
-
-    .icon {
+    &--information {
+      &__fill {
+        fill-opacity: 0.05;
+      }
 
       &__ring {
-        fill-opacity: 1;
+        fill-opacity: 0.6;
       }
     }
-  }
 
-  &--information {
-
-    &__fill {
-      fill-opacity: 0.05;
-    }
-
-    &__ring {
-      fill-opacity: 0.6;
-    }
-  }
-
-  &--limits {
-
-    .limits {
-
-      &__bars {
-
-        &--top {
-          fill-opacity: 0.4;
-        }
-
-        &--middle {
-          fill-opacity: 1;
-        }
-
-        &--bottom {
-          fill-opacity: 1;
-        }
-      }
-    }
-  }
-
-  &--loading-indicator {
-
-    .loading-indicator {
-
-      &--dots {
-
-        &__dot {
-          animation: loading-indicator-dots-pulse 0.6s linear alternate infinite;
-          fill: $white;
-
-          &--center {
-            animation-delay: 0.2s;
+    &--limits {
+      .limits {
+        &__bars {
+          &--top {
+            fill-opacity: 0.4;
           }
 
-          &--right {
-            animation-delay: 0.4s;
+          &--middle {
+            fill-opacity: 1;
+          }
+
+          &--bottom {
+            fill-opacity: 1;
           }
         }
       }
     }
-  }
 
-  &--spinner {
-    animation: spinner-spin 1.25s linear infinite;
+    &--loading-indicator {
+      .loading-indicator {
+        &--dots {
+          &__dot {
+            animation: loading-indicator-dots-pulse 0.6s linear alternate infinite;
+            fill: $white;
+
+            &--center {
+              animation-delay: 0.2s;
+            }
+
+            &--right {
+              animation-delay: 0.4s;
+            }
+          }
+        }
+      }
+    }
+
+    &--spinner {
+      animation: spinner-spin 1.25s linear infinite;
+    }
   }
 }

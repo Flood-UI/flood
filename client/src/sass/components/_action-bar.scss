@@ -9,141 +9,138 @@ $action--border--hover: rgba(#333e4a, 0.15);
 
 $torrent-list--border: rgba($sidebar--background, 0.15);
 
-.action-bar {
-  background: $action-bar--background;
-  border-bottom: 1px solid $torrent-list--border;
-  color: $action-bar--foreground;
-  display: flex;
-  flex: 0 0 60px;
-  height: 60px;
-  position: relative;
+:global {
+  .action-bar {
+    background: $action-bar--background;
+    border-bottom: 1px solid $torrent-list--border;
+    color: $action-bar--foreground;
+    display: flex;
+    flex: 0 0 60px;
+    height: 60px;
+    position: relative;
 
-  &--is-condensed {
-    flex-basis: 30px;
-    height: 30px;
-  }
-
-  &__item {
-
-    &:first-child {
-      text-align: left;
+    &--is-condensed {
+      flex-basis: 30px;
+      height: 30px;
     }
 
-    &:last-child {
-      text-align: right;
-    }
+    &__item {
+      &:first-child {
+        text-align: left;
+      }
 
-    &--sort-torrents {
-      flex: 1 0 auto;
+      &:last-child {
+        text-align: right;
+      }
 
-      .dropdown {
-        margin: 5px 0 0 15px;
+      &--sort-torrents {
+        flex: 1 0 auto;
 
-        &__content {
-          min-width: 250px;
+        .dropdown {
+          margin: 5px 0 0 15px;
+
+          &__content {
+            min-width: 250px;
+          }
+        }
+
+        .action-bar--is-condensed & {
+          display: none;
         }
       }
+
+      &--torrent-operations {
+        display: flex;
+        flex: 0 0 auto;
+        flex-direction: row;
+        margin-left: auto;
+
+        .dropdown {
+          display: flex;
+          height: 60px;
+
+          &__content {
+            min-width: 430px;
+            right: 4px;
+          }
+        }
+      }
+    }
+
+    &__group {
+      display: flex;
+      font-size: 0;
+      padding: 0 15px;
 
       .action-bar--is-condensed & {
-        display: none;
+        padding: 0 10px;
       }
-    }
 
-    &--torrent-operations {
-      display: flex;
-      flex: 0 0 auto;
-      flex-direction: row;
-      margin-left: auto;
+      &--has-divider {
+        position: relative;
 
-      .dropdown {
-        display: flex;
-        height: 60px;
-
-        &__content {
-          min-width: 430px;
-          right: 4px;
+        &:before {
+          background: $action-bar--group--border;
+          content: '';
+          position: absolute;
+          height: 80%;
+          left: 0;
+          top: 10%;
+          width: 1px;
         }
       }
     }
   }
 
-  &__group {
-    display: flex;
-    font-size: 0;
-    padding: 0 15px;
+  .actions {
+    list-style: none;
+  }
 
-    .action-bar--is-condensed & {
-      padding: 0 10px;
-    }
+  .action {
+    box-shadow: 1px 0 transparent, -1px 0 transparent;
+    cursor: pointer;
+    display: inline-block;
+    height: 60px;
+    position: relative;
+    width: 60px;
+    text-align: center;
+    transition: background 0.25s, box-shadow 0.25s;
 
-    &--has-divider {
-      position: relative;
+    &:hover {
+      background: $action--background--hover;
+      box-shadow: 1px 0 $action--border--hover, -1px 0 $action--border--hover;
 
-      &:before {
-        background: $action-bar--group--border;
-        content: '';
-        position: absolute;
-        height: 80%;
-        left: 0;
-        top: 10%;
-        width: 1px;
+      .icon {
+        fill: $action--foreground--hover;
       }
     }
-  }
-}
 
-.actions {
-  list-style: none;
-}
+    .action-bar--is-condensed & {
+      height: 30px;
+      width: 46px;
 
-.action {
-  box-shadow:
-    1px 0 transparent,
-    -1px 0 transparent;
-  cursor: pointer;
-  display: inline-block;
-  height: 60px;
-  position: relative;
-  width: 60px;
-  text-align: center;
-  transition: background 0.25s, box-shadow 0.25s;
+      .icon {
+        height: 18px;
+        width: 18px;
+      }
+    }
 
-  &:hover {
-    background: $action--background--hover;
-    box-shadow:
-      1px 0 $action--border--hover,
-      -1px 0 $action--border--hover;
+    &__label {
+      display: block;
+      position: absolute;
+      top: 100%;
+      visibility: hidden;
+    }
 
     .icon {
-      fill: $action--foreground--hover;
+      fill: $action--foreground;
+      height: 25px;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transition: fill 0.25s;
+      transform: translateX(-50%) translateY(-50%);
+      width: 25px;
     }
-  }
-
-  .action-bar--is-condensed & {
-    height: 30px;
-    width: 46px;
-
-    .icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  &__label {
-    display: block;
-    position: absolute;
-    top: 100%;
-    visibility: hidden;
-  }
-
-  .icon {
-    fill: $action--foreground;
-    height: 25px;
-    left: 50%;
-    position: absolute;
-    top: 50%;
-    transition: fill 0.25s;
-    transform: translateX(-50%) translateY(-50%);
-    width: 25px;
   }
 }

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import styles from './ProgressBar.module.scss';
+
 export default class ProgressBar extends React.PureComponent {
   render() {
     const percent = Math.round(this.props.percent);
@@ -10,10 +12,10 @@ export default class ProgressBar extends React.PureComponent {
     }
 
     return (
-      <div className="progress-bar">
-        <div className="progress-bar__icon">{this.props.icon}</div>
-        <div className="progress-bar__fill__wrapper">
-          <div className="progress-bar__fill" style={style} />
+      <div className={styles.progressBar}>
+        <div className={styles.progressBar__icon}>{this.props.icon}</div>
+        <div className={styles.progressBar__fill__wrapper}>
+          <div className={styles.progressBar__fill} style={style} />
         </div>
       </div>
     );

@@ -1,41 +1,41 @@
-.mediainfo {
-  display: flex;
-  flex-direction: column;
-
-  &__toolbar {
+:global {
+  .mediainfo {
     display: flex;
-    flex: 0 0 auto;
-    justify-content: space-between;
-    padding-bottom: $spacing-unit * 2/5;
-    position: relative;
+    flex-direction: column;
 
-    .tooltip__wrapper {
-      bottom: 0;
-      position: absolute;
-      right: 0;
-    }
-  }
+    &__toolbar {
+      display: flex;
+      flex: 0 0 auto;
+      justify-content: space-between;
+      padding-bottom: $spacing-unit * 2/5;
+      position: relative;
 
-  &__copy-button {
-
-    &.tooltip {
-
-      &__wrapper {
+      .tooltip__wrapper {
+        bottom: 0;
         position: absolute;
         right: 0;
-        top: 0;
       }
     }
 
-    .icon {
-      fill: currentColor;
-      height: 16px;
-      width: 16px;
-    }
-  }
+    &__copy-button {
+      &.tooltip {
+        &__wrapper {
+          position: absolute;
+          right: 0;
+          top: 0;
+        }
+      }
 
-  &__output {
-    flex: 1 1 auto;
-    overflow: auto;
+      .icon {
+        fill: currentColor;
+        height: 16px;
+        width: 16px;
+      }
+    }
+
+    &__output {
+      flex: 1 1 auto;
+      overflow: auto;
+    }
   }
 }

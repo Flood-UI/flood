@@ -1,21 +1,22 @@
 $transfer-data--download: $green;
 $transfer-data--upload: $blue;
 
-.transfer-data {
+:global {
+  .transfer-data {
+    &--download {
+      color: $transfer-data--download;
 
-  &--download {
-    color: $transfer-data--download;
-
-    .icon {
-      fill: $transfer-data--download;
+      .icon {
+        fill: $transfer-data--download;
+      }
     }
-  }
 
-  &--upload {
-    color: $transfer-data--upload;
+    &--upload {
+      color: $transfer-data--upload;
 
-    .icon {
-      fill: $transfer-data--upload;
+      .icon {
+        fill: $transfer-data--upload;
+      }
     }
   }
 }

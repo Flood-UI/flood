@@ -12,78 +12,74 @@ $menu--item--secondary--foreground: lighten($menu--item--foreground, 20%);
 $menu--item--foreground--active: $blue;
 $menu--item--separator--background: $menu--container--border;
 
-.menu {
-  background: $menu--background;
-  border-radius: 3px;
-  box-shadow:
-    0 0 0 1px $menu--container--border,
-    0 1px 4px $menu--container--shadow,
-    0 3px 15px $menu--container--shadow;
-  color: $menu--item--foreground;
-  text-align: left;
+:global {
+  .menu {
+    background: $menu--background;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px $menu--container--border, 0 1px 4px $menu--container--shadow,
+      0 3px 15px $menu--container--shadow;
+    color: $menu--item--foreground;
+    text-align: left;
 
-  &__item {
-    font-size: 0.9em;
-    padding: 5px 15px;
+    &__item {
+      font-size: 0.9em;
+      padding: 5px 15px;
 
-    &__label {
+      &__label {
+        &--primary {
+          &.has-action {
+            display: flex;
 
-      &--primary {
+            .menu {
+              &__item {
+                &__label {
+                  flex: 1 1 auto;
 
-        &.has-action {
-          display: flex;
-
-          .menu {
-
-            &__item {
-
-              &__label {
-                flex: 1 1 auto;
-
-                &__action {
-                  flex: 0 0 auto;
+                  &__action {
+                    flex: 0 0 auto;
+                  }
                 }
               }
             }
           }
         }
+
+        &--secondary {
+          color: $menu--item--secondary--foreground;
+          display: block;
+          font-size: 0.85em;
+        }
       }
 
-      &--secondary {
-        color: $menu--item--secondary--foreground;
+      &--separator {
+        background: $menu--item--separator--background;
+        height: 1px;
+        margin: 5px 0;
+        padding: 0;
+      }
+
+      &.is-selectable {
+        cursor: pointer;
         display: block;
-        font-size: 0.85em;
+        transition: background 0.25s, color 0.25s;
+
+        &:hover {
+          background: $menu--item--background--hover;
+          color: $menu--item--foreground--hover;
+        }
+
+        &.is-selected {
+          color: $menu--item--foreground--active;
+        }
       }
     }
 
-    &--separator {
-      background: $menu--item--separator--background;
-      height: 1px;
-      margin: 5px 0;
-      padding: 0;
+    &-enter {
+      animation: fade-in 0.25s both;
     }
 
-    &.is-selectable {
-      cursor: pointer;
-      display: block;
-      transition: background 0.25s, color 0.25s;
-
-      &:hover {
-        background: $menu--item--background--hover;
-        color: $menu--item--foreground--hover;
-      }
-
-      &.is-selected {
-        color: $menu--item--foreground--active;
-      }
+    &-leave {
+      animation: fade-out 0.25s both;
     }
-  }
-
-  &-enter {
-    animation: fade-in 0.25s both;
-  }
-
-  &-leave {
-    animation: fade-out 0.25s both;
   }
 }

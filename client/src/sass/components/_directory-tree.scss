@@ -1,165 +1,148 @@
 $selection-toolbar--height: $spacing-unit * 1.5;
 
-.directory-tree {
-  flex: 1 1 100%;
-  order: 1;
-  overflow: auto;
-  user-select: none;
-  z-index: 0;
+:global {
+  .directory-tree {
+    flex: 1 1 100%;
+    order: 1;
+    overflow: auto;
+    user-select: none;
+    z-index: 0;
 
-  &__wrapper {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    min-height: 0;
+    &__wrapper {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
 
-    &--toolbar-visible {
+      &--toolbar-visible {
+        .directory-tree {
+          &__selection-toolbar {
+            transform: translateY(0);
+          }
+        }
+
+        .modal__content {
+          &--nested-scroll {
+            &__content {
+              margin-bottom: $selection-toolbar--height;
+            }
+          }
+        }
+      }
+    }
+
+    &__selection-toolbar {
+      align-items: center;
+      background: $another-grey;
+      bottom: 0;
+      display: flex;
+      flex: 0 0 $selection-toolbar--height;
+      justify-content: space-between;
+      min-height: $selection-toolbar--height;
+      padding: $spacing--small;
+      order: 2;
+      position: absolute;
+      transform: translateY(100%);
+      transition: transform 0.25s;
+      width: 100%;
+      z-index: 1;
+
+      &__item {
+        flex: 0 0 auto;
+      }
+
+      &__item-count {
+        color: $blue;
+        font-weight: bold;
+      }
+
+      .button {
+        line-height: inherit;
+        padding: $spacing-unit * 1/5;
+
+        &--download {
+          margin-left: auto;
+          margin-right: $spacing-unit * 2/5;
+        }
+      }
+
+      .dropdown {
+        &__items {
+          font-size: 1.1em;
+          padding-bottom: 0;
+        }
+
+        &__trigger {
+          .dropdown {
+            &__button {
+              padding-top: 5px;
+              padding-bottom: 5px;
+            }
+          }
+        }
+
+        &__value {
+          padding: 0;
+        }
+      }
+    }
+
+    &__parent-directory {
+      margin-left: -1px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      .icon {
+        &--disk {
+          height: 14px;
+          margin-right: 8px;
+          vertical-align: middle;
+          width: 14px;
+        }
+      }
 
       .directory-tree {
-
-        &__selection-toolbar {
-          transform: translateY(0);
-        }
-      }
-
-      .modal__content {
-
-        &--nested-scroll {
-
-          &__content {
-            margin-bottom: $selection-toolbar--height;
+        &__checkbox {
+          .checkbox {
+            &__decoy {
+              height: 18px;
+              width: 18px;
+            }
           }
         }
       }
     }
-  }
 
-  &__selection-toolbar {
-    align-items: center;
-    background: $another-grey;
-    bottom: 0;
-    display: flex;
-    flex: 0 0 $selection-toolbar--height;
-    justify-content: space-between;
-    min-height: $selection-toolbar--height;
-    padding: $spacing--small;
-    order: 2;
-    position: absolute;
-    transform: translateY(100%);
-    transition: transform 0.25s;
-    width: 100%;
-    z-index: 1;
-
-    &__item {
-      flex: 0 0 auto;
-    }
-
-    &__item-count {
-      color: $blue;
-      font-weight: bold;
-    }
-
-    .button {
-      line-height: inherit;
-      padding: $spacing-unit * 1/5;
-
-      &--download {
-        margin-left: auto;
-        margin-right: $spacing-unit * 2/5;
+    &__tree {
+      .directory-tree__tree {
+        padding-left: 0;
       }
     }
 
-    .dropdown {
+    &__node {
+      cursor: default;
+      padding: 1px 0 1px 8px;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+      white-space: nowrap;
 
-      &__items {
-        font-size: 1.1em;
-        padding-bottom: 0;
-      }
+      &:hover > .file__label .directory-tree {
+        &__checkbox {
+          .directory-tree {
+            &__checkbox {
+              &__item {
+                &--icon {
+                  opacity: 0;
+                }
 
-      &__trigger {
+                &--checkbox {
+                  opacity: 1;
 
-        .dropdown {
-
-          &__button {
-            padding-top: 5px;
-            padding-bottom: 5px;
-          }
-        }
-      }
-
-      &__value {
-        padding: 0;
-      }
-    }
-  }
-
-  &__parent-directory {
-    margin-left: -1px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    .icon {
-
-      &--disk {
-        height: 14px;
-        margin-right: 8px;
-        vertical-align: middle;
-        width: 14px;
-      }
-    }
-
-    .directory-tree {
-
-      &__checkbox {
-
-        .checkbox {
-
-          &__decoy {
-            height: 18px;
-            width: 18px;
-          }
-        }
-      }
-    }
-  }
-
-  &__tree {
-
-    .directory-tree__tree {
-      padding-left: 0;
-    }
-  }
-
-  &__node {
-    cursor: default;
-    padding: 1px 0 1px 8px;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    white-space: nowrap;
-
-    &:hover > .file__label .directory-tree {
-
-      &__checkbox {
-
-        .directory-tree {
-
-          &__checkbox {
-
-            &__item {
-
-              &--icon {
-                opacity: 0;
-              }
-
-              &--checkbox {
-                opacity: 1;
-
-                .checkbox {
-
-                  &__decoy {
-
-                    &:after {
-                      opacity: 1;
+                  .checkbox {
+                    &__decoy {
+                      &:after {
+                        opacity: 1;
+                      }
                     }
                   }
                 }
@@ -168,195 +151,179 @@ $selection-toolbar--height: $spacing-unit * 1.5;
           }
         }
       }
+
+      &--selected .directory-tree {
+        &__checkbox {
+          .directory-tree {
+            &__checkbox {
+              &__item {
+                &--icon {
+                  opacity: 0.75;
+                }
+
+                &--checkbox {
+                  opacity: 1;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      &--directory {
+        cursor: pointer;
+      }
+
+      &--group {
+        margin-left: 0;
+        padding-left: 12px;
+        position: relative;
+      }
+
+      &--file-list {
+        margin-bottom: 3px;
+        padding-left: 0;
+      }
+
+      .file {
+        align-items: center;
+        display: flex;
+        width: auto;
+
+        .icon {
+          &--file {
+            transition: fill 0.25s;
+          }
+        }
+
+        &__detail {
+          flex: 1 1 auto;
+          padding-right: $spacing-unit * 1/4;
+
+          &--secondary {
+            flex: 0 0 auto;
+            font-size: 0.7rem;
+            text-align: right;
+            transition: color 0.25s;
+          }
+
+          &--priority {
+            .icon {
+              height: auto;
+              margin-right: 0;
+              width: 16px;
+            }
+          }
+
+          &:last-child {
+            padding-right: 0;
+          }
+        }
+      }
     }
 
-    &--selected .directory-tree {
+    &__checkbox {
+      margin-right: 6px;
+      position: relative;
 
-      &__checkbox {
+      &,
+      .form__element,
+      .form__row__item {
+        height: 18px;
+        width: 18px;
+      }
 
-        .directory-tree {
+      .form__element {
+        left: 50%;
+        padding: 0;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
 
-          &__checkbox {
+      &__item {
+        height: 100%;
+        left: 0;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        transition: opacity 0.25s;
+        width: 100%;
 
-            &__item {
+        & > .icon {
+          left: 50%;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
 
-              &--icon {
-                opacity: 0.75;
-              }
+        &--checkbox {
+          z-index: 2;
 
-              &--checkbox {
-                opacity: 1;
-              }
+          .checkbox {
+            &__decoy {
+              height: 16px;
+              margin-right: 0;
+              width: 16px;
+            }
+          }
+        }
+
+        &--icon {
+          opacity: 1;
+          z-index: 1;
+
+          .icon {
+            &.icon--folder {
+              margin: -1px 0 0 1px;
             }
           }
         }
       }
     }
 
-    &--directory {
-      cursor: pointer;
-    }
-
-    &--group {
-      margin-left: 0;
-      padding-left: 12px;
-      position: relative;
-    }
-
-    &--file-list {
-      margin-bottom: 3px;
-      padding-left: 0;
-    }
-
-    .file {
-      align-items: center;
-      display: flex;
-      width: auto;
-
-      .icon {
-
-        &--file {
-          transition: fill 0.25s;
-        }
-      }
-
-      &__detail {
-        flex: 1 1 auto;
-        padding-right: $spacing-unit * 1/4;
-
-        &--secondary {
-          flex: 0 0 auto;
-          font-size: 0.7rem;
-          text-align: right;
-          transition: color 0.25s;
-        }
-
-        &--priority {
-
-          .icon {
-            height: auto;
-            margin-right: 0;
-            width: 16px;
+    & > .directory-tree {
+      &__tree {
+        & > .directory-tree {
+          &__node {
+            padding-left: 0;
           }
         }
-
-        &:last-child {
-          padding-right: 0;
-        }
       }
     }
-  }
 
-  &__checkbox {
-    margin-right: 6px;
-    position: relative;
-
-    &,
-    .form__element,
-    .form__row__item {
-      height: 18px;
-      width: 18px;
-    }
-
-    .form__element {
-      left: 50%;
-      padding: 0;
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    &__item {
-      height: 100%;
-      left: 0;
-      opacity: 0;
-      position: absolute;
-      top: 0;
-      transition: opacity 0.25s;
-      width: 100%;
-
-      & > .icon {
+    .icon {
+      &--file,
+      &--folder {
+        height: 14px;
         left: 50%;
         position: absolute;
         top: 50%;
         transform: translate(-50%, -50%);
-      }
-
-      &--checkbox {
-        z-index: 2;
-
-        .checkbox {
-
-          &__decoy {
-            height: 16px;
-            margin-right: 0;
-            width: 16px;
-          }
-        }
-      }
-
-      &--icon {
-        opacity: 1;
-        z-index: 1;
-
-        .icon {
-
-          &.icon--folder {
-            margin: -1px 0 0 1px;
-          }
-        }
+        width: 14px;
       }
     }
   }
 
-  & > .directory-tree {
-
-    &__tree {
-
-      & > .directory-tree {
-
-        &__node {
-          padding-left: 0;
+  .directory-tree {
+    &__node {
+      .file {
+        &__label {
+          align-items: center;
+          display: flex;
+          min-width: 1px;
         }
-      }
-    }
-  }
 
-  .icon {
+        &__checkbox {
+          flex: 0 0 auto;
+        }
 
-    &--file,
-    &--folder {
-      height: 14px;
-      left: 50%;
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 14px;
-    }
-  }
-}
-
-.directory-tree {
-
-  &__node {
-
-    .file {
-
-      &__label {
-        align-items: center;
-        display: flex;
-        min-width: 1px;
-      }
-
-      &__checkbox {
-        flex: 0 0 auto;
-      }
-
-      &__name {
-        flex: 1 1 auto;
-        min-width: 1px;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        &__name {
+          flex: 1 1 auto;
+          min-width: 1px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
   }

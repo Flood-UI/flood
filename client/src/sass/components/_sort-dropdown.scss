@@ -1,21 +1,22 @@
-.sort-dropdown {
+:global {
+  .sort-dropdown {
+    &__item {
+      align-items: center;
+      display: flex;
+    }
 
-  &__item {
-    align-items: center;
-    display: flex;
-  }
+    &__indicator {
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid currentColor;
+      display: inline-block;
+      margin-left: auto;
+      transition: transform 0.25s;
+      vertical-align: middle;
 
-  &__indicator {
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 5px solid currentColor;
-    display: inline-block;
-    margin-left: auto;
-    transition: transform 0.25s;
-    vertical-align: middle;
-
-    &--asc {
-      transform: rotate(180deg);
+      &--asc {
+        transform: rotate(180deg);
+      }
     }
   }
 }

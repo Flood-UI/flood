@@ -11,150 +11,142 @@ $dropzone--icon--fill--dragging: $blue;
 
 $dropzone--file--foreground: $dropzone--foreground;
 
-.dropzone {
-  position: relative;
-  text-align: center;
-  transition: border 0.25s, color 0.25s;
-  width: 100%;
-  z-index: 2;
+:global {
+  .dropzone {
+    position: relative;
+    text-align: center;
+    transition: border 0.25s, color 0.25s;
+    width: 100%;
+    z-index: 2;
 
-  &:hover {
-    border-color: $input--inverse--border--hover;
-
-    .dropzone__icon {
-
-      .icon {
-        fill: $dropzone--icon--fill--hover;
-      }
-    }
-  }
-
-  &--is-dragging {
-
-    &,
     &:hover {
-      border-color: $dropzone--border--dragging;
-      color: $dropzone--foreground--dragging;
+      border-color: $input--inverse--border--hover;
 
       .dropzone__icon {
-
         .icon {
-          fill: $dropzone--icon--fill--dragging;
+          fill: $dropzone--icon--fill--hover;
         }
       }
     }
-  }
 
-  &__icon {
-
-    .icon {
-
-      &--files {
-        fill: $dropzone--icon--fill;
-        height: 64px;
-        transition: fill 0.25s;
-        width: 64px;
-
-        &__file {
-
-          &--right,
-          &--left {
-            fill-opacity: 0.5;
-          }
-        }
-      }
-    }
-  }
-
-  &__copy {
-    cursor: pointer;
-    flex: 1;
-    font-size: $font-size--x-small;
-    padding: $spacing-unit;
-    width: 100%;
-  }
-
-  &__browse-button {
-    color: $dropzone--browse--foreground;
-    text-decoration: underline;
-  }
-
-  &__selected-files {
-    font-size: $font-size--small;
-    margin-bottom: -1px;
-    position: relative;
-    width: 100%;
-    z-index: 1;
-
-    &.interactive-list {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-
-    & + .dropzone {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-    }
-
-    &__file {
-
-      .icon {
-
-        &--file {
-          display: inline-block;
-          height: 14px;
-          margin-right: 4px;
-          opacity: 0.5;
-          width: 14px;
-
-          &.icon {
-            fill: currentColor;
-          }
-        }
-      }
-
+    &--is-dragging {
+      &,
       &:hover {
+        border-color: $dropzone--border--dragging;
+        color: $dropzone--foreground--dragging;
 
-        .icon {
-
-          &--file {
-            opacity: 0.5;
+        .dropzone__icon {
+          .icon {
+            fill: $dropzone--icon--fill--dragging;
           }
         }
       }
     }
-  }
 
-  &--with-overlay {
-    text-align: inherit;
-    border: none;
+    &__icon {
+      .icon {
+        &--files {
+          fill: $dropzone--icon--fill;
+          height: 64px;
+          transition: fill 0.25s;
+          width: 64px;
 
-    .dropzone__overlay {
-      position: absolute;
-      visibility: hidden;
-      top: 0;
-      left: 0;
+          &__file {
+            &--right,
+            &--left {
+              fill-opacity: 0.5;
+            }
+          }
+        }
+      }
+    }
+
+    &__copy {
+      cursor: pointer;
+      flex: 1;
+      font-size: $font-size--x-small;
+      padding: $spacing-unit;
       width: 100%;
-      height: 100%;
-      background: #fff;
-      z-index: 2;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 250ms ease-in, visibility 1ms linear 250ms;
     }
 
-    &.dropzone--is-dragging .dropzone__overlay {
-      top: 0;
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 250ms ease-in;
+    &__browse-button {
+      color: $dropzone--browse--foreground;
+      text-decoration: underline;
     }
 
-    .dropzone__copy {
-      position: absolute;
-      top: 50%;
-      height: 150px;
-      margin-top: -75px;
+    &__selected-files {
+      font-size: $font-size--small;
+      margin-bottom: -1px;
+      position: relative;
+      width: 100%;
+      z-index: 1;
+
+      &.interactive-list {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      & + .dropzone {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+
+      &__file {
+        .icon {
+          &--file {
+            display: inline-block;
+            height: 14px;
+            margin-right: 4px;
+            opacity: 0.5;
+            width: 14px;
+
+            &.icon {
+              fill: currentColor;
+            }
+          }
+        }
+
+        &:hover {
+          .icon {
+            &--file {
+              opacity: 0.5;
+            }
+          }
+        }
+      }
+    }
+
+    &--with-overlay {
+      text-align: inherit;
+      border: none;
+
+      .dropzone__overlay {
+        position: absolute;
+        visibility: hidden;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        z-index: 2;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 250ms ease-in, visibility 1ms linear 250ms;
+      }
+
+      &.dropzone--is-dragging .dropzone__overlay {
+        top: 0;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 250ms ease-in;
+      }
+
+      .dropzone__copy {
+        position: absolute;
+        top: 50%;
+        height: 150px;
+        margin-top: -75px;
+      }
     }
   }
 }
