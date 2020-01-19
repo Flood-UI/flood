@@ -99,7 +99,7 @@ class AuthForm extends React.Component {
                 <Textbox placeholder="Username" id="username" />
               </FormRow>
               <FormRow>
-                <Textbox placeholder="Passsword" id="password" type="password" />
+                <Textbox placeholder="Password" id="password" type="password" />
               </FormRow>
             </PanelContent>
             {isLoginMode ? null : (
