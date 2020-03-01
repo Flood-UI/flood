@@ -61,13 +61,10 @@ class TransferData extends React.Component {
       <Measure
         offset
         onResize={contentRect => {
-          this.setState({sidebarWidth: contentRect.offset.width})
-        }}
-      >
-        {({ measureRef}) => (
-          <div
-            ref={measureRef}
-            className="client-stats__wrapper sidebar__item">
+          this.setState({sidebarWidth: contentRect.offset.width});
+        }}>
+        {({measureRef}) => (
+          <div ref={measureRef} className="client-stats__wrapper sidebar__item">
             <div
               className="client-stats"
               onMouseMove={this.handleMouseMove}
