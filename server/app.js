@@ -34,11 +34,11 @@ app.use(cookieParser());
 
 require('./config/passport')(passport);
 
-app.use('/api', apiRoutes);
-app.use('/auth', authRoutes);
+app.use(paths.servedPath + 'api', apiRoutes);
+app.use(paths.servedPath + 'auth', authRoutes);
 
 // After routes, look for static assets.
-app.use(express.static(paths.appBuild));
+app.use(paths.servedPath, express.static(paths.appBuild));
 // After static assets, always return index.html
 app.use((req, res) => res.sendFile(path.join(paths.appBuild, 'index.html')));
 
