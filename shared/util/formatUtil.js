@@ -38,7 +38,7 @@ const formatUtil = {
   status: (isHashChecking, isComplete, isOpen, uploadRate, downloadRate, state, message) => {
     const torrentStatus = [];
 
-    if (isHashChecking === '1') {
+    if (isHashChecking !== '0') {
       torrentStatus.push('ch'); // checking
     } else if (isComplete === '1' && isOpen === '1' && state === '1') {
       torrentStatus.push('sd'); // seeding
