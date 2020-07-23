@@ -1,10 +1,13 @@
 ARG NODE_IMAGE=node:12.2-alpine
 ARG WORKDIR=/usr/src/app/
+ARG FLOOD_BASE_URI=/
 
 FROM ${NODE_IMAGE} as nodebuild
-ARG WORKDIR
 
+ARG WORKDIR
 WORKDIR $WORKDIR
+ARG FLOOD_BASE_URI
+ENV FLOOD_BASE_URI $FLOOD_BASE_URI
 
 # Generate node_modules
 COPY package.json \
@@ -31,9 +34,11 @@ RUN npm run build && \
 
 # Now get the clean image without any dependencies and copy compiled app
 FROM ${NODE_IMAGE} as flood
-ARG WORKDIR
 
+ARG WORKDIR
 WORKDIR $WORKDIR
+ARG FLOOD_BASE_URI
+ENV FLOOD_BASE_URI $FLOOD_BASE_URI
 
 # Install runtime dependencies.
 RUN apk --no-cache add \
