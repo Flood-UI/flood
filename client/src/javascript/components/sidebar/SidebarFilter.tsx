@@ -1,6 +1,6 @@
 import classnames from 'classnames';
-import {FC} from 'react';
-import {useLingui} from '@lingui/react';
+import { FC } from 'react';
+import { useLingui } from '@lingui/react';
 
 import Badge from '../general/Badge';
 
@@ -14,13 +14,13 @@ interface SidebarFilterProps {
 }
 
 const SidebarFilter: FC<SidebarFilterProps> = (props: SidebarFilterProps) => {
-  const {isActive, count, slug, icon, handleClick} = props;
-  const {i18n} = useLingui();
+  const { isActive, count, slug, icon, handleClick } = props;
+  const { i18n } = useLingui();
 
   const classNames = classnames('sidebar-filter__item', {
     'is-active': isActive,
   });
-  let {name} = props;
+  let { name } = props;
 
   if (name === '') {
     name = i18n._('filter.all');
@@ -38,7 +38,7 @@ const SidebarFilter: FC<SidebarFilterProps> = (props: SidebarFilterProps) => {
   }
 
   return (
-    <li className={classNames} onClick={() => handleClick(slug)}>
+    <li className={classNames} onClick={() => handleClick(slug)} role="menuitem">
       {icon}
       {name}
       <Badge>{count}</Badge>

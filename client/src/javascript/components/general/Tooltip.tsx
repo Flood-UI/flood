@@ -1,4 +1,4 @@
-import {Component, CSSProperties, ReactNode} from 'react';
+import { Component, CSSProperties, ReactNode } from 'react';
 import classnames from 'classnames';
 import ReactDOM from 'react-dom';
 
@@ -177,7 +177,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
     tooltipWidth: number,
     tooltipHeight: number,
   ): Pick<Coordinates, 'left' | 'top'> {
-    const {align, offset = 0} = this.props;
+    const { align, offset = 0 } = this.props;
     let top = null;
 
     switch (position) {
@@ -237,7 +237,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
       return {
         anchor,
         position,
-        coordinates: {left: 0, top: 0},
+        coordinates: { left: 0, top: 0 },
       };
     }
 
@@ -262,11 +262,11 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
   }
 
   dismissTooltip = (forceClose?: boolean): void => {
-    const {stayOpen, onClose} = this.props;
-    const {isOpen} = this.state;
+    const { stayOpen, onClose } = this.props;
+    const { isOpen } = this.state;
 
     if ((!stayOpen || forceClose) && isOpen) {
-      this.setState({isOpen: false});
+      this.setState({ isOpen: false });
       this.removeScrollListener();
 
       if (onClose) {
@@ -276,11 +276,11 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
   };
 
   handleTooltipMouseEnter = (): void => {
-    const {interactive} = this.props;
-    const {wasTriggeredClose} = this.state;
+    const { interactive } = this.props;
+    const { wasTriggeredClose } = this.state;
 
     if (interactive && !wasTriggeredClose) {
-      this.setState({isOpen: true});
+      this.setState({ isOpen: true });
       this.addScrollListener();
     }
   };
@@ -290,7 +290,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
   };
 
   handleMouseEnter = (forceOpen?: boolean): void => {
-    const {props} = this;
+    const { props } = this;
 
     if (props.suppress && !forceOpen) {
       return;
@@ -300,7 +300,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
       return;
     }
 
-    const {anchor, position, coordinates} = this.getIdealLocation(props.anchor, props.position);
+    const { anchor, position, coordinates } = this.getIdealLocation(props.anchor, props.position);
 
     this.setState({
       anchor,
@@ -319,7 +319,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
   handleMouseLeave = (): void => {
     this.dismissTooltip();
 
-    const {onMouseLeave} = this.props;
+    const { onMouseLeave } = this.props;
 
     if (onMouseLeave) {
       onMouseLeave();
@@ -327,7 +327,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
   };
 
   isOpen = (): boolean => {
-    const {isOpen} = this.state;
+    const { isOpen } = this.state;
 
     return isOpen;
   };
@@ -358,7 +358,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
       content,
       onClick,
     } = this.props;
-    const {anchor: stateAnchor, position: statePosition, coordinates, isOpen} = this.state;
+    const { anchor: stateAnchor, position: statePosition, coordinates, isOpen } = this.state;
     let tooltipStyle: CSSProperties = {};
 
     // Get the anchor and position from state if possible. If not, get it from
@@ -402,6 +402,7 @@ class Tooltip extends Component<TooltipProps, TooltipStates> {
     return (
       <div
         className={wrapperClassName}
+        role="button"
         onClick={onClick}
         onMouseEnter={() => this.handleMouseEnter()}
         onMouseLeave={() => this.handleMouseLeave()}
