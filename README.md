@@ -1,4 +1,6 @@
-# Flood
+# Flood ⚠️ *DEPRECATED* ⚠️ [Go here](https://github.com/jesec/flood)
+
+Development has ceased in this repository, visit https://github.com/jesec/flood instead
 
 ![Flood logo](flood.png)
 
