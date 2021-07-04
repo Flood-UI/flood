@@ -65,10 +65,11 @@ I've been bad about cutting actual releases, so check this repo for recent commi
 ### Local Development
 
 1. Run `npm install`.
-2. Run `npm run start:development:server` and `npm run start:development:client` in separate terminal instances.
+2. Run `npm run build`.
+3. Run `npm run start:development:server` and `npm run start:development:client` in separate terminal instances.
     * `npm run start:development:server` uses [nodemon](https://github.com/remy/nodemon) to watch for changes to the server-side JavaScript.
     * `npm run start:development:client` watches for changes in the client-side source.
-3. Access the UI in your browser. Defaults to `localhost:4200`.
+4. Access the UI in your browser. Defaults to `localhost:4200`.
 
 ### Environment Variables
 

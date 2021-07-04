@@ -11,6 +11,12 @@ const ajaxUtil = {
         };
       }
 
+      if (typeof error === 'object' && error.faultString !== undefined) {
+        error = {
+          message: error.faultString,
+        }
+      }
+
       res.status(500).json(error);
     } else {
       res.json(data);

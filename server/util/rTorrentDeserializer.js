@@ -6,6 +6,7 @@ let tmpData;
 let dataIsVal;
 let endOfResponse;
 let rejectCallback;
+let fault;
 
 const openTag = elementName => {
   if (elementName === 'array' || elementName === 'struct') {
@@ -74,6 +75,10 @@ const closeTag = elementName => {
     case 'member':
       break;
 
+    case 'fault':
+      fault = true;
+      break;
+
     default:
       rejectCallback(`Unexpected XML-RPC Tag: ${elementName}`);
   }
@@ -85,6 +90,7 @@ const deserialize = (data, resolve, reject) => {
   tmpData = [];
   dataIsVal = false;
   endOfResponse = false;
+  fault = false;
   rejectCallback = reject;
   const parser = new saxen.Parser();
   parser.on('openTag', openTag);
@@ -93,6 +99,9 @@ const deserialize = (data, resolve, reject) => {
   parser.on('error', onError);
   parser.parse(data);
   if (endOfResponse) {
+    if (fault) {
+      return reject(dataStack[0]);
+    }
     return resolve(dataStack[0]);
   }
   return reject('truncated response was received');
