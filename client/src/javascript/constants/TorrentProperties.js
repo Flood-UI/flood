@@ -83,6 +83,10 @@ const torrentProperties = {
     id: 'torrents.properties.trackers',
     defaultMessage: 'Trackers',
   },
+  lastTransfer: {
+    id: 'torrents.properties.last_xfer',
+    defaultMessage: 'Last Transfer',
+  },
 };
 
 export default torrentProperties;
