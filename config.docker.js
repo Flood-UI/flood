@@ -15,6 +15,24 @@ const CONFIG = {
   ssl: process.env.FLOOD_ENABLE_SSL === 'true' || process.env.FLOOD_ENABLE_SSL === true,
   sslKey: '/data/flood_ssl.key',
   sslCert: '/data/flood_ssl.cert',
+  diskUsageService: {
+    dontWatchMountPoints: [
+      "/dev",
+      "/sys/fs/cgroup",
+      "/etc/resolv.conf",
+      "/etc/hostname",
+      "/etc/hosts",
+      "/dev/shm",
+      "/proc/asound",
+      "/proc/acpi",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/timer_list",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/sys/firmware",
+    ],
+  },
 };
 
 module.exports = CONFIG;
